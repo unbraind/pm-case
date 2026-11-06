@@ -10,6 +10,7 @@ try{
   await cp('dist',join(root,'dist'),{recursive:true});await cp('test',join(root,'test'),{recursive:true});await cp('scripts',join(root,'scripts'),{recursive:true});await writeFile(join(root,'package.json'),'{"type":"module"}');await symlink(resolve('node_modules'),join(root,'node_modules'),'dir');
   const mutations=[
     {file:'kernel.js',before:'return Object.entries(partial).every(([key, value]) => Object.hasOwn(full, key) && full[key] === value);',after:'return false;',test:'core.test.ts',pattern:'^independent brute-force oracle'},
+    {file:'kernel.js',before:'new Set(recorded.map(row => row.result.identity)).size === recorded.length && ',after:'',test:'core.test.ts',pattern:'^native read-back refuses duplicate receipt bindings'},
     {file:'api.js',before:'insist(found.request_digest === digest(request),',after:'insist(true,',test:'core.test.ts',pattern:'^real SDK owner retains'},
     {file:'api.js',before:'itemHash: owner.revision',after:'itemHash: (await host.client.readItemRevision(owner.id)).item_hash',test:'concurrency.test.ts',pattern:'^competing write at before_update'},
     {file:'api.js',before:"fitEnvelope(host, envelope(committed(id, 'f'.repeat(64), operation, false)), budget);",after:'void budget;',test:'contracts.test.ts',pattern:'^all write budgets refuse'},

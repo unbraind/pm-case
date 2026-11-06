@@ -92,6 +92,21 @@ test('native read-back refuses corrupt plans digests and repeated execution rece
   for (const change of corruptions) { const copy = structuredClone(state); change(copy); assert.throws(() => readState(copy), hasCode('invalid_record')); }
   for (const raw of [null, {}, { schema_version: 2 }]) assert.throws(() => readState(raw), hasCode('invalid_record'));
 });
+test('native read-back refuses duplicate receipt bindings that leave an outcome unbound', async t => {
+  const { host, id, pmRoot } = await fixture(t); await select(host, id);
+  await recordCaseOutcome(host, await request(host, id, 'first'));
+  const secondCase = (await readCaseModel(host, id)).state.selected_plan!.cases[1].case_id;
+  await recordCaseOutcome(host, await request(host, id, 'second', { case_id: secondCase }));
+  const state = (await readCaseModel(host, id)).state;
+  const receipts = state.operation_receipts.filter(row => row.result.kind === 'record');
+  receipts[1].result.identity = receipts[0].result.identity; receipts[1].result.digest = receipts[0].result.digest;
+  receipts[1].result_digest = digest(receipts[1].result);
+  await host.client.update(id, { field: [`case_state=${canonical(state)}`], comment: ['Seed malformed native receipt binding'] });
+  const events = await historyEvents(pmRoot, id);
+  await assert.rejects(readCaseModel(host, id), hasCode('invalid_record'));
+  await assert.rejects(caseCoverage(host, { id }), hasCode('invalid_record'));
+  assert.equal(await historyEvents(pmRoot, id), events);
+});
 test('constraint and mandatory ordering is canonical for reversed and duplicated declarations', () => {
   const constraints: CaseModel['forbidden_tuples'] = [{ assignment: { water: 'high', soil: 'high' }, rationale: 'Second', source_refs: [source()] },{ assignment: { light: 'low', soil: 'low' }, rationale: 'First', source_refs: [source()] }];
   const m = model({forbidden_tuples:[...constraints,constraints[0]]}); const a=normalizeModel(m);const b=normalizeModel({...m,forbidden_tuples:[...m.forbidden_tuples].reverse()});assert.equal(canonical(a),canonical(b));

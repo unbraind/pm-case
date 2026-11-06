@@ -26,7 +26,7 @@ An independent mixed-radix/combination oracle checks feasibility and coverage, i
 
 Planned tuple coverage counts feasible obligations covered by selected cases. Recorded execution tuple coverage counts obligations with a pass/fail observation for the exact model subject and the first recorded oracle scope. Unresolved observations contribute no execution coverage. Different oracles remain incomparable, and different subjects refuse at recording time. Multiple executions are retained; pass/fail counts can overlap for conflicting cases. Conflict identities, unavailable counts, unobserved cases, exact gaps and excluded tuples remain distinct.
 
-Every admitted outcome has source references, immutable subject/oracle digests, an execution ID, timestamp, recorder, reason and `evidence_grade: reported`. Aggregation never upgrades it to verified execution. Stored reads validate model and plan digests, operation sequences/result digests, execution-to-receipt pins and owner identity. Coverage never implies source truth, correctness, higher-order coverage, statement coverage or approval.
+Every admitted outcome has source references, immutable subject/oracle digests, an execution ID, timestamp, recorder, reason and `evidence_grade: reported`. Aggregation never upgrades it to verified execution. Stored reads validate model and plan digests, operation sequences/result digests, a one-to-one binding between outcomes and execution receipts, and owner identity. Coverage never implies source truth, correctness, higher-order coverage, statement coverage or approval.
 
 ## Mutation, concurrency and recovery
 

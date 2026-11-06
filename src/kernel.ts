@@ -65,7 +65,7 @@ export function readState(raw: unknown): CaseState {
   insist(digest(normalizeModel(state.model)) === state.model_digest, 'invalid_record', 'Stored model digest differs');
   insist(state.operation_receipts[0].result.kind === 'create' && state.operation_receipts[0].result.digest === state.model_digest && state.operation_receipts.slice(1).every(row => row.result.kind !== 'create'), 'invalid_record', 'Creation receipt does not bind this immutable model');
   const recorded = state.operation_receipts.filter(row => row.result.kind === 'record');
-  insist(recorded.length === state.outcomes.length && recorded.every(row => state.outcomes.some(outcome => outcome.execution_id === row.result.identity && digest(outcome) === row.result.digest)), 'invalid_record', 'Execution content differs from its immutable receipt');
+  insist(recorded.length === state.outcomes.length && new Set(recorded.map(row => row.result.identity)).size === recorded.length && recorded.every(row => state.outcomes.some(outcome => outcome.execution_id === row.result.identity && digest(outcome) === row.result.digest)), 'invalid_record', 'Execution content differs from its immutable receipt');
   const plan = state.selected_plan; const selected = state.operation_receipts.filter(row => row.result.kind === 'select').at(-1);
   insist(plan ? selected?.result.digest === digest(plan) && selected.result.identity === plan.proposal_digest : selected === undefined, 'invalid_record', 'Selected plan differs from its committed receipt');
   if (plan) insist(canonical(generateCover(state.model, { max_cases: plan.max_cases })) === canonical(plan), 'invalid_record', 'Stored plan is not the declared deterministic cover');
