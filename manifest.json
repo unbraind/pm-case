@@ -1,0 +1,14 @@
+{
+  "name": "pm-case",
+  "version": "2026.11.6",
+  "description": "Constrained combinatorial test design and exact coverage context",
+  "author": "@unbraind",
+  "entry": "./dist/index.js",
+  "pm_min_version": "2026.11.5",
+  "priority": 90,
+  "capabilities": [
+    "commands",
+    "schema",
+    "renderers"
+  ]
+}
