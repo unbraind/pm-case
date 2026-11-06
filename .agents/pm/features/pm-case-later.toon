@@ -1,0 +1,16 @@
+id: pm-case-later
+title: Extend reviewed finite design beyond v1
+description: ""
+type: Feature
+status: open
+priority: 2
+tags: []
+created_at: "2026-11-06T18:19:09.231Z"
+updated_at: "2026-11-06T19:13:10.588Z"
+author: codex-agent
+acceptance_criteria: "Deferred: higher-than-pairwise strength; SAT solver; automated factor extraction; scheduling and execution; optional evidence adapter. Require a separately approved scope and proof before implementation."
+parent: pm-case-release
+docs[2]{path,scope}:
+  ARCHITECTURE.md,project
+  README.md,project
+body: ""
