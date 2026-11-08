@@ -34,6 +34,17 @@ function runtimeProvisioning(source: string): void {
   if (source.includes('matrix.node-version')) assert.match(source, /node-version: \['22\.19\.0', '26\.13\.0'\]/);
 }
 
+/** Bind release metadata to the package owner and reject inherited scaffold identity anywhere. */
+function workflowPackageIdentity(source: string): void {
+  const pkg = JSON.parse(readFileSync('package.json', 'utf8')) as { name: string; repository: { url: string } };
+  assert.doesNotMatch(source, /pm-unit/, 'Workflows must not retain the template package identity');
+  if (source.includes('gh pr create')) {
+    assert.ok(source.includes('--title "Release ' + pkg.name + ' ${RELEASE_TAG}"'), 'Release PR title must name the owning package');
+    const repository = pkg.repository.url.replace(/^git\+/, '').replace(/\.git$/, '');
+    assert.ok(source.includes(`Tracking: [${pkg.name}-release](${repository}/blob/main/.agents/pm/epics/${pkg.name}-release.toon)`), 'Release PR tracking must link the owning package item');
+  }
+}
+
 /** Reject literal PATH separators in any composed environment value, including array joins. */
 function pathConventions(source: string): void {
   walk(parse(source, { sourceType: 'module', plugins: ['typescript'] }), node => {
@@ -63,7 +74,19 @@ test('all CI and release jobs provision their exact acceptance runtimes', () => 
   }
   const source = readFileSync('.github/workflows/release.yml', 'utf8');
   assert.throws(() => runtimeProvisioning(source.replaceAll('PM_CASE_NODE_26=', 'MISSING_NODE_26=')), assert.AssertionError);
-  assert.match(source, /pkg_name="pm-case"/); assert.doesNotMatch(source, /pkg_name="pm-unit"/);
+  assert.match(source, /pkg_name="pm-case"/); assert.doesNotMatch(source, /pm-unit/);
+});
+
+test('all workflow release metadata binds the owning package identity', () => {
+  for (const path of readdirSync('.github/workflows').filter(name => /\.ya?ml$/.test(name))) {
+    const source = readFileSync(`.github/workflows/${path}`, 'utf8'); workflowPackageIdentity(source);
+    for (const match of source.matchAll(/pm-case/g)) {
+      const changed = source.slice(0, match.index) + 'pm-unit' + source.slice(match.index + match[0].length);
+      assert.throws(() => workflowPackageIdentity(changed), assert.AssertionError, `Every package coordinate in ${path} must reject template drift`);
+    }
+  }
+  const source = readFileSync('.github/workflows/release.yml', 'utf8');
+  for (const [before, after] of [['Release pm-case', 'Release wrong-package'], ['Tracking: [pm-case-release]', 'Tracking: [wrong-item]']]) assert.throws(() => workflowPackageIdentity(source.replace(before, after)), assert.AssertionError);
 });
 
 test('harness archives share frozen provenance while retaining intentional path scopes', () => {
@@ -73,6 +96,19 @@ test('harness archives share frozen provenance while retaining intentional path 
   assert.match(harvest, /\['archive', revision, '\.agents\/pm'\]/);
   assert.match(harness, /\['archive', source\.revision\]/);
   assert.match(harness, /publicTrackers\.find/);
+});
+
+test('all receipt producers and consumers validate planned coordinates before side effects', () => {
+  const producer = readFileSync('test/public-harness.acceptance.ts', 'utf8');
+  assert.match(producer, /publicHarnessArguments\(check, resolve\('test\/harness-reporter\.ts'\)\)/);
+  assert.match(producer, /command: publicHarnessCommand\(check\)/);
+  for (const [path, validation, sideEffect] of [
+    ['test/public-harness.acceptance.ts', 'harnessPlanBindings(results);', "await writeFile('docs/public-harness-receipt.json'"],
+    ['test/real-data-proof.ts', 'harnessPlanBindings(harness.results);', 'const root=await mkdtemp('],
+  ]) {
+    const source = readFileSync(path, 'utf8'); const guard = source.indexOf(validation);
+    assert.ok(guard >= 0 && guard < source.indexOf(sideEffect), 'Every evidence path must validate the same plan before persistence');
+  }
 });
 
 test('harness PATH composition and linked commands use platform conventions', () => {

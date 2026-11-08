@@ -36,6 +36,20 @@ try{
     {file:'kernel.js',before:'const memoized = memo.get(key);',after:'const memoized = undefined;',test:'core.test.ts',pattern:'^deterministic covers and domains are reused'},
   ];
   const additional = [
+    ...[
+      "assert.equal(run.test_file, planned.file, 'Harness test file must bind the reviewed plan');",
+      "assert.equal(run.test_name, planned.pattern, 'Harness test name must bind the reviewed plan');",
+      "assert.equal(run.command, publicHarnessCommand(planned), 'Harness command must bind the reviewed plan');",
+      "assert.deepEqual(run.assignment, planned.assignment, 'Harness assignment must bind the reviewed plan');",
+      "assert.equal(run.source_visibility, 'public', 'Harness source must remain public');",
+    ].map(before => ({file:'test/harness-bindings.ts',before,after:'void run;',test:'real-data.test.ts',pattern:'^every public and historical harness row'})),
+    ...[
+      ['--title "Release pm-case', '--title "Release pm-unit'],
+      ['Tracking: [pm-case-release]', 'Tracking: [pm-unit-release]'],
+      ['https://github.com/unbraind/pm-case/blob/main/.agents/pm/epics/pm-case-release.toon', 'https://github.com/unbraind/pm-unit/blob/main/.agents/pm/epics/pm-unit-release.toon'],
+    ].map(([before, after]) => ({file:'.github/workflows/release.yml',before,after,test:'review-classes.test.ts',pattern:'^all workflow release metadata'})),
+    {file:'test/real-data-proof.ts',before:'harnessPlanBindings(harness.results);',after:'void harness;',test:'review-classes.test.ts',pattern:'^all receipt producers and consumers'},
+    {file:'test/public-harness.acceptance.ts',before:'  harnessPlanBindings(results);',after:'  void results;',test:'review-classes.test.ts',pattern:'^all receipt producers and consumers'},
     {file:'dist/src/host.js',before:'const root = resolve(pmRoot);',after:'const root = pmRoot;',test:'review.test.ts',pattern:'^directory hosts pin relative'},
     {file:'dist/src/host.js',before:'cwd: root, pmRoot: root',after:'cwd: pmRoot, pmRoot',test:'review.test.ts',pattern:'^directory hosts pin relative'},
     {file:'dist/src/host.js',before:'normalizeItemId(id, (await readSettings(root)).id_prefix)',after:'normalizeItemId(id, (await readSettings(pmRoot)).id_prefix)',test:'review.test.ts',pattern:'^directory hosts pin relative'},

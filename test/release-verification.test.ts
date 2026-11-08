@@ -8,13 +8,13 @@ import { verify } from 'pm-ops/attestation';
 import { npmEnvironment } from '../scripts/environment.ts';
 
 for(const state of ['QUEUED','FAILURE'])test(`archived release refuses a ${state.toLowerCase()} required check`,()=>{
-  const root=mkdtempSync(join(tmpdir(),'unit-release-'));
+  const root=mkdtempSync(join(tmpdir(),'case-release-'));
   try{
     const workflow=readFileSync('.github/workflows/release.yml','utf8');assert.deepEqual(verify(process.cwd()).failures,[]);
     const start=workflow.indexOf('          deadline=$(( SECONDS + 1800 ))');const end=workflow.indexOf('          rm -f "$merge_err" "$pr_view_err"',start);assert.ok(start>0&&end>start);
     const loop=workflow.slice(start,end).replace(/^ {10}/gm,'').replace('deadline=$(( SECONDS + 1800 ))','deadline=$SECONDS');
     writeFileSync(join(root,'checks.json'),JSON.stringify({mergeStateStatus:'BLOCKED',statusCheckRollup:[{name:'CI',status:state==='QUEUED'?'QUEUED':'COMPLETED',conclusion:state==='FAILURE'?'FAILURE':null}]}));
-    const script=`set -euo pipefail\nowner=example\nrepo=pm-unit\npr_number=1\nrelease_commit=fixture\nGITHUB_REPOSITORY=example/pm-unit\nGITHUB_SERVER_URL=https://example.org\nfunction gh(){ if [[ "$1" == pr && "$2" == view ]]; then local filter="\u0024{!#}"; jq "$filter" checks.json; elif [[ "$1" == api && "\u0024{2:-}" == --method && "\u0024{3:-}" == PUT ]]; then echo 'required check not successful' >&2; return 1; fi; }\n${loop}\nprintf 'UNEXPECTED_PUBLICATION'\n`;
+    const script=`set -euo pipefail\nowner=example\nrepo=pm-case\npr_number=1\nrelease_commit=fixture\nGITHUB_REPOSITORY=example/pm-case\nGITHUB_SERVER_URL=https://example.org\nfunction gh(){ if [[ "$1" == pr && "$2" == view ]]; then local filter="\u0024{!#}"; jq "$filter" checks.json; elif [[ "$1" == api && "\u0024{2:-}" == --method && "\u0024{3:-}" == PUT ]]; then echo 'required check not successful' >&2; return 1; fi; }\n${loop}\nprintf 'UNEXPECTED_PUBLICATION'\n`;
     const result=spawnSync('bash',['-c',script],{cwd:root,env:npmEnvironment(process.env),encoding:'utf8',timeout:10000});assert.notEqual(result.status,0);assert.match(result.stdout,/CI/);assert.match(result.stdout,/not merging or publishing/);assert.doesNotMatch(result.stdout,/UNEXPECTED_PUBLICATION/);
   }finally{rmSync(root,{recursive:true,force:true});}
 });

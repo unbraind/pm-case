@@ -7,11 +7,14 @@ import { createDirectoryHost, createCaseModel, proposeCases, selectCases, record
 import { wire } from '../dist/src/output.js';
 import { matrices, passages, gold } from './matrices.ts';
 import { expectedQuestions, summaryQuestions, detailedModels } from './proof-contract.ts';
-import type { Assignment, Outcome } from '../dist/index.js';
+import type { Outcome } from '../dist/index.js';
+import { harnessPlanBindings } from './harness-bindings.ts';
+import type { HarnessResult } from './harness-bindings.ts';
 
 /** Recompute frozen-corpus questions through current production packets in a disposable non-Git tracker. */
 export async function collectRealDataProof() {
-const harness=JSON.parse(await readFile('docs/public-harness-receipt.json','utf8')) as {results:{repo:string;result:'pass'|'fail';assignment:Assignment;oracle_digest:string;source_digest?:string;command:string}[]};
+const harness=JSON.parse(await readFile('docs/public-harness-receipt.json','utf8')) as {results:HarnessResult[]};
+harnessPlanBindings(harness.results);
 const root=await mkdtemp(join(tmpdir(),'case-real-data-')); const results=[]; const questions=[];
 try {
   const pmRoot=join(root,'.agents/pm');const native=new PmClient({cwd:root,pmRoot,author:'public-proof',noExtensions:true});await native.init('proof',{defaults:true,agentGuidance:'skip',mergeFence:false});const host=createDirectoryHost(pmRoot,'public-proof');

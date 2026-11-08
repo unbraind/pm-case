@@ -6,8 +6,15 @@ import { matrices, gold, passages } from './matrices.ts';
 import { collectRealDataProof } from './real-data-proof.ts';
 import { expectedQuestions } from './proof-contract.ts';
 import { publicChecks, historicalChecks } from './harness-plan.ts';
-import { harnessBindings } from './harness-bindings.ts';
+import { harnessBindings, harnessPlanBindings } from './harness-bindings.ts';
 import type { HarnessResult } from './harness-bindings.ts';
+
+/** Read the independent frozen execution and coverage receipts for binding regressions. */
+function frozenHarnessEvidence() {
+  const harness = JSON.parse(readFileSync('docs/public-harness-receipt.json', 'utf8')) as { results: HarnessResult[] };
+  const receipt = JSON.parse(readFileSync('docs/real-data-receipt.json', 'utf8')) as Awaited<ReturnType<typeof collectRealDataProof>>;
+  return { harness, receipt };
+}
 
 test('frozen public matrices independently cover every feasible pair with no excluded case',()=>{
   const receipt=JSON.parse(readFileSync('docs/real-data-receipt.json','utf8')) as {matrices:{gold_pair_sha256:string;gold_feasible_pairs:string[];pairwise_cases:number}[]};assert.ok(passages.length>=20);
@@ -29,8 +36,7 @@ test('ten pinned resume questions retain exact independent answers and at least 
   const harness=JSON.parse(readFileSync('docs/public-harness-receipt.json','utf8')) as {results:{result:string;exit_code:number}[]};assert.equal(harness.results.filter(row=>row.result==='pass'&&row.exit_code===0).length,publicChecks.length);assert.equal(harness.results.filter(row=>row.result==='fail'&&row.exit_code===1).length,historicalChecks.length);
 });
 test('frozen harness receipts bind repository revision assignment and recorded outcomes', () => {
-  const harness = JSON.parse(readFileSync('docs/public-harness-receipt.json', 'utf8')) as { results: HarnessResult[] };
-  const receipt = JSON.parse(readFileSync('docs/real-data-receipt.json', 'utf8')) as Awaited<ReturnType<typeof collectRealDataProof>>;
+  const { harness, receipt } = frozenHarnessEvidence();
   harnessBindings(harness.results, receipt.matrices, receipt.regression);
   for (const index of harness.results.keys()) {
     assert.throws(() => harnessBindings(harness.results.filter((_, i) => i !== index), receipt.matrices, receipt.regression), assert.AssertionError);
@@ -50,4 +56,26 @@ test('frozen harness receipts bind repository revision assignment and recorded o
   matching[0].model.mandatory_cases = [shifted[0].assignment];
   matching[0].selected_cases.find(row => row.case_id === matching[0].outcomes[0].case_id)!.assignment = shifted[0].assignment;
   assert.throws(() => harnessBindings(shifted, matching, receipt.regression), assert.AssertionError, 'Paired receipt drift must not redefine the expected public corpus');
+});
+
+test('every public and historical harness row rejects substituted planned coordinates', () => {
+  const { harness, receipt } = frozenHarnessEvidence();
+  const validators = [harnessPlanBindings, (rows: HarnessResult[]) => harnessBindings(rows, receipt.matrices, receipt.regression)];
+  for (const validate of validators) {
+    assert.doesNotThrow(() => validate(harness.results));
+    for (const [index, row] of harness.results.entries()) {
+      const other = harness.results.find(candidate => candidate.repo !== row.repo)!;
+      for (const field of ['test_file', 'test_name', 'command', 'assignment', 'source_visibility'] as const) {
+        for (const value of [undefined, 'unplanned', other[field]]) {
+          if (value === row[field]) continue;
+          const changed = structuredClone(harness.results);
+          Object.assign(changed[index], { [field]: value });
+          assert.throws(() => validate(changed), assert.AssertionError, `Every ${row.repo}/${row.result} ${field} must bind the plan`);
+        }
+      }
+      const paired = structuredClone(harness.results);
+      paired[index].test_file = other.test_file; paired[index].test_name = other.test_name; paired[index].command = other.command;
+      assert.throws(() => validate(paired), assert.AssertionError, 'Consistent substituted coordinates must still bind the owning repository');
+    }
+  }
 });
