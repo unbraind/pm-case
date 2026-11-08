@@ -1,0 +1,105 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { readFileSync, readdirSync } from 'node:fs';
+import { parse } from '@babel/parser';
+import { walk } from './syntax.ts';
+import { runtimeSources } from '../scripts/inventory.ts';
+
+/** Prevent harness acquisition from entering any shipped runtime module. */
+function productionImports(source: string): void {
+  walk(parse(source, { sourceType: 'module', plugins: ['typescript'] }), node => {
+    if (['ImportDeclaration', 'ExportNamedDeclaration', 'ExportAllDeclaration'].includes(String(node.type)) && node.source) {
+      assert.doesNotMatch((node.source as { value: string }).value, /(?:^|\/)test(?:\/|$)|corpus|harness/u, 'Production imports must exclude proof code');
+    }
+    assert.notEqual(node.type, 'ImportExpression', 'Dynamic production imports are forbidden');
+    if (['CallExpression', 'OptionalCallExpression'].includes(String(node.type))) {
+      const callee = node.callee as { type: string; name?: string; property?: { name?: string; value?: string } };
+      assert.ok(!['Import', 'require'].includes(callee.type === 'Import' ? callee.type : callee.name ?? callee.property?.name ?? callee.property?.value ?? ''), 'Dynamic and member production loaders are forbidden');
+    }
+  });
+}
+
+/** Check every runtime setup rather than one currently reviewed line. */
+function runtimeProvisioning(source: string): void {
+  for (const step of source.split(/(?=^      - name:)/m)) {
+    if (step.includes('uses: actions/setup-node@')) assert.match(step, /node-version: (?:22\.19\.0|26\.13\.0|\$\{\{ matrix\.node-version \}\})\s*\n/);
+    if (step.includes('uses: oven-sh/setup-bun@')) assert.match(step, /bun-version: 1\.3\.5\s*\n/);
+  }
+  for (const job of source.split(/(?=^  [a-z_]+:)/m).filter(job => job.includes('run: npm run release:check') || job.includes('run: npm run test:install'))) {
+    for (const [major, version] of [['22', '22.19.0'], ['26', '26.13.0']]) {
+      const setup = job.indexOf(`node-version: ${version}`); const retained = job.indexOf(`PM_CASE_NODE_${major}=$(command -v node)`);
+      assert.ok(setup >= 0 && retained > setup && retained < job.indexOf('run: npm ci'), 'Full gates require both exact runtimes before dependency execution');
+    }
+  }
+  if (source.includes('matrix.node-version')) assert.match(source, /node-version: \['22\.19\.0', '26\.13\.0'\]/);
+}
+
+/** Reject literal PATH separators in any composed environment value, including array joins. */
+function pathConventions(source: string): void {
+  walk(parse(source, { sourceType: 'module', plugins: ['typescript'] }), node => {
+    const key = node.key as { name?: string; value?: string } | undefined;
+    const left = node.left as { property?: { name?: string; value?: string } } | undefined;
+    const name = key?.name ?? key?.value ?? left?.property?.name ?? left?.property?.value;
+    if (typeof name !== 'string' || name.toLowerCase() !== 'path') return;
+    const expression = node.value ?? node.right;
+    let inherited = false; const separators: string[] = [];
+    walk(expression, child => {
+      if (child.type === 'Identifier' && typeof child.name === 'string' && child.name.toUpperCase() === 'PATH') inherited = true;
+      if (child.type === 'StringLiteral' && [':', ';'].includes(String(child.value))) separators.push(String(child.value));
+    });
+    if (inherited) assert.deepEqual(separators, [], 'PATH composition must use the platform delimiter');
+  });
+}
+
+test('all production imports exclude static dynamic member and optional proof loaders', () => {
+  for (const path of runtimeSources()) productionImports(readFileSync(path, 'utf8'));
+  for (const code of ["import '../test/corpus.ts';", "export * from '../test/harness-plan.ts';", "await import('../test/corpus.ts');", "require('../test/corpus.ts');", "loader.require('../test/corpus.ts');", "loader?.require('../test/corpus.ts');", "loader['require']?.('../test/corpus.ts');"]) assert.throws(() => productionImports(code), assert.AssertionError);
+});
+
+test('all CI and release jobs provision their exact acceptance runtimes', () => {
+  for (const path of readdirSync('.github/workflows').filter(name => name.endsWith('.yml'))) {
+    const source = readFileSync(`.github/workflows/${path}`, 'utf8'); runtimeProvisioning(source);
+    for (const version of ['22.19.0', '26.13.0', '1.3.5']) if (source.includes(`version: ${version}`)) assert.throws(() => runtimeProvisioning(source.replaceAll(`version: ${version}`, 'version: latest')), assert.AssertionError);
+  }
+  const source = readFileSync('.github/workflows/release.yml', 'utf8');
+  assert.throws(() => runtimeProvisioning(source.replaceAll('PM_CASE_NODE_26=', 'MISSING_NODE_26=')), assert.AssertionError);
+  assert.match(source, /pkg_name="pm-case"/); assert.doesNotMatch(source, /pkg_name="pm-unit"/);
+});
+
+test('harness archives share frozen provenance while retaining intentional path scopes', () => {
+  const harvest = readFileSync('test/corpus.ts', 'utf8'); const harness = readFileSync('test/public-harness.acceptance.ts', 'utf8');
+  assert.match(harvest, /Harvest only tracker passages; the harness needs the full tree/);
+  assert.match(harvest, /Both archives use the same frozen revision/);
+  assert.match(harvest, /\['archive', revision, '\.agents\/pm'\]/);
+  assert.match(harness, /\['archive', source\.revision\]/);
+  assert.match(harness, /publicTrackers\.find/);
+});
+
+test('harness PATH composition and linked commands use platform conventions', () => {
+  for (const path of [...readdirSync('test'), ...readdirSync('scripts').map(name => `../scripts/${name}`)].filter(name => name.endsWith('.ts'))) {
+    const source = readFileSync(`test/${path}`, 'utf8');
+    pathConventions(source);
+  }
+  for (const path of runtimeSources()) pathConventions(readFileSync(path, 'utf8'));
+  for (const expression of ["bin + ':' + process.env.PATH", "[bin, process.env.PATH].join(':')", "[bin, process.env.PATH].join(';')"]) assert.throws(() => pathConventions(`const env = { PATH: ${expression} };`), assert.AssertionError);
+  pathConventions('const env = { PATH: [bin, process.env.PATH].join(delimiter) };');
+  for (const path of ['test/public-harness.acceptance.ts', 'test/revert.acceptance.ts']) assert.match(readFileSync(path, 'utf8'), /\+\s*delimiter\s*\+/);
+  const revert = readFileSync('test/revert.acceptance.ts', 'utf8');
+  assert.doesNotMatch(revert, /spawnSync\('\/bin\/sh'/); assert.match(revert, /spawnSync\(command,\{\.\.\.options,shell:true\}\)/);
+  assert.ok(revert.indexOf('const baseline=spawnSync(process.execPath') < revert.indexOf('await writeFile(path,original.replace'));
+  assert.match(revert, /selectedTestFailed\(red.stdout,mutation.pattern,mutation.test\)/);
+});
+
+test('all documented CLI and SDK installs initialize a tracker before package use', () => {
+  const source = readFileSync('README.md', 'utf8');
+  for (const block of source.matchAll(/```(?:sh|ts)\n([\s\S]*?)```/g)) {
+    const commands = block[1].split('\n'); let initialized = false;
+    for (const command of commands) {
+      if (/^(?:npm install|bun add)/.test(command)) initialized = false;
+      if (/pm init demo|await native\.init\(/.test(command)) initialized = true;
+      if (/pm package install|const host = createDirectoryHost/.test(command)) assert.ok(initialized, 'Every installation path must initialize the tracker first');
+    }
+  }
+  assert.match(source, /await native\.init\(/);
+  assert.match(readFileSync('docs/real-data.md', 'utf8'), /Packet-framing changes may require regenerating the receipt/);
+});

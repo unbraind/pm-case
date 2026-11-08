@@ -3,18 +3,13 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { parse } from '@babel/parser';
+import { walk } from './syntax.ts';
 import { passages, matrices } from './matrices.ts';
 import { publicTrackers } from './corpus.ts';
 
 const privateRepositories = ['pm-observer','pm-web-hosted','pm-gpt'];
 /** Public artifact guard rejects exact private repository references without accessing them. */
 function checkPublic(text: string): void { for (const name of privateRepositories) assert.ok(!new RegExp(`(?<![\\w-])${name}(?![\\w-])`,'i').test(text), 'Private fleet citation refused'); }
-/** Walk static syntax nodes without evaluating acquisition code or third-party imports. */
-function walk(value: unknown, visit: (node: Record<string, unknown>) => void): void {
-  if (Array.isArray(value)) { for (const child of value) walk(child,visit); return; }
-  if (typeof value !== 'object' || value === null) return; const node = value as Record<string, unknown>; if (typeof node.type === 'string') visit(node);
-  for (const [key, child] of Object.entries(node)) if (!['loc','start','end','extra','comments','tokens'].includes(key)) walk(child,visit);
-}
 /** Confine every corpus read capability to the reviewed source list and disposable copies. */
 function readBoundaries(source: string): void {
   const tree = parse(source,{ sourceType:'module', plugins:['typescript'] }); const seen: string[] = [];
@@ -36,10 +31,10 @@ function readBoundaries(source: string): void {
       }
     }
     assert.notEqual(node.type,'ImportExpression','Dynamic import refused');
-    if(node.type==='CallExpression'||node.type==='NewExpression'){
+    if(node.type==='CallExpression'||node.type==='OptionalCallExpression'||node.type==='NewExpression'){
       const callee=node.callee as {name?:string;type:string;property?:{name?:string;value?:string}};
-      assert.ok(!['eval','Function','require'].includes(callee.name??''),'Dynamic capability refused');
-      if(callee.type==='MemberExpression') assert.ok(!['readFile','readFileSync','readdir','readdirSync','fetch','execFileSync'].includes(callee.property?.name??callee.property?.value??''),'Member acquisition calls refused');
+      assert.ok(!['eval','Function','require','Import'].includes(callee.type==='Import' ? callee.type : callee.name??callee.property?.name??callee.property?.value??''),'Dynamic capability refused');
+      if(callee.type==='MemberExpression'||callee.type==='OptionalMemberExpression') assert.ok(!['readFile','readFileSync','readdir','readdirSync','fetch','execFileSync'].includes(callee.property?.name??callee.property?.value??''),'Member acquisition calls refused');
       if(callee.type==='Identifier'&&capabilities.has(callee.name!))seen.push(source.slice(node.start as number,node.end as number));
     }
   });
@@ -51,7 +46,7 @@ test('public-only acquisition guard pins capabilities roots and complete SDK rea
   const source=readFileSync('test/corpus.ts','utf8');readBoundaries(source);
   for(const changed of [source+"\nawait readFile('unapproved','utf8');",source.replace("resolve(root, '..', repo)","resolve(root, '..', 'unapproved')"),source.replace('cwd: copy, pmRoot','cwd: original, pmRoot'),source.replace("from 'node:fs/promises'","from 'node:fs'"),source+"\nawait import('node:fs');"] )assert.throws(()=>readBoundaries(changed));
   for(const changed of [source.replace('{ mkdtemp, mkdir, rm, writeFile }','{ mkdtemp, mkdir, rm, writeFile, readdir }')+"\nawait readdir('unapproved');", source+"\nimport * as fs from 'node:fs/promises'; await fs.readFile('unapproved');", source+"\nimport fs from 'node:fs/promises'; await fs.readFile('unapproved');"] )assert.throws(()=>readBoundaries(changed),'Unapproved imported acquisition capabilities must be rejected');
-  for(const suffix of ["\nawait fs.readFile('unapproved');", "\nawait fs['readdir']('unapproved');"]) assert.throws(()=>readBoundaries(source+suffix),'Member acquisition calls must be rejected');
+  for(const suffix of ["\nawait fs.readFile('unapproved');", "\nawait fs['readdir']('unapproved');", "\nawait fs?.readFile('unapproved');", "\nawait fs.readFile?.('unapproved');", "\nawait fs?.['readdir']?.('unapproved');", "\nloader.require('node:fs');", "\nloader?.['require']?.('node:fs');", "\nglobalThis.eval('unapproved');"]) assert.throws(()=>readBoundaries(source+suffix),'Member acquisition calls must be rejected');
 });
 test('public passages and domain fixtures retain only verified public coordinates and exact text digests',()=>{
   assert.ok(passages.length>=20);checkPublic(JSON.stringify(passages));checkPublic(JSON.stringify(matrices));

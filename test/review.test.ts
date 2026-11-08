@@ -1,9 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
-import { createPmCliExpectedError } from '@unbrained/pm-cli/sdk';
+import { mkdir, readFile } from 'node:fs/promises';
+import { join } from 'node:path';
+import { createPmCliExpectedError, writeSettingsSection } from '@unbrained/pm-cli/sdk';
 import { decode } from '@toon-format/toon';
-import { CaseRefusal, readCaseModel, readState, caseCoverage, casePacket, explainCaseTuple, recoverCaseOperation, proposeCases, selectCases, recordCaseOutcome, createCaseModel, normalizeModel, enumerateFeasibleTuples, generateCover, canonical } from '../dist/index.js';
+import { CaseRefusal, createDirectoryHost, readCaseModel, readState, caseCoverage, casePacket, explainCaseTuple, recoverCaseOperation, proposeCases, selectCases, recordCaseOutcome, createCaseModel, normalizeModel, enumerateFeasibleTuples, generateCover, canonical } from '../dist/index.js';
 import { refusal } from '../dist/src/errors.js';
 import { refusalEnvelope, renderOutput, envelope, fitEnvelope } from '../dist/src/output.js';
 import { runCommand } from '../dist/src/commands.js';
@@ -72,4 +73,31 @@ test('every documented local archive install has preceding build prerequisites a
     assert.ok(preceding.includes('newly built review archive'));
     assert.ok(preceding.includes('maintainer-supplied copy and its matching SHA-256 receipt'));
   }
+});
+
+test('directory hosts pin relative operator roots across every SDK lifecycle and cwd change', async t => {
+  await assert.doesNotReject(async () => {
+    const { root, native, birth, pmRoot } = await fixture(t, false); const previous = process.cwd();
+    const elsewhere = join(root, 'elsewhere'); await mkdir(elsewhere);
+    await writeSettingsSection(pmRoot, 'case', { output_budget: 2048 }, { author: 'fixture', expectedRevision: null });
+    try {
+      process.chdir(root);
+      const host = createDirectoryHost('.agents/pm', 'fixture');
+      process.chdir(elsewhere);
+      assert.equal(typeof host.settings, 'function'); assert.deepEqual(await host.settings!(), { output_budget: 2048 });
+      assert.equal(await host.normalizeId!('suite'), birth.id);
+      await createCaseModel(host, birth); const plan = await select(host, birth.id);
+      await recordCaseOutcome(host, await request(host, birth.id, 'relative-root'));
+      const coverage = await caseCoverage(host, { id: birth.id });
+      await explainCaseTuple(host, { id: birth.id, tuple: coverage.gaps[0].tuple_id });
+      assert.equal((await recoverCaseOperation(host, { id: birth.id, op: 'birth' })).outcome, 'committed');
+      for (const format of ['json', 'toon'] as const) {
+        const value = fitEnvelope(host, envelope(await casePacket(host, { id: birth.id, limit: 1 })));
+        assert.deepEqual(format === 'json' ? JSON.parse(renderOutput(value, format)) : decode(renderOutput(value, format)), value);
+      }
+      assert.equal((await readCaseModel(host, birth.id)).state.outcomes.length, 1);
+      assert.equal((await native.readItemRevision(birth.id)).item_hash, (await readCaseModel(host, birth.id)).revision);
+      assert.equal(plan.complete, true); assert.equal(await historyEvents(pmRoot, birth.id), 3);
+    } finally { process.chdir(previous); }
+  });
 });

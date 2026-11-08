@@ -1,7 +1,8 @@
 import { PmClient, normalizeItemId } from '@unbrained/pm-cli/sdk/core';
-import { readSettings, fitOutputEnvelope } from '@unbrained/pm-cli/sdk';
+import { readSettings, readSettingsSection, fitOutputEnvelope } from '@unbrained/pm-cli/sdk';
 import type { CaseState } from './schema.ts';
 import { insist } from './errors.ts';
+import { resolve } from 'node:path';
 
 /** Host-owned capability evidence; method presence alone is insufficient. */
 export interface Host {
@@ -26,13 +27,14 @@ export function capable(host: Host): void {
 }
 /** Bind a directory tracker through the public SDK; no runtime git dependency. */
 export function createDirectoryHost(pmRoot: string, author: string): Host {
-  const client = new PmClient({ cwd: pmRoot, pmRoot, author, noExtensions: false });
+  const root = resolve(pmRoot);
+  const client = new PmClient({ cwd: root, pmRoot: root, author, noExtensions: false });
   const port = persistedSchemaPort(client, true);
   return { client: port, capabilities: { native_item_cas: true, create_if_absent: true, provider: 'directory' }, fitOutputEnvelope,
     /** Normalize owner identities using the backend SDK prefix policy. */
-    normalizeId: async id => normalizeItemId(id, (await readSettings(pmRoot)).id_prefix),
+    normalizeId: async id => normalizeItemId(id, (await readSettings(root)).id_prefix),
     /** Read package-owned policy without changing native tracker settings. */
-    settings: async () => (await readSettings(pmRoot) as unknown as Record<string, unknown>).case,
+    settings: async () => (await readSettingsSection(root, 'case')).value,
     /** Register missing native schema only for explicit creation; never replace peer definitions. */
     prepareCreate: async () => {
       const fields = await client.schemaListFields(); const existing = fields.fields.find(field => field.key === 'case_state');

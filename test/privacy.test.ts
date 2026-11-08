@@ -2,6 +2,9 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createCaseModel, readCaseModel, recordCaseOutcome, canonical, digest } from '../dist/index.js';
 import { guardSubmitted, parse, KeySchema } from '../dist/src/schema.js';
+import { containsPrivateHomePath, privateHomeRoots } from '../dist/src/privacy.js';
+import { mkdir, symlink } from 'node:fs/promises';
+import { join } from 'node:path';
 import { fixture, model, select, request, hasCode, source } from './helpers.ts';
 
 test('must-refuse privacy corpus never reaches native immutable history', async t => {
@@ -41,4 +44,40 @@ test('aggregate byte ceiling refuses before schema provisioning and receipt keys
   await createCaseModel(host, birth); await select(host, birth.id);
   const before = await readCaseModel(host, birth.id); const malformed = await request(host, birth.id, 'no-source'); malformed.outcome.source_refs = []; await assert.rejects(recordCaseOutcome(host, malformed), hasCode('invalid_outcome')); assert.equal((await readCaseModel(host, birth.id)).revision, before.revision);
   const control = await request(host, birth.id, 'bad-note', { reason: '\u001b[0m', subject_digest: digest('other') }); await assert.rejects(recordCaseOutcome(host, control), hasCode('invalid_input'));
+});
+
+test('aggregate text work counts repeated strings and shared subtrees before any write', async t => {
+  const { host, native, birth } = await fixture(t, false);
+  const long = 'x'.repeat(8000);
+  const variants = [Array(1000).fill({ text: long }), Array(200000).fill(long), Array.from({ length: 1000 }, (_, i) => long.slice(0, -4) + String(i).padStart(4, '0'))];
+  for (const payload of variants) {
+    assert.throws(() => guardSubmitted(payload), error => hasCode('invalid_input')(error) && error instanceof Error && error.message === 'Submitted input exceeds the text budget');
+    const malformed = { ...birth, model: { ...birth.model, unexpected: payload } };
+    await assert.rejects(createCaseModel(host, malformed), hasCode('invalid_input'));
+  }
+  assert.equal((await native.schemaListFields()).fields.length, 0);
+  await assert.rejects(native.get(birth.id), hasCode('item_not_found'));
+  const admittedCount = Math.floor((4 * 1024 * 1024) / long.length);
+  guardSubmitted(Array(admittedCount).fill(long));
+  assert.throws(() => guardSubmitted(Array(admittedCount + 1).fill(long)), hasCode('invalid_input'));
+});
+
+test('home aliases punctuation WSL and resolved roots obey the same privacy rule', async t => {
+  const { host, native, birth, root } = await fixture(t, false);
+  const resolved = join(root, 'resolved'); const alias = join(root, 'alias'); await mkdir(resolved); await symlink(resolved, alias, 'dir');
+  assert.deepEqual(privateHomeRoots(alias), [alias, resolved]);
+  assert.deepEqual(privateHomeRoots(join(root, 'absent')), [join(root, 'absent')]);
+  for (const suffix of ['', '.', '..', '...', '.'.repeat(7000)]) {
+    for (const home of ['~', '$HOME', '$USERPROFILE', '%HOME%', '%USERPROFILE%', '/root', '/home', '/Users', ['', 'mnt', 'c', 'Users', 'public'].join('/'), ['', 'mnt', 'host', 'c', 'Users', 'public'].join('/'), ['', 'run', 'desktop', 'mnt', 'host', 'c', 'Users', 'public'].join('/'), ['', 'cygdrive', 'c', 'Users', 'public'].join('/'), ['', 'var', 'home', 'public'].join('/'), ['', 'System', 'Volumes', 'Data', 'Users', 'public'].join('/'), '/private/var/root', '/var/root', ['', '', 'wsl$', 'distro', 'home', 'public'].join('/'), '//wsl.localhost/distro/root', ['', '', 'server', 'share', 'Users', 'public'].join('/'), ['', '', '?', 'UNC', 'server', 'share', 'Users', 'public'].join('/'), 'file://' + ['', 'home', 'public'].join('/'), 'file://localhost' + ['', 'Users', 'public'].join('/'), ['C:', 'Users', 'public'].join(String.fromCharCode(92)), '-I' + ['', 'home', 'public'].join('/'), ['', 'public', '..', 'home', 'public'].join('/')]) {
+      const text = `See ${home}${suffix}!`;
+      assert.equal(containsPrivateHomePath(text), true, `Private alias variant ${home}`);
+      assert.throws(() => guardSubmitted(text), hasCode('invalid_input'));
+      await assert.rejects(createCaseModel(host, { ...birth, model: { ...birth.model, factors: birth.model.factors.map(f => ({ ...f, label: text })) } }), hasCode('invalid_input'));
+    }
+    for (const spelling of [alias, resolved, resolved + '/child']) assert.equal(containsPrivateHomePath(spelling + suffix, privateHomeRoots(alias)), true);
+    assert.equal(containsPrivateHomePath(alias + suffix, [alias + '/']), true);
+    assert.equal(containsPrivateHomePath('Z:/public/profile' + suffix, ['Z:\\public\\profile\\']), true);
+  }
+  for (const safe of ['', '.', '...', 'src/root.ts', 'app/root', ['docs', 'Users', 'guide'].join('/'), '/rooted', '/public/root', 'https://example.org' + ['', 'home', 'page'].join('/'), 'ssh://host' + ['', 'home', 'public'].join('/'), 'custom://host' + ['', 'Users', 'public'].join('/'), '~public-example', '$HOMES', '%HOME%guide']) assert.equal(containsPrivateHomePath(safe, []), false, safe);
+  assert.equal((await native.schemaListFields()).fields.length, 0);
 });

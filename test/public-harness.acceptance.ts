@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { mkdtemp, mkdir, rm, readFile, writeFile } from 'node:fs/promises';
-import { join, resolve } from 'node:path';
+import { delimiter, join, resolve } from 'node:path';
 import { tmpdir } from 'node:os';
 import { execFileSync, spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
@@ -8,18 +8,15 @@ import { publicTrackers } from './corpus.ts';
 import { npmEnvironment, testEnvironment } from '../scripts/environment.ts';
 import { selectedTestPassed } from './harness-results.ts';
 
-const checks = [
-  { repo: 'pm-csv', file: 'test/atomic.test.ts', pattern: '^a nonzero close receipt cleans markers only after a status recheck proves closure$', assignment: { runtime: 'node', close_receipt: 'conflict', persisted_status: 'closed', cleanup: 'ok' } },
-  { repo: 'pm-beads', file: 'test/repair.test.ts', pattern: '^proposals bind exact source revisions, revalidate current text and reject forged or sparse edits$', assignment: { runtime: 'node', line_ending: 'lf', source: 'changed', topology: 'cycle', action: 'preview' } },
-  { repo: 'pm-ops', file: 'test/backend-capabilities.test.ts', pattern: '^read-only source directories are unchanged and disposable copies are cleaned$', assignment: { runtime: 'node', permissions: 'readonly', format: 'current', history: 'healthy' } },
-];
+import { publicChecks, historicalChecks } from './harness-plan.ts';
+
 const scratch = await mkdtemp(join(tmpdir(), 'case-harness-')); const results = [];
 try {
-  for (const check of checks) {
+  for (const check of publicChecks) {
     const source = publicTrackers.find(row => row.repo === check.repo)!; const original = resolve(process.env.PM_CASE_PUBLIC_ROOT ?? '..', source.repo); const copy = join(scratch, source.repo); await mkdir(copy);
     const archive = execFileSync('git', ['archive', source.revision], { cwd: original, maxBuffer: 32 * 1024 * 1024, env: npmEnvironment(process.env) }); execFileSync('tar', ['-x','-C',copy], { input: archive });
-    const installation=spawnSync('npm',['ci','--ignore-scripts','--no-audit','--no-fund'],{cwd:copy,env:npmEnvironment(process.env),encoding:'utf8',timeout:180000,maxBuffer:4*1024*1024}); assert.equal(installation.status,0,'Frozen public harness dependencies must install successfully');
-    const env = { ...testEnvironment(npmEnvironment(process.env)), PM_PATH: '', PM_AUTHOR: 'public-proof', PATH: join(copy,'node_modules/.bin') + ':' + process.env.PATH, GIT_CEILING_DIRECTORIES: scratch };
+    const installation=spawnSync(process.platform === 'win32' ? 'npm.cmd' : 'npm',['ci','--ignore-scripts','--no-audit','--no-fund'],{cwd:copy,env:npmEnvironment(process.env),shell:process.platform === 'win32',encoding:'utf8',timeout:180000,maxBuffer:4*1024*1024}); assert.equal(installation.status,0,'Frozen public harness dependencies must install successfully');
+    const env = { ...testEnvironment(npmEnvironment(process.env)), PM_PATH: '', PM_AUTHOR: 'public-proof', PATH: join(copy,'node_modules/.bin') + delimiter + process.env.PATH, GIT_CEILING_DIRECTORIES: scratch };
     const args = ['--test','--test-concurrency=1','--test-reporter',resolve('test/harness-reporter.ts'),'--test-name-pattern',check.pattern,check.file]; const started = performance.now();
     const run = spawnSync(process.execPath,args,{cwd:copy,env,encoding:'utf8',timeout:180000,maxBuffer:4*1024*1024});
     await writeFile(`public-${source.repo}.local.log`,run.stdout+run.stderr); assert.equal(run.status,0,`Public scoped harness failed; inspect public-${source.repo}.local.log`);
@@ -28,7 +25,7 @@ try {
     const publicArgs = args.map(value => value === resolve('test/harness-reporter.ts') ? 'test/harness-reporter.ts' : value);
     const common = { repo: source.repo, revision: source.revision, test_file: check.file, test_name: check.pattern, assignment: check.assignment, oracle_digest: oracleDigest, result: 'pass', exit_code: run.status, elapsed_ms: Math.round(performance.now()-started), output_sha256: createHash('sha256').update(run.stdout+run.stderr).digest('hex'), command: 'node '+publicArgs.map(value=>JSON.stringify(value)).join(' '), source_visibility: 'public' };
     results.push(common);
-    if (source.repo === 'pm-csv') {
+    if (historicalChecks.some(row => row.repo === source.repo)) {
       const path = join(copy,'index.ts'); const fixed = await readFile(path,'utf8'); const before = 'const postCloseStatus = compensationItemStatus(pmRoot, id);'; assert.equal(fixed.split(before).length,2);
       const reverted = fixed.replace(before,'const postCloseStatus = undefined;'); await writeFile(path,reverted);
       try {

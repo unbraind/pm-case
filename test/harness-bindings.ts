@@ -3,6 +3,7 @@ import { canonical, digest } from '../dist/index.js';
 import type { Assignment, Outcome } from '../dist/index.js';
 import { matrices } from './matrices.ts';
 import { publicTrackers } from './corpus.ts';
+import { publicChecks, historicalChecks } from './harness-plan.ts';
 
 /** Frozen, reported public execution coordinates, independent of external checkout availability. */
 export interface HarnessResult {
@@ -23,10 +24,14 @@ export interface HarnessResult {
 }
 /** Reject drift between reported public harness coordinates, corpus models, and recorded observations. */
 export function harnessBindings(results: HarnessResult[], records: { model: typeof matrices[number]; selected_cases: { case_id: string; assignment: Assignment }[]; outcomes: Outcome[] }[], regression: { subject_digest: string }): void {
-  assert.equal(results.length, 4);
+  assert.equal(results.length, publicChecks.length + historicalChecks.length);
+  assert.equal(records.length, matrices.length);
+  assert.deepEqual(records.map(row => row.model.model_key).sort(), matrices.map(row => row.model_key).sort());
   for (const source of publicTrackers) {
     const runs = results.filter(row => row.repo === source.repo);
-    assert.equal(runs.length, source.repo === 'pm-csv' ? 2 : 1);
+    assert.equal(runs.length, [...publicChecks, ...historicalChecks].filter(row => row.repo === source.repo).length);
+    assert.equal(runs.filter(row => row.result === 'pass').length, publicChecks.filter(row => row.repo === source.repo).length);
+    assert.equal(runs.filter(row => row.result === 'fail').length, historicalChecks.filter(row => row.repo === source.repo).length);
     for (const run of runs) {
       const record = records.find(row => row.model.model_key === source.repo)!; assert.ok(record);
       const expectedModel = matrices.find(row => row.model_key === source.repo)!;

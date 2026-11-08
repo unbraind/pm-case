@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto';
 import { z } from 'zod';
 import { scanMutationSecrets } from '@unbrained/pm-cli/sdk';
+import { containsPrivateHomePath } from './privacy.ts';
 import { insist, CaseRefusal } from './errors.ts';
 /** Stable bounded identifier, normalized identically on write and replay. */
 export const KeySchema = z.string().trim().min(1).max(96).regex(/^[a-zA-Z0-9][a-zA-Z0-9_.:-]*$/);
@@ -82,20 +83,22 @@ export function canonical(value: unknown): string {
 }
 /** SHA-256 content identity for source, requests and results. */
 export function digest(value: unknown): string { return createHash('sha256').update(canonical(value)).digest('hex'); }
-/** Absolute home-directory paths, anchored to path-token starts so public URLs and relative paths remain usable. */
-const privatePathPattern = /(?:^|(?<=[\s"'`([{<~=;,~:\\/]))(?:[\\/](?:home|Users)[\\/]|[\\/]root(?:[\\/]|\b))/iu;
 /** Email-shaped contact text in any submitted string. */
 const emailAddressPattern = /(?<![\w.+-])[\w.+-]+@[\w.-]+\.[a-z]{2,}/iu;
 /** Aggregate submitted-input traversal budget; over twenty times the largest schema-bounded valid request. */
 const submittedNodeBudget = 200000;
+/** Bound cumulative scanning, including repeated strings, above schema-bounded request sizes. */
+const submittedTextBudget = 4 * 1024 * 1024;
 /** Refuse unsafe data before it can enter immutable native history. */
-export function guardSubmitted(value: unknown, seen = new Set<object>(), depth = 0, visits = { count: 0 }): void {
+export function guardSubmitted(value: unknown, seen = new Set<object>(), depth = 0, visits = { count: 0, characters: 0 }): void {
   insist(depth <= 16, 'invalid_input', 'Input nesting exceeds sixteen levels');
   insist(++visits.count <= submittedNodeBudget, 'invalid_input', 'Submitted input exceeds the traversal budget');
   if (typeof value === 'string') {
+    visits.characters += value.length;
+    insist(visits.characters <= submittedTextBudget, 'invalid_input', 'Submitted input exceeds the text budget');
     insist(value.length <= 8000 && value.isWellFormed(), 'invalid_input', 'Text is oversized or malformed Unicode');
     insist(!/[\u0000-\u0008\u000b-\u001f\u007f-\u009f\u202a-\u202e\u2066-\u2069]/u.test(value), 'invalid_input', 'Control sequences are forbidden');
-    insist(!privatePathPattern.test(value) && !emailAddressPattern.test(value), 'invalid_input', 'Private paths and email addresses are forbidden');
+    insist(!containsPrivateHomePath(value) && !emailAddressPattern.test(value), 'invalid_input', 'Private paths and email addresses are forbidden');
     insist(scanMutationSecrets(value).length === 0, 'invalid_input', 'SDK privacy guard detected credential-shaped content');
   } else if (value !== null && typeof value === 'object') {
     const prototype = Object.getPrototypeOf(value);

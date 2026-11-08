@@ -40,6 +40,8 @@ export async function harvest(): Promise<Passage[]> {
   try {
     for (const { repo, revision, ids } of publicTrackers) {
       const original = resolve(root, '..', repo); const copy = join(scratch, repo); await mkdir(copy);
+      // Harvest only tracker passages; the harness needs the full tree to run tests.
+      // Both archives use the same frozen revision, so provenance is identical.
       const archive = execFileSync('git', ['archive', revision, '.agents/pm'], { cwd: original, maxBuffer: 32 * 1024 * 1024, env: npmEnvironment(process.env) });
       execFileSync('tar', ['-x', '-C', copy], { input: archive });
       const client = new PmClient({ cwd: copy, pmRoot: join(copy, '.agents/pm'), noExtensions: true }); const all = await client.listAllComplete(); certifyCompleteListResult(all);

@@ -27,10 +27,15 @@ npx --no-install pm case --help
 After maintainer publication, the registry paths are:
 
 ```sh
-pm package install pm-case
+# npm project
 npm install pm-case @unbrained/pm-cli
-bun add pm-case @unbrained/pm-cli
+npx --no-install pm init demo --defaults --agent-guidance skip --no-merge-fence
 npx --no-install pm package install ./node_modules/pm-case
+npx --no-install pm case --help
+
+# Separate Bun project
+bun add pm-case @unbrained/pm-cli
+bunx --bun --no-install pm init demo --defaults --agent-guidance skip --no-merge-fence
 bunx --bun --no-install pm package install ./node_modules/pm-case
 bunx --bun --no-install pm case --help
 ```
@@ -92,6 +97,11 @@ import {
   CaseRefusal,
 } from 'pm-case';
 
+import { PmClient } from '@unbrained/pm-cli/sdk/core';
+
+// Initialize once in a fresh directory before creating a package host.
+const native = new PmClient({ cwd: process.cwd(), pmRoot: '.agents/pm', author: 'agent', noExtensions: true });
+await native.init('demo', { defaults: true, agentGuidance: 'skip', mergeFence: false });
 const host = createDirectoryHost('.agents/pm', 'agent');
 // reviewedModel has the strict CaseModel shape shown above.
 const birth = await createCaseModel(host, {
