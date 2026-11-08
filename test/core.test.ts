@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createCaseModel, proposeCases, selectCases, recordCaseOutcome, readCaseModel, caseCoverage, explainCaseTuple, casePacket, generateCover, enumerateFeasibleTuples, normalizeModel, canonical, digest, readState } from '../dist/index.js';
+import { createCaseModel, proposeCases, selectCases, recordCaseOutcome, readCaseModel, caseCoverage, explainCaseTuple, casePacket, generateCover, enumerateFeasibleTuples, normalizeModel, canonical, digest, readState, kernelComputations } from '../dist/index.js';
 import type { Assignment, CaseModel, CaseState } from '../dist/index.js';
 import { contains } from '../dist/src/kernel.js';
 import { fixture, model, source, select, request, hasCode, historyEvents } from './helpers.ts';
@@ -49,6 +49,29 @@ test('model and constraint limitations refuse before population expansion', () =
     [{ ...base, strength: 3 }, 'invalid_input'],
   ] as const) assert.throws(() => normalizeModel(m), hasCode(code));
   assert.equal(contains({ x: 'yes' }, { constructor: 'yes' }), false);
+});
+test('deterministic covers and domains are reused across equal models and packet pages', async t => {
+  const wide = model({ factors: Array.from({ length: 12 }, (_, index) => ({ ...model().factors[0], factor_id: `f${index}`, values: ['one','two'] })) });
+  const baseline = kernelComputations.covers; const first = generateCover(wide, { max_cases: 256 });
+  assert.equal(kernelComputations.covers - baseline, 1);
+  assert.deepEqual(generateCover({ ...wide, factors: wide.factors.map(factor => ({ ...factor, values: [...factor.values] })) }, { max_cases: 256 }), first);
+  assert.equal(kernelComputations.covers - baseline, 1);
+  assert.ok(generateCover(model({ subject_digest: digest('shifted subject') }), { max_cases: 32 }).complete);
+  assert.equal(kernelComputations.covers - baseline, 2);
+  const domainBaseline = kernelComputations.domains;
+  assert.equal(enumerateFeasibleTuples(wide).assignments.length, first.feasible_assignments);
+  assert.equal(kernelComputations.domains - domainBaseline, 0);
+  for (let index = 0; index < 10; index++) assert.ok(generateCover(model({ subject_digest: digest(`eviction ${index}`) }), { max_cases: 32 }).complete);
+  assert.equal(kernelComputations.covers - baseline, 12);
+  assert.deepEqual(generateCover(wide, { max_cases: 256 }), first);
+  assert.equal(kernelComputations.covers - baseline, 13);
+  const isolated = generateCover(wide, { max_cases: 256 }); isolated.cases.push(isolated.cases[0]!);
+  assert.notDeepEqual(generateCover(wide, { max_cases: 256 }), isolated);
+  const { host } = await fixture(t); const id = 'wide-suite';
+  await createCaseModel(host, { id, op: 'wide', title: 'Wide reuse journey', model: wide }); await select(host, id, 256, 'wide-selection');
+  const before = { covers: kernelComputations.covers, domains: kernelComputations.domains }; let cursor: string | undefined; let pages = 0;
+  do { const page = await casePacket(host, { id, limit: 40, cursor }); cursor = page.next_cursor ?? undefined; pages++; } while (cursor !== undefined);
+  assert.ok(pages >= 2); assert.equal(kernelComputations.covers - before.covers, 0); assert.equal(kernelComputations.domains - before.domains, 0);
 });
 test('real SDK owner retains links comments immutable outcomes and old request replays', async t => {
   const { host, id, pmRoot, birth, native } = await fixture(t);

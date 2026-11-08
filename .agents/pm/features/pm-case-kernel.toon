@@ -6,13 +6,14 @@ status: in_progress
 priority: 2
 tags: []
 created_at: "2026-11-06T18:18:53.831Z"
-updated_at: "2026-11-06T19:14:35.050Z"
+updated_at: "2026-11-08T07:02:11.817Z"
 author: codex-agent
 acceptance_criteria: Independent exhaustive oracle; deterministic complete and partial covers; constraints and mandatory cases.
 parent: pm-case-release
-comments[2]{created_at,author,text}:
+comments[3]{created_at,author,text}:
   "2026-11-06T18:29:07.548Z",codex-agent,"Seven focused tests passed. Independent mixed-radix oracle checks all 32 small constraint masks; mandatory cases, partial covers, exclusion witnesses, immutable model binding and contradictory reported outcomes are exercised. V1 follows the specification exhaustive deterministic greedy algorithm and strength one or two; higher strength is deferred in pm-case-later."
   "2026-11-06T19:11:12.212Z",codex-agent,"Implemented all seven commands and shared typed SDK kernels. The v1 specification deliberately uses bounded exhaustive enumeration and deterministic greedy selection with canonical ties and fixed seed zero. Strength above two and alternate IPOG strategies are deferred in pm-case-later. Independent brute-force and 24 seeded proposal/apply sequences pass; linked kernel run passes 11 tests. Stored plans also bind their latest selection receipt, and packet omissions count earlier pages separately from remaining continuation."
+  "2026-11-08T07:02:11.817Z",codex-agent,"Review round two fixes for the kernel and guard threads: deterministic covers and domains are now served through bounded content-keyed reuse (a fresh twelve-binary-factor cover still measures about one second, while equal-content recomputation and every later packet page add zero fresh computations), the submitted-text guard rejects only absolute home paths at path-token starts so public URLs and relative paths pass, and guardSubmitted enforces an aggregate 200000-visit traversal budget that counts shared-subtree revisits. Reuse returns isolated copies, stays keyed by exact model content so a changed model recomputes, and readState still refuses tampered stored plans. Regression tests: covers-and-domains reuse across equal models and packet pages, a public-path must-allow corpus, and a shared-subtree DAG refusal. Behavioral revert proof: with reuse bypassed, the budget removed and the path pattern rolled back, each focused test fails red with AssertionError and all eight restored variants pass green."
 files[4]{path,scope}:
   src/kernel.ts,project
   src/schema.ts,project

@@ -17,7 +17,7 @@ export { KeySchema, DigestSchema, SourceRefSchema, AssignmentSchema, FactorSchem
 /** Portable model and request types. */
 export type { CaseModel, Assignment, CaseState, CasePlan, Outcome, CreateCaseModelInput, ProposeCasesInput, SelectCasesInput, RecordCaseOutcomeInput, CoverageInput, RecoveryInput, ExplainTupleInput, PacketInput } from './src/schema.ts';
 /** Pure finite-model algorithms with exact denominators and immutable case identities. */
-export { normalizeModel, enumerateFeasibleTuples, generateCover, evaluateCaseCoverage, readState } from './src/kernel.ts';
+export { normalizeModel, enumerateFeasibleTuples, generateCover, evaluateCaseCoverage, readState, kernelComputations } from './src/kernel.ts';
 /** Strict output contracts and whole-envelope fitting. */
 export { CoverageSummarySchema, CoverageReportSchema, MutationReceiptSchema, PacketRowSchema, GapSchema, CaseDataSchema, CaseResultSchema, envelope, fitEnvelope } from './src/output.ts';
 /** Typed common transport payload and envelope. */

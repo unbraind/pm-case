@@ -82,13 +82,20 @@ export function canonical(value: unknown): string {
 }
 /** SHA-256 content identity for source, requests and results. */
 export function digest(value: unknown): string { return createHash('sha256').update(canonical(value)).digest('hex'); }
+/** Absolute home-directory paths, anchored to path-token starts so public URLs and relative paths remain usable. */
+const privatePathPattern = /(?:^|(?<=[\s"'`(\[{<~=;,~:\\/]))(?:[\\/](?:home|Users)[\\/]|[\\/]root(?:[\\/]|\b))/iu;
+/** Email-shaped contact text in any submitted string. */
+const emailAddressPattern = /(?<![\w.+-])[\w.+-]+@[\w.-]+\.[a-z]{2,}/iu;
+/** Aggregate submitted-input traversal budget; over twenty times the largest schema-bounded valid request. */
+const submittedNodeBudget = 200000;
 /** Refuse unsafe data before it can enter immutable native history. */
-export function guardSubmitted(value: unknown, seen = new Set<object>(), depth = 0): void {
+export function guardSubmitted(value: unknown, seen = new Set<object>(), depth = 0, visits = { count: 0 }): void {
   insist(depth <= 16, 'invalid_input', 'Input nesting exceeds sixteen levels');
+  insist(++visits.count <= submittedNodeBudget, 'invalid_input', 'Submitted input exceeds the traversal budget');
   if (typeof value === 'string') {
     insist(value.length <= 8000 && value.isWellFormed(), 'invalid_input', 'Text is oversized or malformed Unicode');
     insist(!/[\u0000-\u0008\u000b-\u001f\u007f-\u009f\u202a-\u202e\u2066-\u2069]/u.test(value), 'invalid_input', 'Control sequences are forbidden');
-    insist(!/(?:[\\/](?:home|Users)[\\/]|[\\/]root(?:[\\/]|\b)|(?<![\w.+-])[\w.+-]+@[\w.-]+\.[a-z]{2,})/iu.test(value), 'invalid_input', 'Private paths and email addresses are forbidden');
+    insist(!privatePathPattern.test(value) && !emailAddressPattern.test(value), 'invalid_input', 'Private paths and email addresses are forbidden');
     insist(scanMutationSecrets(value).length === 0, 'invalid_input', 'SDK privacy guard detected credential-shaped content');
   } else if (value !== null && typeof value === 'object') {
     const prototype = Object.getPrototypeOf(value);
@@ -99,7 +106,7 @@ export function guardSubmitted(value: unknown, seen = new Set<object>(), depth =
       insist(typeof name === 'string' && 'value' in descriptor && (descriptor.enumerable || (Array.isArray(value) && name === 'length')), 'invalid_input', 'Only enumerable JSON data properties are supported');
     }
     for (const [name, child] of Object.entries(value)) {
-      insist(!['__proto__', 'prototype', 'constructor'].includes(name), 'invalid_input', 'Prototype keys are forbidden'); guardSubmitted(child, seen, depth + 1);
+      insist(!['__proto__', 'prototype', 'constructor'].includes(name), 'invalid_input', 'Prototype keys are forbidden'); guardSubmitted(child, seen, depth + 1, visits);
     }
     seen.delete(value);
   }

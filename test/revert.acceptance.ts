@@ -14,6 +14,9 @@ try{
     {file:'api.js',before:'insist(found.request_digest === digest(request),',after:'insist(true,',test:'core.test.ts',pattern:'^real SDK owner retains'},
     {file:'api.js',before:'itemHash: owner.revision',after:'itemHash: (await host.client.readItemRevision(owner.id)).item_hash',test:'concurrency.test.ts',pattern:'^competing write at before_update'},
     {file:'api.js',before:"fitEnvelope(host, envelope(committed(id, 'f'.repeat(64), operation, false)), budget);",after:'void budget;',test:'contracts.test.ts',pattern:'^all write budgets refuse'},
+    {file:'schema.js',before:"insist(!privatePathPattern.test(value) && !emailAddressPattern.test(value), 'invalid_input', 'Private paths and email addresses are forbidden');",after:"insist(!/(?:[\\\\/](?:home|Users)[\\\\/]|[\\\\/]root(?:[\\\\/]|\\b)|(?<![\\w.+-])[\\w.+-]+@[\\w.-]+\\.[a-z]{2,})/iu.test(value), 'invalid_input', 'Private paths and email addresses are forbidden');",test:'privacy.test.ts',pattern:'^must-allow public data'},
+    {file:'schema.js',before:"insist(++visits.count <= submittedNodeBudget, 'invalid_input', 'Submitted input exceeds the traversal budget');",after:"insist(true, 'invalid_input', 'Traversal budget removed');",test:'privacy.test.ts',pattern:'^shared subtrees and oversized'},
+    {file:'kernel.js',before:'const memoized = memo.get(key);',after:'const memoized = undefined;',test:'core.test.ts',pattern:'^deterministic covers and domains are reused'},
   ];
   for(const mutation of mutations){const path=join(root,'dist/src',mutation.file);const original=await readFile(path,'utf8');assert.equal(original.split(mutation.before).length,2,'Revert seam must identify exactly one behavior');
     const args=['--test','--test-concurrency=1','--test-name-pattern',mutation.pattern,`test/${mutation.test}`];const options={cwd:root,env:testEnvironment(npmEnvironment(process.env)),encoding:'utf8' as const,timeout:90000,maxBuffer:4*1024*1024};

@@ -6,15 +6,19 @@ status: in_progress
 priority: 2
 tags: []
 created_at: "2026-11-06T18:17:25.406Z"
-updated_at: "2026-11-06T21:10:52.658Z"
+updated_at: "2026-11-08T07:02:12.654Z"
+assignee: codex-agent
+claim_principal: codex-agent
 author: codex-agent
 acceptance_criteria: Seven CLI and SDK operations; complete exact feasible coverage witnesses; native guarded storage; public proof; all release gates.
-comments[5]{created_at,author,text}:
+comments[7]{created_at,author,text}:
   "2026-11-06T18:17:25.406Z",codex-agent,"Companion reference: pm-cli-website-c98t. Source specification and comments read only. Implement the complete production v1 slice; strength above two and autonomous execution remain follow-ups."
   "2026-11-06T19:11:25.139Z",codex-agent,"Implementation and evidence are complete for local first-release review. Companion pm-cli-website-c98t remains read-only. Package-owned links identify source, docs and tests; public harness receipt proves three selected upstream tests and one reproduced historical regression. Required final validation commands are npm run release:check and bun run release:check with isolated Git identity configuration. No repository creation, pushing, publication or hosted operation is authorized. Remaining capabilities are explicitly tracked as open Features; items remain open for orchestrator verification."
   "2026-11-06T19:43:50.816Z",codex-agent,"Orchestrator opened public PR 1 at the completed implementation head. Resuming review ownership: inspect CodeRabbit including outside-diff and nitpick content, address findings, validate changes, push all package-owned tracker records, and verify final CI. Existing implementation and public proofs remain complete."
   "2026-11-06T19:45:53.798Z",codex-agent,"Review round one is queued for PR 1. Automatic CodeRabbit and Sourcery skips are missing review evidence; both notices received negative reactions. The requested voting script hit a GraphQL API rate limit, so equivalent notice reactions were submitted through REST. No findings or CI failures are currently available; CI jobs are queued. Preserve the completed source validation and wait for the manual review and final-head CI before declaring review complete."
   "2026-11-06T21:10:48.231Z",codex-agent,"Final-head CI passed Node 22, Node 26 and CodeQL on d45600d, while the shared CodeRabbit queue had not reached PR 1. Independent receipt-integrity review then reproduced and fixed a one-to-one outcome-binding gap. Focused native test, linked test, typecheck, lint, duplication, docstrings and five behavioral revert proofs pass. Push the narrow fix, requeue review and rerun both full release checks on the new candidate. Existing public model and byte-reduction results are unchanged."
+  "2026-11-07T20:47:21.071Z",codex-agent,"Review round two: CodeRabbit posted 13 unresolved review threads on PR 1 (no outside-diff findings in the review body or PR comments; Sourcery skipped). Resuming the epic's review ownership: verify every thread against current code, fix valid findings with regression tests and behavioral revert proofs, self-review the full PR diff for the same defect classes, run targeted gates plus changelog/identity checks, then push for CI certification of the full release gate."
+  "2026-11-08T07:02:12.653Z",codex-agent,"Round two step one is fixed and validated locally: kernel reuse, path-guard scoping and traversal budget landed with three new regression tests; the linked suite passes 69 of 69 tests and the revert acceptance proves 8 red and 8 restored-green behavioral proofs. Remaining round-two work: pack-gate document presence, tightened refusal-code assertions, the writer lock_conflict retry, corpus-privacy import boundaries, public-harness per-test verification with receipt regeneration, live resume-question checks, exact CI runtimes and the linked-test build prefixes."
 files[2]{path,scope}:
   index.ts,project
   package.json,project
