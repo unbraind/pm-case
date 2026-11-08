@@ -70,7 +70,7 @@ test('deterministic covers and domains are reused across equal models and packet
   const { host } = await fixture(t); const id = 'wide-suite';
   await createCaseModel(host, { id, op: 'wide', title: 'Wide reuse journey', model: wide }); await select(host, id, 256, 'wide-selection');
   const before = { covers: kernelComputations.covers, domains: kernelComputations.domains }; let cursor: string | undefined; let pages = 0;
-  do { const page = await casePacket(host, { id, limit: 40, cursor }); cursor = page.next_cursor ?? undefined; pages++; } while (cursor !== undefined);
+  do { const page = await casePacket(host, { id, limit: 40, cursor }); cursor = page.next_cursor ?? undefined; pages++; assert.ok(page.returned > 0 && pages <= Math.ceil(page.total / 40), 'Every packet page must make bounded progress'); } while (cursor !== undefined);
   assert.ok(pages >= 2); assert.equal(kernelComputations.covers - before.covers, 0); assert.equal(kernelComputations.domains - before.domains, 0);
 });
 test('cached covers and domains still validate every submitted model before reuse', () => {

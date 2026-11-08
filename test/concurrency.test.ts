@@ -34,7 +34,7 @@ for (const step of ['before_create','after_create','before_receipt']) test(`crea
 });
 /** Run a real independent process and retain bounded stdout or a diagnostic. */
 function execute(worker: string, args: string[], expected = 0): Promise<string> {
-  return new Promise((resolve, reject) => { const child = spawn(process.execPath, [worker, ...args], { env: npmEnvironment(process.env) }); let out = '', err = ''; child.stdout.on('data', chunk => out += String(chunk)); child.stderr.on('data', chunk => err += String(chunk)); child.on('error', reject); child.on('close', code => code === expected ? resolve(out) : reject(new Error(`Worker exit ${code}: ${err}`))); });
+  return new Promise((resolve, reject) => { const child = spawn(process.execPath, [worker, ...args], { env: npmEnvironment(process.env), timeout: 120000 }); let out = '', err = ''; child.stdout.on('data', chunk => out += String(chunk)); child.stderr.on('data', chunk => err += String(chunk)); child.on('error', reject); child.on('close', code => code === expected ? resolve(out) : reject(new Error(`Worker exit ${code}: ${err}`))); });
 }
 test('two independent OS writers retain all acknowledged operations and explicit retries converge', async t => {
   const { root, pmRoot, host, id } = await fixture(t); await select(host, id); const template = (await request(host, id, 'template')).outcome; const worker = join(root, 'writer.mjs');

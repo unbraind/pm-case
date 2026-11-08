@@ -14,7 +14,7 @@ export class CaseRefusal extends Error {
   /** Construct a refusal without reflecting input. */
   constructor(code: string, message: string, remedy = 'Review the input using the documented schema', details: Record<string, unknown> = {}, nativeExit?: number) {
     super(message); this.name = 'CaseRefusal'; this.code = code; this.remedy = remedy; this.details = details; this.nativeExit = nativeExit;
-    this.retryable = ['revision_conflict', 'contention', 'stale_cursor'].includes(code);
+    this.retryable = ['revision_conflict', 'lock_conflict', 'contention', 'stale_cursor'].includes(code);
   }
 }
 /** Enforce a domain invariant before writing. */

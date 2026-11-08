@@ -66,7 +66,7 @@ export async function createCaseModel(host: Host, raw: CreateCaseModelInput) {
   } catch (error) { throw refusal(error); }
 }
 /** Bind the deterministic plan to the exact current native revision and declared bound. */
-function proposal(owner: Snapshot, maxCases: number) { const plan = generateCover(owner.state.model, { max_cases: maxCases }); return { owner_id: owner.id, revision: owner.revision, ...plan, proposal: digest({ owner_id: owner.id, revision: owner.revision, plan: plan.proposal_digest }) }; }
+function proposal(owner: Snapshot, maxCases: number) { const plan = generateCover(owner.state.model, { max_cases: maxCases }, true); return { owner_id: owner.id, revision: owner.revision, ...plan, proposal: digest({ owner_id: owner.id, revision: owner.revision, plan: plan.proposal_digest }) }; }
 /** Propose without persisting or claiming any execution evidence. */
 export async function proposeCases(host: Host, raw: ProposeCasesInput) { const input = parse(ProposeCasesInputSchema, raw); return proposal(await readCaseModel(host, input.id), input.max_cases); }
 /** Native compare-and-set of the single authoritative owner; stale requests never silently rebase. */
@@ -80,7 +80,7 @@ async function mutate(host: Host, parsed: ReturnType<typeof SelectCasesInputSche
     if ('proposal' in input) {
       const proposed = proposal(owner, input.max_cases);
       insist(proposed.proposal === input.proposal, 'operation_conflict', 'Recomputed proposal digest differs', 'Propose again at the current revision with the same max_cases');
-      const plan = generateCover(state.model, { max_cases: input.max_cases });
+      const plan = generateCover(state.model, { max_cases: input.max_cases }, true);
       insist(state.outcomes.every(row => plan.cases.some(selected => selected.case_id === row.case_id)), 'operation_conflict', 'Selection would discard an observed case', 'Extend the maximum or create a successor model');
       state.selected_plan = plan; operation = remember(state, input.op, input, 'select', plan.proposal_digest, plan);
     } else {
@@ -111,7 +111,7 @@ export async function recordCaseOutcome(host: Host, raw: RecordCaseOutcomeInput)
 export async function caseCoverage(host: Host, raw: CoverageInput) { const input = parse(CoverageInputSchema, raw); const owner = await readCaseModel(host, input.id); return { owner_id: owner.id, revision: owner.revision, ...evaluateCaseCoverage(owner.state) }; }
 /** Explain feasibility using a full assignment witness, or retain every declared exclusion rationale. */
 export async function explainCaseTuple(host: Host, raw: ExplainTupleInput) {
-  const input = parse(ExplainTupleInputSchema, raw); const owner = await readCaseModel(host, input.id); const domain = enumerateFeasibleTuples(owner.state.model);
+  const input = parse(ExplainTupleInputSchema, raw); const owner = await readCaseModel(host, input.id); const domain = enumerateFeasibleTuples(owner.state.model, true);
   const tuple = [...domain.feasible, ...domain.excluded].find(row => row.tuple_id === input.tuple); insist(tuple, 'invalid_input', 'Tuple does not belong to this model', 'Choose a tuple from coverage or packet');
   const full = domain.assignments.find(row => contains(row, tuple.assignment)); const selected = (owner.state.selected_plan?.cases ?? []).filter(row => contains(row.assignment, tuple.assignment)).map(row => row.case_id);
   return { owner_id: owner.id, revision: owner.revision, tuple, feasible: full !== undefined, witness: full ? { case_id: digest({ model_digest: owner.state.model_digest, assignment: full }), assignment: full } : null, selected_case_ids: selected, observed_execution_ids: owner.state.outcomes.filter(row => selected.includes(row.case_id)).map(row => row.execution_id), constraints: full ? [] : owner.state.model.forbidden_tuples, reason: full ? 'feasible' as const : 'no_valid_completion' as const, evidence_grade: 'reported' as const };

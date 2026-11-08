@@ -32,6 +32,19 @@ try{
     {file:'kernel.js',before:'const memoized = memo.get(key);',after:'const memoized = undefined;',test:'core.test.ts',pattern:'^deterministic covers and domains are reused'},
   ];
   const additional = [
+    {file:'README.md',before:'npm ci\nnpm pack',after:'npm ci\nnpm run build',test:'review.test.ts',pattern:'^every documented local archive'},
+    {file:'dist/src/errors.js',before:"'revision_conflict', 'lock_conflict', 'contention'",after:"'revision_conflict', 'contention'",test:'review.test.ts',pattern:'^transient refusal metadata'},
+    {file:'test/writer-retry.ts',before:' || tries >= maxAttempts',after:'',test:'writer-retry.test.ts',pattern:'^writers bound every conflict'},
+    {file:'dist/src/kernel.js',before:'parse(CaseModelSchema, raw, stored)',after:'parse(CaseModelSchema, raw)',test:'review.test.ts',pattern:'^stored owners remain readable'},
+    {file:'dist/src/kernel.js',before:'const model = normalizeModel(raw, stored);\n    return reuse(domainMemo,',after:'const model = normalizeModel(raw);\n    return reuse(domainMemo,',test:'review.test.ts',pattern:'^stored owners remain readable'},
+    {file:'dist/src/kernel.js',before:'const model = normalizeModel(raw, stored);\n    return reuse(coverMemo,',after:'const model = normalizeModel(raw);\n    return reuse(coverMemo,',test:'review.test.ts',pattern:'^stored owners remain readable'},
+    {file:'dist/src/kernel.js',before:'enumerateFeasibleTuples(model, stored)',after:'enumerateFeasibleTuples(model)',test:'review.test.ts',pattern:'^stored owners remain readable'},
+    {file:'dist/src/kernel.js',before:'normalizeModel(state.model, true)',after:'normalizeModel(state.model)',test:'review.test.ts',pattern:'^stored owners remain readable'},
+    {file:'dist/src/kernel.js',before:'generateCover(state.model, { max_cases: plan.max_cases }, true)',after:'generateCover(state.model, { max_cases: plan.max_cases })',test:'review.test.ts',pattern:'^stored owners remain readable'},
+    {file:'dist/src/kernel.js',before:'enumerateFeasibleTuples(state.model, true)',after:'enumerateFeasibleTuples(state.model)',test:'review.test.ts',pattern:'^stored owners remain readable'},
+    {file:'dist/src/api.js',before:'generateCover(owner.state.model, { max_cases: maxCases }, true)',after:'generateCover(owner.state.model, { max_cases: maxCases })',test:'review.test.ts',pattern:'^stored owners remain readable'},
+    {file:'dist/src/api.js',before:'generateCover(state.model, { max_cases: input.max_cases }, true)',after:'generateCover(state.model, { max_cases: input.max_cases })',test:'review.test.ts',pattern:'^stored owners remain readable'},
+    {file:'dist/src/api.js',before:'enumerateFeasibleTuples(owner.state.model, true)',after:'enumerateFeasibleTuples(owner.state.model)',test:'review.test.ts',pattern:'^stored owners remain readable'},
     {file:'scripts/pack-gate.ts',before:"for (const document of ['docs/real-data.md', 'docs/real-data-receipt.json', 'docs/public-harness-receipt.json']) if (!files.includes(document)) throw new Error(`Package document is missing: ${document}`);",after:'void files;',test:'pack-gate.test.ts',pattern:'^package gate refuses each missing'},
     {file:'test/corpus-privacy.test.ts',before:"assert.ok(names.includes(row.imported!.name),'Unreviewed acquisition import');",after:'void names;',test:'corpus-privacy.test.ts',pattern:'^public-only acquisition guard'},
     {file:'test/corpus-privacy.test.ts',before:"if(callee.type==='MemberExpression') assert.ok(!['readFile','readFileSync','readdir','readdirSync','fetch','execFileSync'].includes(callee.property?.name??callee.property?.value??''),'Member acquisition calls refused');",after:'void callee;',test:'corpus-privacy.test.ts',pattern:'^public-only acquisition guard'},
@@ -40,8 +53,8 @@ try{
     {file:'test/writer-retry.ts',before:" && code !== 'lock_conflict'",after:'',test:'writer-retry.test.ts',pattern:'^writers retry lock'},
     {file:'test/install-tools.ts',before:'  assert.ok(!env.GITHUB_ACTIONS,',after:'  assert.ok(true,',test:'install-tools.test.ts',pattern:'^exact runtime acceptance'},
     {file:'dist/src/api.js',before:'revision: owner.revision, summary, rows, total:',after:'revision: owner.revision, summary: { ...summary, case_counts: { ...summary.case_counts, unresolved: 0 } }, rows, total:',test:'real-data.test.ts',pattern:'^ten pinned resume questions'},
-    {file:'dist/src/kernel.js',before:'const model = normalizeModel(raw);\n    return reuse(domainMemo,',after:'const model = raw;\n    return reuse(domainMemo,',test:'core.test.ts',pattern:'^cached covers and domains'},
-    {file:'dist/src/kernel.js',before:'const model = normalizeModel(raw);\n    return reuse(coverMemo,',after:'const model = raw;\n    return reuse(coverMemo,',test:'core.test.ts',pattern:'^cached covers and domains'},
+    {file:'dist/src/kernel.js',before:'const model = normalizeModel(raw, stored);\n    return reuse(domainMemo,',after:'const model = raw;\n    return reuse(domainMemo,',test:'core.test.ts',pattern:'^cached covers and domains'},
+    {file:'dist/src/kernel.js',before:'const model = normalizeModel(raw, stored);\n    return reuse(coverMemo,',after:'const model = raw;\n    return reuse(coverMemo,',test:'core.test.ts',pattern:'^cached covers and domains'},
   ];
   for(const mutation of [...mutations.map(row=>({...row,file:`dist/src/${row.file}`})),...additional]){
     await proveMutation(root,mutation);proofs.push({function_behavior:mutation.before,test:mutation.test,pattern:mutation.pattern,reverted_exit:1,restored_exit:0});

@@ -16,9 +16,9 @@ function validAssignment(model: CaseModel, assignment: Assignment, full: boolean
   const factors = new Map(model.factors.map(factor => [factor.factor_id, factor.values])); const entries = Object.entries(assignment);
   return entries.length > 0 && (!full || entries.length === factors.size) && entries.every(([key, value]) => factors.get(key)?.includes(value));
 }
-/** Normalize the immutable model and refuse all invalid finite domains before enumeration. */
-export function normalizeModel(raw: unknown): CaseModel {
-  const model = parse(CaseModelSchema, raw);
+/** Validate a finite model; stored mode preserves inert historical text without applying submission policy. */
+export function normalizeModel(raw: unknown, stored = false): CaseModel {
+  const model = parse(CaseModelSchema, raw, stored);
   insist(new Set(model.factors.map(factor => factor.factor_id)).size === model.factors.length, 'model_limit', 'Factor identities must be unique');
   insist(model.factors.every(factor => new Set(factor.values).size === factor.values.length), 'model_limit', 'Value identities must be unique within a factor');
   insist(model.factors.reduce((size, factor) => size * factor.values.length, 1) <= 4096, 'model_limit', 'Cartesian population exceeds 4096', 'Partition the reviewed factor model');
@@ -48,9 +48,9 @@ function reuse<T>(memo: Map<string, T>, key: string, compute: () => T, counter: 
   memo.set(key, computed);
   return structuredClone(computed);
 }
-/** Enumerate exact feasible obligations and excluded tuples from the entire bounded Cartesian domain. */
-export function enumerateFeasibleTuples(raw: CaseModel): FeasibleDomain {
-  const model = normalizeModel(raw);
+/** Enumerate exact feasible obligations; propagate stored mode through every normalization before cache reuse. */
+export function enumerateFeasibleTuples(raw: CaseModel, stored = false): FeasibleDomain {
+  const model = normalizeModel(raw, stored);
   return reuse(domainMemo, digest(model), () => {
     const modelDigest = digest(model); const all = product(model.factors);
     const assignments = all.filter(row => !model.forbidden_tuples.some(constraint => contains(row, constraint.assignment)));
@@ -60,12 +60,12 @@ export function enumerateFeasibleTuples(raw: CaseModel): FeasibleDomain {
     return { model, model_digest: modelDigest, cartesian: all.length, assignments, feasible: tuples.filter(tuple => assignments.some(row => contains(row, tuple.assignment))), excluded: tuples.filter(tuple => !assignments.some(row => contains(row, tuple.assignment))) };
   }, 'domains');
 }
-/** Select mandatory cases then maximal new tuple coverage, with canonical byte ordering for ties. */
-export function generateCover(raw: CaseModel, bounds: { max_cases: number }): CasePlan {
+/** Select mandatory cases then maximal tuple coverage; stored mode only bypasses submission policy, never schema checks. */
+export function generateCover(raw: CaseModel, bounds: { max_cases: number }, stored = false): CasePlan {
   const maxCases = parse(z.number().int().min(1).max(256), bounds.max_cases);
-  const model = normalizeModel(raw);
+  const model = normalizeModel(raw, stored);
   return reuse(coverMemo, `${digest(model)}|${maxCases}`, () => {
-    const domain = enumerateFeasibleTuples(model);
+    const domain = enumerateFeasibleTuples(model, stored);
   insist(domain.model.mandatory_cases.length <= maxCases, 'model_limit', 'Maximum cannot contain all mandatory cases', 'Increase max_cases to retain every mandatory assignment');
   const remaining = new Set(domain.feasible.map(tuple => tuple.tuple_id)); const selected: Assignment[] = [];
   const candidates = domain.assignments;
@@ -86,20 +86,20 @@ export function generateCover(raw: CaseModel, bounds: { max_cases: number }): Ca
 export function readState(raw: unknown): CaseState {
   const state = parse(CaseStateSchema, raw, true);
   insist(Buffer.byteLength(canonical(state)) <= 262144, 'capacity_exceeded', 'Owner state exceeds 256 KiB', 'Create a successor owner; retain original receipts');
-  insist(digest(normalizeModel(state.model)) === state.model_digest, 'invalid_record', 'Stored model digest differs');
+  insist(digest(normalizeModel(state.model, true)) === state.model_digest, 'invalid_record', 'Stored model digest differs');
   insist(state.operation_receipts[0].result.kind === 'create' && state.operation_receipts[0].result.digest === state.model_digest && state.operation_receipts.slice(1).every(row => row.result.kind !== 'create'), 'invalid_record', 'Creation receipt does not bind this immutable model');
   const recorded = state.operation_receipts.filter(row => row.result.kind === 'record');
   insist(recorded.length === state.outcomes.length && new Set(recorded.map(row => row.result.identity)).size === recorded.length && recorded.every(row => state.outcomes.some(outcome => outcome.execution_id === row.result.identity && digest(outcome) === row.result.digest)), 'invalid_record', 'Execution content differs from its immutable receipt');
   const plan = state.selected_plan; const selected = state.operation_receipts.filter(row => row.result.kind === 'select').at(-1);
   insist(plan ? selected?.result.digest === digest(plan) && selected.result.identity === plan.proposal_digest : selected === undefined, 'invalid_record', 'Selected plan differs from its committed receipt');
-  if (plan) insist(canonical(generateCover(state.model, { max_cases: plan.max_cases })) === canonical(plan), 'invalid_record', 'Stored plan is not the declared deterministic cover');
+  if (plan) insist(canonical(generateCover(state.model, { max_cases: plan.max_cases }, true)) === canonical(plan), 'invalid_record', 'Stored plan is not the declared deterministic cover');
   insist(new Set(state.operation_receipts.map(row => row.operation_id)).size === state.operation_receipts.length && state.operation_receipts.every((row, index) => row.result.sequence === index + 1 && row.result_digest === digest(row.result)), 'invalid_record', 'Stored replay receipts differ or repeat');
   insist(new Set(state.outcomes.map(row => row.execution_id)).size === state.outcomes.length && state.outcomes.every(row => row.subject_digest === state.model.subject_digest && plan?.cases.some(selected => selected.case_id === row.case_id)), 'invalid_record', 'Stored outcomes do not belong to this selected model');
   return state;
 }
 /** Separate planned interaction coverage from comparable reported execution evidence and conflicts. */
 export function evaluateCaseCoverage(state: CaseState) {
-  const domain = enumerateFeasibleTuples(state.model); const cases = state.selected_plan?.cases ?? []; const oracle = state.outcomes[0]?.oracle_digest ?? null;
+  const domain = enumerateFeasibleTuples(state.model, true); const cases = state.selected_plan?.cases ?? []; const oracle = state.outcomes[0]?.oracle_digest ?? null;
   const comparable = state.outcomes.filter(row => row.subject_digest === state.model.subject_digest && row.oracle_digest === oracle);
   const observed = new Set(comparable.filter(row => row.result !== 'unresolved').map(row => row.case_id));
   const executed = cases.filter(row => observed.has(row.case_id));

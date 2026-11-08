@@ -6,7 +6,16 @@ Constrained combinatorial test design as durable agent context. An agent can res
 
 ## Install
 
-This candidate is local and unpublished. For review, install its captured tarball alongside the host:
+This candidate is local and unpublished. To create a fresh local review archive from a clean source checkout, run these prerequisites in the package directory:
+
+```sh
+npm ci
+npm pack
+```
+
+This creates `pm-case-2026.11.6.tgz` in that directory. It is a newly built review archive, with no claim that its bytes match the captured, validated artifact from a previous run. The captured artifact is untracked; use a maintainer-supplied copy and its matching SHA-256 receipt when verifying that earlier run.
+
+Install the archive from the package directory alongside the host:
 
 ```sh
 npm install ./pm-case-2026.11.6.tgz @unbrained/pm-cli@2026.11.5
@@ -104,7 +113,7 @@ const transport = fitEnvelope(host, envelope(page), 1600);
 const recovery = await recoverCaseOperation(host, { id: snapshot.id, op: 'run-1' });
 ```
 
-`createCaseModel`, `selectCases` and `recordCaseOutcome` accept an optional result `budget`. Read operations return complete typed objects; use `envelope` and `fitEnvelope` for bounded transport. `explainCaseTuple(host, {id, tuple})` returns a feasible witness or the constraints explaining no valid completion. `enumerateFeasibleTuples(model)`, `generateCover(model, {max_cases})` and `evaluateCaseCoverage(state)` are pure. `normalizeModel`, `canonical`, `digest` and `readState` support strict normalization and integrity checks. Exported request, state, result and nested Zod schemas reject unknown fields. `CaseRefusal` carries `code`, safe `message`, `remedy`, `retryable` and bounded `details`.
+`createCaseModel`, `selectCases` and `recordCaseOutcome` accept an optional result `budget`. Read operations return complete typed objects; use `envelope` and `fitEnvelope` for bounded transport. `explainCaseTuple(host, {id, tuple})` returns a feasible witness or the constraints explaining no valid completion. `enumerateFeasibleTuples(model)`, `generateCover(model, {max_cases})` and `evaluateCaseCoverage(state)` are pure. `normalizeModel`, `canonical`, `digest` and `readState` support strict normalization and integrity checks. The optional `stored` flag on `normalizeModel`, `enumerateFeasibleTuples` and `generateCover` is for trusted persisted state: it preserves historical inert text while retaining schema and domain validation. New submissions use the default `false`, including before cache lookups. Exported request, state, result and nested Zod schemas reject unknown fields. `CaseRefusal` carries `code`, safe `message`, `remedy`, `retryable` and bounded `details`.
 
 The injected host supplies native `get`, `create`, `update`, `readItemRevision`, `withExpectedItemRevisions` and `listAllComplete`, plus explicit native CAS and create-if-absent capability assertions. Optional host output fitting, settings, identity normalization and creation schema provisioning stay host-owned. Directory and injected native-client contracts are tested; arbitrary database/MCP providers are not certified. Authorization must happen before invoking the package.
 
