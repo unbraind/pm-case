@@ -50,8 +50,9 @@ function reuse<T>(memo: Map<string, T>, key: string, compute: () => T, counter: 
 }
 /** Enumerate exact feasible obligations and excluded tuples from the entire bounded Cartesian domain. */
 export function enumerateFeasibleTuples(raw: CaseModel): FeasibleDomain {
-  return reuse(domainMemo, digest(raw), () => {
-    const model = normalizeModel(raw); const modelDigest = digest(model); const all = product(model.factors);
+  const model = normalizeModel(raw);
+  return reuse(domainMemo, digest(model), () => {
+    const modelDigest = digest(model); const all = product(model.factors);
     const assignments = all.filter(row => !model.forbidden_tuples.some(constraint => contains(row, constraint.assignment)));
     insist(assignments.length > 0, 'unsatisfiable_model', 'No valid full assignment remains', 'Review the forbidden partial assignments');
     const groups = model.strength === 1 ? model.factors.map(factor => [factor]) : model.factors.flatMap((factor, index) => model.factors.slice(index + 1).map(other => [factor, other]));
@@ -62,8 +63,9 @@ export function enumerateFeasibleTuples(raw: CaseModel): FeasibleDomain {
 /** Select mandatory cases then maximal new tuple coverage, with canonical byte ordering for ties. */
 export function generateCover(raw: CaseModel, bounds: { max_cases: number }): CasePlan {
   const maxCases = parse(z.number().int().min(1).max(256), bounds.max_cases);
-  return reuse(coverMemo, `${digest(raw)}|${maxCases}`, () => {
-    const domain = enumerateFeasibleTuples(raw);
+  const model = normalizeModel(raw);
+  return reuse(coverMemo, `${digest(model)}|${maxCases}`, () => {
+    const domain = enumerateFeasibleTuples(model);
   insist(domain.model.mandatory_cases.length <= maxCases, 'model_limit', 'Maximum cannot contain all mandatory cases', 'Increase max_cases to retain every mandatory assignment');
   const remaining = new Set(domain.feasible.map(tuple => tuple.tuple_id)); const selected: Assignment[] = [];
   const candidates = domain.assignments;

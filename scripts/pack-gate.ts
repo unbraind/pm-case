@@ -12,4 +12,5 @@ for(const file of files)if(file.startsWith('dist/')&&!emitted.has(file))throw ne
 const publicAssets = new Set(['package.json', 'manifest.json', 'README.md', 'LICENSE', 'CHANGELOG.md', 'ARCHITECTURE.md', 'docs/real-data.md', 'docs/public-harness-receipt.json', 'docs/real-data-receipt.json']);
 for (const file of files) if (!emitted.has(file) && !publicAssets.has(file)) throw new Error(`Package allowlist failed: ${file}`);
 if (!files.includes('dist/index.js')) throw new Error('Package entrypoint is missing');
+for (const document of ['docs/real-data.md', 'docs/real-data-receipt.json', 'docs/public-harness-receipt.json']) if (!files.includes(document)) throw new Error(`Package document is missing: ${document}`);
 console.log(`pack-gate: ${files.length} allowlisted files`);

@@ -375,7 +375,7 @@
         "subject_digest": "a59fa30a4977e8196c82991627eb94d8d536c70e94408649143bbc2c5f21409e"
       },
       "owner_id": "proof-pm-csv",
-      "owner_revision": "1eb1e8c80a73eacbaac8766a511e7960bab9b5506f37b2b5560e308a00d7a925",
+      "owner_revision": "9f9448bf6bb2e31adc49e603964cc1150db8597166257bc5284c4ebdcb19c45e",
       "outcomes": [
         {
           "execution_id": "public-harness",
@@ -387,9 +387,9 @@
           "source_refs": [
             {
               "item_id": "proof-evidence",
-              "item_hash": "9069387eacaf6291464399b7aaa15b3bad7b9e9465ef68b8edc26489ab3f44b3",
+              "item_hash": "c247e2525790c70818f099f81627c16b2b773273fd12e9a3a6a152473657d089",
               "field_pointer": "/description",
-              "content_digest": "53659364950c6820ae666eb1c1f874c1d0a36ba7e96e987a44541dea09d99ce3"
+              "content_digest": "1bd5e1b54bad64e908d47ef23064892ae74a980244facabbfd0f91d66d1a4a6d"
             }
           ],
           "observed_at": "2026-11-06T00:00:00Z",
@@ -406,9 +406,9 @@
           "source_refs": [
             {
               "item_id": "proof-evidence",
-              "item_hash": "9069387eacaf6291464399b7aaa15b3bad7b9e9465ef68b8edc26489ab3f44b3",
+              "item_hash": "c247e2525790c70818f099f81627c16b2b773273fd12e9a3a6a152473657d089",
               "field_pointer": "/description",
-              "content_digest": "53659364950c6820ae666eb1c1f874c1d0a36ba7e96e987a44541dea09d99ce3"
+              "content_digest": "1bd5e1b54bad64e908d47ef23064892ae74a980244facabbfd0f91d66d1a4a6d"
             }
           ],
           "observed_at": "2026-11-06T00:00:00Z",
@@ -611,10 +611,10 @@
         {
           "case_id": "6c3fbc5eb50cc13f3fc6c1b610162f2edff24e190977748dc8dce3a90c1f936c",
           "assignment": {
-            "cleanup": "ok",
+            "runtime": "node",
             "close_receipt": "conflict",
             "persisted_status": "closed",
-            "runtime": "node"
+            "cleanup": "ok"
           }
         },
         {
@@ -1005,7 +1005,7 @@
         "subject_digest": "67d17f362aeafa6d5f7b69820462554442afff5bafcc9ad34e7dd7b7f679a77b"
       },
       "owner_id": "proof-pm-beads",
-      "owner_revision": "36135476717bc548c1b1cf96024bd6fb7bc6dbe702f60890b18867ac965edfe5",
+      "owner_revision": "86359c380829391cc548604fcb561ceef14958fbd53f2b112c00dc429ab33d25",
       "outcomes": [
         {
           "execution_id": "public-harness",
@@ -1017,9 +1017,9 @@
           "source_refs": [
             {
               "item_id": "proof-evidence",
-              "item_hash": "9069387eacaf6291464399b7aaa15b3bad7b9e9465ef68b8edc26489ab3f44b3",
+              "item_hash": "c247e2525790c70818f099f81627c16b2b773273fd12e9a3a6a152473657d089",
               "field_pointer": "/description",
-              "content_digest": "53659364950c6820ae666eb1c1f874c1d0a36ba7e96e987a44541dea09d99ce3"
+              "content_digest": "1bd5e1b54bad64e908d47ef23064892ae74a980244facabbfd0f91d66d1a4a6d"
             }
           ],
           "observed_at": "2026-11-06T00:00:00Z",
@@ -1036,9 +1036,9 @@
           "source_refs": [
             {
               "item_id": "proof-evidence",
-              "item_hash": "9069387eacaf6291464399b7aaa15b3bad7b9e9465ef68b8edc26489ab3f44b3",
+              "item_hash": "c247e2525790c70818f099f81627c16b2b773273fd12e9a3a6a152473657d089",
               "field_pointer": "/description",
-              "content_digest": "53659364950c6820ae666eb1c1f874c1d0a36ba7e96e987a44541dea09d99ce3"
+              "content_digest": "1bd5e1b54bad64e908d47ef23064892ae74a980244facabbfd0f91d66d1a4a6d"
             }
           ],
           "observed_at": "2026-11-06T00:00:00Z",
@@ -1353,11 +1353,11 @@
         {
           "case_id": "d0344b3eed620976765ed1fa1f1a33ff6df629cc459a458f95fc8d9844afd990",
           "assignment": {
-            "action": "preview",
-            "line_ending": "lf",
             "runtime": "node",
+            "line_ending": "lf",
             "source": "changed",
-            "topology": "cycle"
+            "topology": "cycle",
+            "action": "preview"
           }
         },
         {
@@ -1648,7 +1648,7 @@
         "subject_digest": "ec0004f5e395a3fe09eb8e00c996ac0f54955f359159c639c75706595072a1b2"
       },
       "owner_id": "proof-pm-ops",
-      "owner_revision": "60651a0bf542beedcc7e00151839f1f1e7277872175b64c0bd96c292f2a93e8f",
+      "owner_revision": "fb0b4aa7abadaf9e431050a9e9ea9870237e891dcb452a36251e1f9fbeac2700",
       "outcomes": [
         {
           "execution_id": "public-harness",
@@ -1660,9 +1660,9 @@
           "source_refs": [
             {
               "item_id": "proof-evidence",
-              "item_hash": "9069387eacaf6291464399b7aaa15b3bad7b9e9465ef68b8edc26489ab3f44b3",
+              "item_hash": "c247e2525790c70818f099f81627c16b2b773273fd12e9a3a6a152473657d089",
               "field_pointer": "/description",
-              "content_digest": "53659364950c6820ae666eb1c1f874c1d0a36ba7e96e987a44541dea09d99ce3"
+              "content_digest": "1bd5e1b54bad64e908d47ef23064892ae74a980244facabbfd0f91d66d1a4a6d"
             }
           ],
           "observed_at": "2026-11-06T00:00:00Z",
@@ -1679,9 +1679,9 @@
           "source_refs": [
             {
               "item_id": "proof-evidence",
-              "item_hash": "9069387eacaf6291464399b7aaa15b3bad7b9e9465ef68b8edc26489ab3f44b3",
+              "item_hash": "c247e2525790c70818f099f81627c16b2b773273fd12e9a3a6a152473657d089",
               "field_pointer": "/description",
-              "content_digest": "53659364950c6820ae666eb1c1f874c1d0a36ba7e96e987a44541dea09d99ce3"
+              "content_digest": "1bd5e1b54bad64e908d47ef23064892ae74a980244facabbfd0f91d66d1a4a6d"
             }
           ],
           "observed_at": "2026-11-06T00:00:00Z",
@@ -1885,10 +1885,10 @@
         {
           "case_id": "72de19ae33f2782727f1d1aab7dd2903018d583357e06641745573172f9eeaf0",
           "assignment": {
-            "format": "current",
-            "history": "healthy",
+            "runtime": "node",
             "permissions": "readonly",
-            "runtime": "node"
+            "format": "current",
+            "history": "healthy"
           }
         },
         {
@@ -1956,7 +1956,7 @@
       "expected": 17,
       "actual": 17,
       "calls": 1,
-      "elapsed_ms": 80,
+      "elapsed_ms": 112,
       "packet_bytes": 2661,
       "max_page_bytes": 2661,
       "naive_bytes": 11444
@@ -1967,7 +1967,7 @@
       "expected": 1,
       "actual": 1,
       "calls": 1,
-      "elapsed_ms": 72,
+      "elapsed_ms": 126,
       "packet_bytes": 2661,
       "max_page_bytes": 2661,
       "naive_bytes": 11444
@@ -1978,7 +1978,7 @@
       "expected": [],
       "actual": [],
       "calls": 1,
-      "elapsed_ms": 82,
+      "elapsed_ms": 125,
       "packet_bytes": 2661,
       "max_page_bytes": 2661,
       "naive_bytes": 11444
@@ -2025,7 +2025,7 @@
         "{\"persisted_status\":\"open\",\"runtime\":\"node\"}"
       ],
       "calls": 5,
-      "elapsed_ms": 537,
+      "elapsed_ms": 471,
       "packet_bytes": 18044,
       "max_page_bytes": 3836,
       "naive_bytes": 11444
@@ -2036,7 +2036,7 @@
       "expected": 29,
       "actual": 29,
       "calls": 1,
-      "elapsed_ms": 61,
+      "elapsed_ms": 44,
       "packet_bytes": 2684,
       "max_page_bytes": 2684,
       "naive_bytes": 9158
@@ -2047,7 +2047,7 @@
       "expected": 1,
       "actual": 1,
       "calls": 1,
-      "elapsed_ms": 54,
+      "elapsed_ms": 61,
       "packet_bytes": 2684,
       "max_page_bytes": 2684,
       "naive_bytes": 9158
@@ -2058,7 +2058,7 @@
       "expected": [],
       "actual": [],
       "calls": 1,
-      "elapsed_ms": 66,
+      "elapsed_ms": 73,
       "packet_bytes": 2684,
       "max_page_bytes": 2684,
       "naive_bytes": 9158
@@ -2069,7 +2069,7 @@
       "expected": 18,
       "actual": 18,
       "calls": 1,
-      "elapsed_ms": 67,
+      "elapsed_ms": 43,
       "packet_bytes": 2655,
       "max_page_bytes": 2655,
       "naive_bytes": 8229
@@ -2080,7 +2080,7 @@
       "expected": 1,
       "actual": 1,
       "calls": 1,
-      "elapsed_ms": 81,
+      "elapsed_ms": 30,
       "packet_bytes": 2655,
       "max_page_bytes": 2655,
       "naive_bytes": 8229
@@ -2091,7 +2091,7 @@
       "expected": [],
       "actual": [],
       "calls": 1,
-      "elapsed_ms": 79,
+      "elapsed_ms": 59,
       "packet_bytes": 2655,
       "max_page_bytes": 2655,
       "naive_bytes": 8229

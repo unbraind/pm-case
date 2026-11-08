@@ -73,6 +73,15 @@ test('deterministic covers and domains are reused across equal models and packet
   do { const page = await casePacket(host, { id, limit: 40, cursor }); cursor = page.next_cursor ?? undefined; pages++; } while (cursor !== undefined);
   assert.ok(pages >= 2); assert.equal(kernelComputations.covers - before.covers, 0); assert.equal(kernelComputations.domains - before.domains, 0);
 });
+test('cached covers and domains still validate every submitted model before reuse', () => {
+  const valid = model({ model_key: 'cached-validation' }); generateCover(valid, { max_cases: 32 }); enumerateFeasibleTuples(valid);
+  for (const generate of [(input: typeof valid) => generateCover(input, { max_cases: 32 }), enumerateFeasibleTuples]) {
+    assert.throws(() => generate({ ...valid, unknown: undefined } as typeof valid), hasCode('invalid_input'));
+    assert.throws(() => generate({ ...valid, factors: valid.factors.map(factor => ({ ...factor, unknown: undefined })) } as typeof valid), hasCode('invalid_input'));
+    let invoked = false; const getter = Object.defineProperty({ ...valid }, 'unknown', { enumerable: true, get() { invoked = true; return undefined; } });
+    assert.throws(() => generate(getter), hasCode('invalid_input')); assert.equal(invoked, false, 'Cache keys must not evaluate untrusted accessors');
+  }
+});
 test('real SDK owner retains links comments immutable outcomes and old request replays', async t => {
   const { host, id, pmRoot, birth, native } = await fixture(t);
   const initial = await readCaseModel(host, id); assert.equal((await createCaseModel(host, birth)).replayed, true);

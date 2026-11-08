@@ -1,13 +1,13 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync, symlinkSync, readFileSync, existsSync, unlinkSync, copyFileSync, chmodSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync, symlinkSync, readFileSync, unlinkSync, copyFileSync, chmodSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join, dirname } from 'node:path';
+import { join } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { npmEnvironment } from '../scripts/environment.ts';
 import { observation, model } from './helpers.ts';
-import { packedRequirement } from './install-tools.ts';
+import { packedRequirement, acceptanceRuntime } from './install-tools.ts';
 /** Run a credential-free consumer command and preserve only bounded diagnostics. */
 function execute(executable: string, args: string[], cwd: string, env: NodeJS.ProcessEnv, input?: string, expected = 0): string {
   const result = spawnSync(executable, args, { cwd, env, input, encoding: 'utf8', timeout: 180000, maxBuffer: 4 * 1024 * 1024 });
@@ -27,7 +27,7 @@ test('one captured artifact supports npm Bun npx bunx and SDK with Git absent', 
     const bin = join(root, 'bin'); mkdirSync(bin); const bun = tools.get('bun')!;
     for (const [name, target] of [['sh', '/bin/sh'], ['node', process.execPath], ['bun', bun], ['bunx', bun]]) symlinkSync(target, join(bin, name));
     for (const name of ['npm', 'npx']) symlinkSync(tools.get(name)!, join(bin, name));
-    const journeys: { manager: string; commands: number; runtime: string }[] = [];
+    const journeys: { manager: string; commands: number; runtime: string; exact_runtimes: string[] }[] = [];
     for (const manager of ['npm', 'bun']) {
       const cwd = join(root, manager); mkdirSync(cwd); writeFileSync(join(cwd, 'package.json'), JSON.stringify({ name: 'case-consumer', version: '1.0.0', private: true, type: 'module' }));
       execute(manager, manager === 'npm' ? ['install', '--ignore-scripts', '--no-audit', '--no-fund', archive, '@unbrained/pm-cli@2026.11.5'] : ['add', '--ignore-scripts', archive, '@unbrained/pm-cli@2026.11.5'], cwd, env);
@@ -72,15 +72,17 @@ test('one captured artifact supports npm Bun npx bunx and SDK with Git absent', 
       writeFileSync(join(cwd,'sdk.mjs'), "import assert from 'node:assert/strict';import {createDirectoryHost,createCaseModel,readCaseModel,recordCaseOutcome,caseCoverage,CaseRefusal,exitCode} from 'pm-case';const host=createDirectoryHost(process.cwd()+'/.agents/pm','consumer');const owner=await readCaseModel(host,'packed-suite');assert.equal(owner.state.outcomes.length,1);await assert.rejects(readCaseModel({...host,capabilities:{...host.capabilities,native_item_cas:false}},owner.id),e=>e instanceof CaseRefusal&&exitCode(e.code)===5);await createCaseModel(host,{id:'packed-second',op:'birth',title:'SDK created owner',model:owner.state.model});await recordCaseOutcome(host,{id:owner.id,op:'sdk-observation',revision:owner.revision,outcome:{...owner.state.outcomes[0],execution_id:'sdk-observation',result:'unresolved'}});assert.equal((await caseCoverage(host,{id:owner.id})).recorded_execution_tuple_coverage.covered,3);console.log('SDK OK '+(globalThis.Bun?'bun':'node'));\n");
       const runtime=manager==='npm'?'node':'bun';assert.match(execute(runtime,['sdk.mjs'],cwd,safe),new RegExp(`SDK OK ${runtime}`));
       writeFileSync(join(cwd,'sdk.mjs'),"import assert from 'node:assert/strict';import {createDirectoryHost,caseCoverage} from 'pm-case';const value=await caseCoverage(createDirectoryHost(process.cwd()+'/.agents/pm','consumer'),{id:'packed-suite'});assert.equal(value.case_counts.unresolved,1);console.log('SDK OK node');\n");
-      const installed = join(dirname(dirname(dirname(process.execPath))));
-      for (const version of ['v22.19.0', 'v26.13.0']) {
-        const node = join(installed, version, 'bin/node');
-        if (!existsSync(node)) { assert.ok(process.env.GITHUB_ACTIONS, 'Minimum and current Node runtimes must be present for local acceptance'); continue; }
+      const exactRuntimes: string[] = [];
+      for (const version of ['v22.19.0', 'v26.13.0'] as const) {
+        const node = acceptanceRuntime(version, process.execPath, process.env);
+        if (node === null) continue;
+        assert.equal(execute(node, ['--version'], cwd, safe).trim(), version, 'Provisioned runtime must have the exact expected version');
         unlinkSync(join(bin, 'node')); symlinkSync(node, join(bin, 'node'));
         assert.match(execute(node, ['sdk.mjs'], cwd, safe), /SDK OK node/);
         const packet = JSON.parse(execute('npx', ['--no-install','pm','case','packet','packed-suite','--limit','1','--json'],cwd,safe)); assert.equal(packet.data.summary.feasible_tuples,12);
+        exactRuntimes.push(version); console.log(`packed acceptance: ${manager} ${version} SDK and CLI passed`);
       }
-      unlinkSync(join(bin, 'node')); symlinkSync(process.execPath, join(bin, 'node')); journeys.push({ manager, commands, runtime });
+      unlinkSync(join(bin, 'node')); symlinkSync(process.execPath, join(bin, 'node')); journeys.push({ manager, commands, runtime, exact_runtimes: exactRuntimes });
     }
     const handoff = join(root, 'handoff'); mkdirSync(join(handoff, 'release-artifact'), { recursive: true }); mkdirSync(join(handoff, 'dist'));
     copyFileSync(archive, join(handoff, 'release-artifact/package.tgz'));

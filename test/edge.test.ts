@@ -11,11 +11,11 @@ import { fixture, hasCode } from './helpers.ts';
 
 test('native persisted adapter preserves options and refuses incompatible peer schema', async t => {
   const { native, host, birth } = await fixture(t); const port = persistedSchemaPort(native);
-  await assert.rejects(host.client.create(), error => error instanceof Error); await port.update(birth.id, { description: 'Preserved peer text' });
+  await assert.rejects(host.client.create(), hasCode('missing_required_option')); await port.update(birth.id, { description: 'Preserved peer text' });
   for (const field of [[],['other=x']]) await assert.rejects(port.update(birth.id, { field }), hasCode('invalid_input'));
   await native.create({ id: 'corpus-peer', title: 'Peer', type: 'Task' }); await assert.rejects(readCaseModel(host, 'corpus-peer'), hasCode('invalid_record')); await assert.rejects(createCaseModel(host, { ...birth, id: 'corpus-peer' }), hasCode('invalid_record'));
   const noOptional = { ...host, normalizeId: undefined, prepareCreate: undefined, fitOutputEnvelope: undefined }; await createCaseModel(noOptional, { ...birth, id: 'corpus-plain', op: 'plain', related: ['corpus-peer'] });
-  await assert.rejects(createCaseModel(host, { ...birth, id: 'corpus-invalid', related: ['corpus-missing'] }), error => error instanceof CaseRefusal);
+  await assert.rejects(createCaseModel(host, { ...birth, id: 'corpus-invalid', related: ['corpus-missing'] }), hasCode('dependency_target_not_found'));
   await native.schemaRemoveType('CaseModel'); await native.schemaAddType('CaseModel', { folder: 'peer', description: 'Peer definition' }); await assert.rejects(createCaseModel(host, { ...birth, id: 'corpus-new' }), hasCode('invalid_record'));
 });
 test('fresh dynamic native routes do not provision or mutate schemas on reads', async t => {

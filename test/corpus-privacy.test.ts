@@ -19,12 +19,29 @@ function walk(value: unknown, visit: (node: Record<string, unknown>) => void): v
 function readBoundaries(source: string): void {
   const tree = parse(source,{ sourceType:'module', plugins:['typescript'] }); const seen: string[] = [];
   const allowed = ["fileURLToPath(new URL('../', import.meta.url))","resolve(root, '..', repo)","execFileSync('git', ['archive', revision, '.agents/pm'], { cwd: original, maxBuffer: 32 * 1024 * 1024, env: npmEnvironment(process.env) })","execFileSync('tar', ['-x', '-C', copy], { input: archive })","new PmClient({ cwd: copy, pmRoot: join(copy, '.agents/pm'), noExtensions: true })","fileURLToPath(import.meta.url)"];
-  const modules = new Set(['node:fs/promises','node:path','node:os','node:child_process','node:crypto','node:url','@unbrained/pm-cli/sdk/core','@unbrained/pm-cli/sdk/runtime','../dist/src/schema.js','../scripts/environment.ts']);
+  const modules = new Map([
+    ['node:fs/promises',['mkdtemp','mkdir','rm','writeFile']], ['node:path',['join','resolve']], ['node:os',['tmpdir']],
+    ['node:child_process',['execFileSync']], ['node:crypto',['createHash']], ['node:url',['fileURLToPath']],
+    ['@unbrained/pm-cli/sdk/core',['PmClient']], ['@unbrained/pm-cli/sdk/runtime',['certifyCompleteListResult']],
+    ['../dist/src/schema.js',['guardSubmitted']], ['../scripts/environment.ts',['npmEnvironment']],
+  ]);
   const capabilities = new Set(['fileURLToPath','resolve','execFileSync','PmClient','readFile','readFileSync','fetch']);
   walk(tree,node=>{
-    if(node.type==='ImportDeclaration') { assert.ok(modules.has((node.source as {value:string}).value),'Unreviewed import'); for(const row of node.specifiers as {local:{name:string};imported?:{name:string}}[])assert.equal(row.imported?.name??row.local.name,row.local.name,'Aliased acquisition imports refused'); }
+    if(node.type==='ImportDeclaration') {
+      const names = modules.get((node.source as {value:string}).value); assert.ok(names,'Unreviewed import');
+      for(const row of node.specifiers as {type:string;local:{name:string};imported?:{name:string}}[]) {
+        assert.equal(row.type,'ImportSpecifier','Namespace and default acquisition imports refused');
+        assert.ok(names.includes(row.imported!.name),'Unreviewed acquisition import');
+        assert.equal(row.imported!.name,row.local.name,'Aliased acquisition imports refused');
+      }
+    }
     assert.notEqual(node.type,'ImportExpression','Dynamic import refused');
-    if(node.type==='CallExpression'||node.type==='NewExpression'){ const callee=node.callee as {name?:string;type:string}; assert.ok(!['eval','Function','require'].includes(callee.name??''),'Dynamic capability refused'); if(callee.type==='Identifier'&&capabilities.has(callee.name!))seen.push(source.slice(node.start as number,node.end as number)); }
+    if(node.type==='CallExpression'||node.type==='NewExpression'){
+      const callee=node.callee as {name?:string;type:string;property?:{name?:string;value?:string}};
+      assert.ok(!['eval','Function','require'].includes(callee.name??''),'Dynamic capability refused');
+      if(callee.type==='MemberExpression') assert.ok(!['readFile','readFileSync','readdir','readdirSync','fetch','execFileSync'].includes(callee.property?.name??callee.property?.value??''),'Member acquisition calls refused');
+      if(callee.type==='Identifier'&&capabilities.has(callee.name!))seen.push(source.slice(node.start as number,node.end as number));
+    }
   });
   assert.deepEqual(seen.sort(),allowed.sort(),'Acquisition read boundary differs');
   for(const row of publicTrackers){ assert.match(source,new RegExp(`repo: '${row.repo}', revision: '${row.revision}'`)); }
@@ -33,6 +50,8 @@ function readBoundaries(source: string): void {
 test('public-only acquisition guard pins capabilities roots and complete SDK reads',()=>{
   const source=readFileSync('test/corpus.ts','utf8');readBoundaries(source);
   for(const changed of [source+"\nawait readFile('unapproved','utf8');",source.replace("resolve(root, '..', repo)","resolve(root, '..', 'unapproved')"),source.replace('cwd: copy, pmRoot','cwd: original, pmRoot'),source.replace("from 'node:fs/promises'","from 'node:fs'"),source+"\nawait import('node:fs');"] )assert.throws(()=>readBoundaries(changed));
+  for(const changed of [source.replace('{ mkdtemp, mkdir, rm, writeFile }','{ mkdtemp, mkdir, rm, writeFile, readdir }')+"\nawait readdir('unapproved');", source+"\nimport * as fs from 'node:fs/promises'; await fs.readFile('unapproved');", source+"\nimport fs from 'node:fs/promises'; await fs.readFile('unapproved');"] )assert.throws(()=>readBoundaries(changed),'Unapproved imported acquisition capabilities must be rejected');
+  for(const suffix of ["\nawait fs.readFile('unapproved');", "\nawait fs['readdir']('unapproved');"]) assert.throws(()=>readBoundaries(source+suffix),'Member acquisition calls must be rejected');
 });
 test('public passages and domain fixtures retain only verified public coordinates and exact text digests',()=>{
   assert.ok(passages.length>=20);checkPublic(JSON.stringify(passages));checkPublic(JSON.stringify(matrices));

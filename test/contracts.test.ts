@@ -37,7 +37,7 @@ test('native harness exercises all seven commands with equivalent scoped JSON an
     ['coverage', {}, { outputCursor: 'bad' }, 'invalid_input'], ['coverage', {}, { outputLimit: 1 }, 'invalid_input'],
     ['packet', { cursor: page.next_cursor }, { outputCursor: page.next_cursor }, 'invalid_input'], ['packet', { limit: '1' }, { outputLimit: '2' }, 'invalid_input'], ['packet', { budget: '1600' }, { outputBudget: '1600' }, 'invalid_input'],
   ] as const) assert.equal((await run(command, options, global)).refusal?.code, code);
-  await assert.rejects(native.get('corpus-refused'), error => error instanceof Error);
+  await assert.rejects(native.get('corpus-refused'), hasCode('item_not_found'));
   assert.equal((await runCommand('packet', { command: 'case packet', args: [], options: {}, global: {}, pm_root: pmRoot } as CommandHandlerContext) as CaseResult).refusal?.code, 'backend_unsupported');
 });
 test('stdin is bounded fatal UTF-8 JSON without executable expressions or side-file reads', async () => {
@@ -60,7 +60,7 @@ test('opaque packet cursors bind exact owner revision query ordering and range',
 test('whole-envelope token estimates count framing and provide an actually usable retry', async t => {
   const { host, id } = await fixture(t); const value = envelope(await casePacket(host, { id, limit: 1 })); const fitted = fitEnvelope(host, value); assert.ok(fitted.output_fit.estimated_tokens <= 1600); assert.deepEqual(JSON.parse(wire(fitted, 'json')), decodeToon(wire(fitted, 'toon')));
   assert.throws(() => fitEnvelope(host, value, 0), hasCode('invalid_input')); let minimum = 0;
-  try { fitEnvelope({}, value, 1); } catch (error) { assert.ok(error instanceof CaseRefusal); minimum = error.details.minimum_usable_budget as number; }
+  try { fitEnvelope({}, value, 1); } catch (error) { assert.ok(error instanceof CaseRefusal && error.code === 'output_budget', 'Budget fitting must refuse with the typed output budget refusal'); minimum = (error as CaseRefusal).details.minimum_usable_budget as number; }
   assert.ok(minimum > 1); assert.ok(fitEnvelope({}, value, minimum).output_fit.estimated_tokens <= minimum);
   assert.throws(() => fitEnvelope(host, { ...value, warnings: ['x'.repeat(40000)] }, 8192), hasCode('output_budget'));
   const calls: number[] = []; const observe: typeof fitOutputEnvelope = (rows, options) => { calls.push(options.tokenBudget!); return fitOutputEnvelope(rows, options); }; fitEnvelope({ fitOutputEnvelope: observe }, value); assert.ok(calls.length > 0);

@@ -16,9 +16,9 @@
       "oracle_digest": "c4432a3dccfc52e22988938e745f3e2849f72edf0796f270bc0d5539ed2d9219",
       "result": "pass",
       "exit_code": 0,
-      "elapsed_ms": 9841,
-      "output_sha256": "39f8435189dfc57b0808f8d5b3c6452a463161a9dea73e380afab108bff748f5",
-      "command": "node \"--test\" \"--test-concurrency=1\" \"--test-name-pattern\" \"^a nonzero close receipt cleans markers only after a status recheck proves closure$\" \"test/atomic.test.ts\"",
+      "elapsed_ms": 4322,
+      "output_sha256": "01be46df88cca2c8e56023bf394d548721029d011edc367d29bc39424a1a6b1c",
+      "command": "node \"--test\" \"--test-concurrency=1\" \"--test-reporter\" \"test/harness-reporter.ts\" \"--test-name-pattern\" \"^a nonzero close receipt cleans markers only after a status recheck proves closure$\" \"test/atomic.test.ts\"",
       "source_visibility": "public"
     },
     {
@@ -35,9 +35,9 @@
       "oracle_digest": "c4432a3dccfc52e22988938e745f3e2849f72edf0796f270bc0d5539ed2d9219",
       "result": "fail",
       "exit_code": 1,
-      "elapsed_ms": 9361,
-      "output_sha256": "8341754555da2f0e94c35d63f0d39adcecf4d48554b09f80f66b0bae45c39cba",
-      "command": "node \"--test\" \"--test-concurrency=1\" \"--test-name-pattern\" \"^a nonzero close receipt cleans markers only after a status recheck proves closure$\" \"test/atomic.test.ts\"",
+      "elapsed_ms": 3175,
+      "output_sha256": "dffc0fe3201722674ec1172fecdade6bb00caa1187b26f2f0b1968d45865c0fb",
+      "command": "node \"--test\" \"--test-concurrency=1\" \"--test-reporter\" \"test/harness-reporter.ts\" \"--test-name-pattern\" \"^a nonzero close receipt cleans markers only after a status recheck proves closure$\" \"test/atomic.test.ts\"",
       "source_visibility": "public",
       "variant": "historical nonzero-receipt shortcut",
       "source_digest": "0f99f494eb9ab3007a77b25224ac6fc521d5b9f496b3d95f313b9771852a2bbe"
@@ -57,9 +57,9 @@
       "oracle_digest": "b68540841055d4295224a6d1917ab787206554da2bf74fe852ff4c5107865777",
       "result": "pass",
       "exit_code": 0,
-      "elapsed_ms": 1647,
-      "output_sha256": "59ff063557dbb06c44807fad17c43df07f8282856b3c30b4bda69f2b7ce53b40",
-      "command": "node \"--test\" \"--test-concurrency=1\" \"--test-name-pattern\" \"^proposals bind exact source revisions, revalidate current text and reject forged or sparse edits$\" \"test/repair.test.ts\"",
+      "elapsed_ms": 1314,
+      "output_sha256": "39fef629179677f6cd4ae3cac1cb11d31469489d7270bf70c98046dac437f7fe",
+      "command": "node \"--test\" \"--test-concurrency=1\" \"--test-reporter\" \"test/harness-reporter.ts\" \"--test-name-pattern\" \"^proposals bind exact source revisions, revalidate current text and reject forged or sparse edits$\" \"test/repair.test.ts\"",
       "source_visibility": "public"
     },
     {
@@ -76,9 +76,9 @@
       "oracle_digest": "bdbcc85bc7fb7a91d3df6bbc47c12859eaa9e1eb32996c69867dcf9dffb1a5c1",
       "result": "pass",
       "exit_code": 0,
-      "elapsed_ms": 5312,
-      "output_sha256": "33838cb56d11d07b56b6a7051f24878d59111efafa1588ad343f5aeef8f1c25f",
-      "command": "node \"--test\" \"--test-concurrency=1\" \"--test-name-pattern\" \"^read-only source directories are unchanged and disposable copies are cleaned$\" \"test/backend-capabilities.test.ts\"",
+      "elapsed_ms": 3205,
+      "output_sha256": "39e8db0a083f0a83daba794db4b701373307c8aa8ded74e9bc81c1dea957657f",
+      "command": "node \"--test\" \"--test-concurrency=1\" \"--test-reporter\" \"test/harness-reporter.ts\" \"--test-name-pattern\" \"^read-only source directories are unchanged and disposable copies are cleaned$\" \"test/backend-capabilities.test.ts\"",
       "source_visibility": "public"
     }
   ]

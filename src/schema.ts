@@ -83,7 +83,7 @@ export function canonical(value: unknown): string {
 /** SHA-256 content identity for source, requests and results. */
 export function digest(value: unknown): string { return createHash('sha256').update(canonical(value)).digest('hex'); }
 /** Absolute home-directory paths, anchored to path-token starts so public URLs and relative paths remain usable. */
-const privatePathPattern = /(?:^|(?<=[\s"'`(\[{<~=;,~:\\/]))(?:[\\/](?:home|Users)[\\/]|[\\/]root(?:[\\/]|\b))/iu;
+const privatePathPattern = /(?:^|(?<=[\s"'`([{<~=;,~:\\/]))(?:[\\/](?:home|Users)[\\/]|[\\/]root(?:[\\/]|\b))/iu;
 /** Email-shaped contact text in any submitted string. */
 const emailAddressPattern = /(?<![\w.+-])[\w.+-]+@[\w.-]+\.[a-z]{2,}/iu;
 /** Aggregate submitted-input traversal budget; over twenty times the largest schema-bounded valid request. */

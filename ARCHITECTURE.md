@@ -20,6 +20,8 @@ Version `exhaustive-greedy-v1`, seed 0, follows the specification's bounded exha
 
 The stored plan digest binds the model, algorithm, fixed seed, mandatory cases, maximum and exact generated cases. A proposal additionally binds the native owner ID/revision. Selection recomputes using the same generator and rejects a different bound, revision or proposal digest. It may retain an explicitly incomplete proposal. A later selection must retain every observed case. Arbitrary seeds, higher strengths, alternative IPOG/SAT strategies and scheduling are deferred.
 
+Domain and cover computation reuse at most eight entries each, keyed by the normalized model digest and, for covers, the requested maximum. Every call validates its submitted model before looking up a result. Results are isolated copies; stored reads still compare the entire deterministic plan. Reuse cannot validate a changed or malformed model by borrowing an earlier result.
+
 An independent mixed-radix/combination oracle checks feasibility and coverage, including every small binary constraint mask. The public proof freezes exact feasible pair strings and their digests. Exhaustive three-way reference suites are proof artifacts only; the product refuses strength 3.
 
 ## Coverage and evidence
@@ -51,5 +53,7 @@ SDK 2026.11.5 `ExtensionCommandReadOutput` exposes `row_keys` only, with no prod
 Limits apply before writing: 2–12 factors, 2–8 values each, 4096 Cartesian assignments, strength 1 or 2, 64 forbidden tuples, 32 mandatory cases, 256 selected cases and observations, 512 retained operation receipts and 256 KiB canonical domain state. Full JSON input is bounded to 256 KiB with fatal UTF-8 decoding. Oversized source definitions require a narrower model, not truncation.
 
 The SDK privacy scanner and package guard run before mutations. Unsafe controls/bidi, malformed Unicode, absolute home paths, common email shapes, token-like content and prototype/accessor/cyclic objects refuse without reflecting input. Labels and notes are never evaluated as instructions. No runtime network, environment enumeration, model calls, shell, automatic source copying or side storage exists. Local author labels are not access control; host history/retention/redaction remain authoritative.
+
+Submitted input traversal counts every visit, including revisits to shared subtrees, and refuses after 200,000 visits or sixteen nested levels. Public URLs and relative source paths remain permitted; the absolute-home-path check starts at path-token boundaries.
 
 The runtime source inventory is `index.ts` and every module under `src`. The independent Istanbul instrumentation gate counts all emitted statements, branches, functions and lines with nonzero denominators and no ignores. Scripts/tests are development assets and not shipped. Packed npm/Bun checks certify the exact captured tarball; future publishing selects that archive even if an ignored distribution file changes afterward. Binary/cache/archive artifacts remain untracked.

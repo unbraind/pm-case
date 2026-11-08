@@ -4,14 +4,12 @@ description: Implement companion specification pm-cli-website-c98t locally; no p
 type: Epic
 status: in_progress
 priority: 2
-tags: []
+tags[1]: "gh:unbraind/pm-case#1"
 created_at: "2026-11-06T18:17:25.406Z"
-updated_at: "2026-11-08T07:02:12.654Z"
-assignee: codex-agent
-claim_principal: codex-agent
+updated_at: "2026-11-08T10:24:15.185Z"
 author: codex-agent
 acceptance_criteria: Seven CLI and SDK operations; complete exact feasible coverage witnesses; native guarded storage; public proof; all release gates.
-comments[7]{created_at,author,text}:
+comments[12]{created_at,author,text}:
   "2026-11-06T18:17:25.406Z",codex-agent,"Companion reference: pm-cli-website-c98t. Source specification and comments read only. Implement the complete production v1 slice; strength above two and autonomous execution remain follow-ups."
   "2026-11-06T19:11:25.139Z",codex-agent,"Implementation and evidence are complete for local first-release review. Companion pm-cli-website-c98t remains read-only. Package-owned links identify source, docs and tests; public harness receipt proves three selected upstream tests and one reproduced historical regression. Required final validation commands are npm run release:check and bun run release:check with isolated Git identity configuration. No repository creation, pushing, publication or hosted operation is authorized. Remaining capabilities are explicitly tracked as open Features; items remain open for orchestrator verification."
   "2026-11-06T19:43:50.816Z",codex-agent,"Orchestrator opened public PR 1 at the completed implementation head. Resuming review ownership: inspect CodeRabbit including outside-diff and nitpick content, address findings, validate changes, push all package-owned tracker records, and verify final CI. Existing implementation and public proofs remain complete."
@@ -19,9 +17,37 @@ comments[7]{created_at,author,text}:
   "2026-11-06T21:10:48.231Z",codex-agent,"Final-head CI passed Node 22, Node 26 and CodeQL on d45600d, while the shared CodeRabbit queue had not reached PR 1. Independent receipt-integrity review then reproduced and fixed a one-to-one outcome-binding gap. Focused native test, linked test, typecheck, lint, duplication, docstrings and five behavioral revert proofs pass. Push the narrow fix, requeue review and rerun both full release checks on the new candidate. Existing public model and byte-reduction results are unchanged."
   "2026-11-07T20:47:21.071Z",codex-agent,"Review round two: CodeRabbit posted 13 unresolved review threads on PR 1 (no outside-diff findings in the review body or PR comments; Sourcery skipped). Resuming the epic's review ownership: verify every thread against current code, fix valid findings with regression tests and behavioral revert proofs, self-review the full PR diff for the same defect classes, run targeted gates plus changelog/identity checks, then push for CI certification of the full release gate."
   "2026-11-08T07:02:12.653Z",codex-agent,"Round two step one is fixed and validated locally: kernel reuse, path-guard scoping and traversal budget landed with three new regression tests; the linked suite passes 69 of 69 tests and the revert acceptance proves 8 red and 8 restored-green behavioral proofs. Remaining round-two work: pack-gate document presence, tightened refusal-code assertions, the writer lock_conflict retry, corpus-privacy import boundaries, public-harness per-test verification with receipt regeneration, live resume-question checks, exact CI runtimes and the linked-test build prefixes."
-files[2]{path,scope}:
+  "2026-11-08T09:48:51.246Z",codex-agent,"Continuation inspected the existing branch, uncommitted patch, all 13 unresolved threads with complete comments, latest review and tracker records. Retained the three completed fixes and four pending edits in an isolated worktree; no outside-diff findings, no duplicate PR or tracker items. Remaining fixes and final exact-head validation are in progress."
+  "2026-11-08T09:57:10.184Z",codex-agent,"All thirteen review findings are valid. Preserved the prior three fixes and completed explicit package-document presence checks, exact native refusal codes, writer contention retries, acquisition import/member restrictions, named concrete harness test results, exact CI runtime provisioning, frozen harness bindings, live current-packet resume questions, and build-prefixed linked commands. Whole-diff follow-up found and fixed cache hits bypassing strict input validation and synthetic public URL literals violating the tracked privacy gate. Public harness regeneration passes three selected tests and reproduces one historical regression, followed by restored success. Remaining work: behavioral revert certification, linked execution and complete npm/Bun release gates."
+  "2026-11-08T10:01:35.401Z",codex-agent,"Behavioral revert certification passed: 18 isolated mutants fail and all 18 restored implementations pass. Covered prior tuple/replay/CAS/budget/receipt guards; public path, shared-DAG work bound and deterministic reuse; required packed docs; acquisition named imports and member calls; concrete selected harness results; frozen receipt bindings; lock retries; CI runtime refusal; live packet answers; and validation before both cache lookups. Four clean-dist linked commands fail without their build prefix and pass with it. Three injected wrong native/domain error codes fail the strengthened assertions and pass after restoration. Every temporary change was confined to disposable copies; package source/history was not altered by proofs. A normal-home health check discovered an unrelated globally installed extension version skew; the isolated-home authoritative tracker check passes without dependency or threshold changes."
+  "2026-11-08T10:24:08.941Z",codex-agent,"Final local release certification: npm run release:check and bun run release:check each passed all 14 stages via pinned pm test --run --progress in isolated homes/Git configuration. Each measured 75 tests, zero failures/skips, 100 percent coverage of 560 statements/306 branches/167 functions/446 lines across eight runtime modules; 98 documented declarations; zero duplication at the unchanged zero threshold; zero production vulnerabilities; 41 allowlisted packed files. Packed acceptance passed 31 CLI commands per package manager, SDK checks, and both SDK/CLI checks on exact Node 22.19.0 and 26.13.0 under each manager. Each full gate passed 18 red/18 restored-green behavioral proofs, four clean-dist build-prefix proofs and three wrong-error-code probes. Final paired-receipt/privacy assertions separately passed seven focused tests; three helper tests also pass on the minimum Node runtime. Earlier gate attempts exposed duplicated proof scaffolding, now factored out; the final gates pass without changed thresholds. Existing local extension skew is avoided by the required isolated home. Final commit/CI verification follows; items remain in_progress for orchestrator verification."
+  "2026-11-08T10:24:10.158Z",codex-agent,"Thread mapping, all valid: PRRT_kwDOVlkMx860uigS build-prefixed linked commands; PRRT_kwDOVlkMx860uigp independently frozen corpus/receipt/outcome bindings; PRRT_kwDOVlkMx860uigv required packed proof documents; PRRT_kwDOVlkMx860uig1 bounded deterministic reuse with validation before lookup and isolated copies; PRRT_kwDOVlkMx860uig6 public URL/relative path allowance; PRRT_kwDOVlkMx860uihC aggregate shared-subtree traversal bound; PRRT_kwDOVlkMx860uihM explicit writer lock/revision retries; PRRT_kwDOVlkMx860uihW native item_not_found assertion; PRRT_kwDOVlkMx860uihd acquisition import/namespace/member restrictions; PRRT_kwDOVlkMx860uihk exact missing-related/native input refusals; PRRT_kwDOVlkMx860uihs provisioned exact CI runtimes with missing-runtime refusal; PRRT_kwDOVlkMx860uihy concrete named-test events before a pass receipt; PRRT_kwDOVlkMx860uih3 ten live packet questions and measured bytes. Latest review had no outside-diff findings. Review threads were not replied to or resolved. Additional whole-diff fixes cover cache-validation bypass and synthetic-fixture privacy-gate compatibility. No pm CLI/SDK defects were found."
+files[25]{path,scope}:
+  .github/workflows/ci.yml,project
   index.ts,project
   package.json,project
+  scripts/pack-gate.ts,project
+  src/kernel.ts,project
+  src/schema.ts,project
+  test/concurrency.test.ts,project
+  test/contracts.test.ts,project
+  test/corpus-privacy.test.ts,project
+  test/edge.test.ts,project
+  test/harness-bindings.ts,project
+  test/harness-reporter.ts,project
+  test/harness-results.test.ts,project
+  test/harness-results.ts,project
+  test/install-tools.test.ts,project
+  test/install-tools.ts,project
+  test/install.acceptance.ts,project
+  test/pack-gate.test.ts,project
+  test/public-harness.acceptance.ts,project
+  test/real-data-proof.ts,project
+  test/real-data.test.ts,project
+  test/release-verification.test.ts,project
+  test/revert.acceptance.ts,project
+  test/writer-retry.test.ts,project
+  test/writer-retry.ts,project
 tests[2]{command,scope,timeout_seconds,provenance{author,created_at,source_kind,source_ref}}:
   "npm run release:check",project,1800,codex-agent,"2026-11-06T19:11:28.983Z",local_mutation,feat/case
   "bun run release:check",project,1800,codex-agent,"2026-11-06T19:11:32.610Z",local_mutation,feat/case

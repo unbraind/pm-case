@@ -6,16 +6,17 @@ status: in_progress
 priority: 2
 tags: []
 created_at: "2026-11-06T18:18:57.840Z"
-updated_at: "2026-11-06T21:10:50.873Z"
+updated_at: "2026-11-08T10:24:13.913Z"
 author: codex-agent
 acceptance_criteria: Seven operations; replay identity; no-git concurrent writes and crash convergence; strict privacy and budget envelopes.
 parent: pm-case-release
-comments[4]{created_at,author,text}:
+comments[5]{created_at,author,text}:
   "2026-11-06T18:29:05.782Z",codex-agent,"Native SDK tests: 25 concurrency and interruption cases passed. Competing writes injected at all six mutation boundaries; exact duplicate requests converge to one audit event; stale requests refuse without a write and succeed only after an explicit reread. Two OS writers acknowledged and retained twelve distinct observations; hard exits before and after commit converged on the original key. Source and transport gates remain in progress."
   "2026-11-06T19:11:16.517Z",codex-agent,"Native single-owner CAS and create-if-absent preserve immutable operation receipts, outcome evidence and peer fields. Linked concurrency/capacity run passes 30 tests, including every instrumented competing-write boundary, same-key replay, independent OS writers and hard process interruption. Prior complete 500-sequence model run passed with 156 observations and 228 acknowledged domain mutations; the final model also checks native related edges on every read-back. Behavioral reverts independently fail the tuple-membership, changed-replay, stale-CAS and mutation-budget checks; each restored behavior passes. Four red and four restored green proofs, all in disposable copies."
   "2026-11-06T21:07:47.162Z",codex-agent,"Independent review identified a candidate receipt-integrity edge: equal receipt and outcome counts plus receipt-to-outcome existence do not establish a one-to-one binding. Reproduce with two real native observations and a duplicated result identity in a scratch tracker. Require invalid_record if confirmed; preserve native audit history and add a behavioral revert proof."
   "2026-11-06T21:10:45.512Z",codex-agent,"Confirmed and fixed a malformed stored-state acceptance: two record receipts could bind the same execution while another outcome had no receipt. Native SDK regression first failed with Missing expected rejection; requiring unique recorded result identities now refuses both owner reads and coverage as invalid_record, without a new history event. The linked focused test passes 1 of 1. Five isolated behavioral reverts now fail as intended and all five restored versions pass. This is an independent finding, not a CodeRabbit thread."
-files[8]{path,scope}:
+  "2026-11-08T10:24:06.605Z",codex-agent,"Review fixes preserve explicit retry semantics while retrying both lock_conflict and revision_conflict after rereading state. Deterministic helper tests inject both contention codes and verify unrelated refusals propagate; independent OS writers retain all twelve acknowledged outcomes. Native missing-item, missing-required-option and missing-related-target assertions now require their exact codes. Three wrong-code injections fail the strengthened tests and pass after restoration. Every linked storage/kernel/proof command now builds first; all four clean-dist command probes fail when their build prefix is removed and pass with it. No audit history was rewritten."
+files[10]{path,scope}:
   src/api.ts,project
   src/host.ts,project
   src/kernel.ts,project
@@ -24,9 +25,11 @@ files[8]{path,scope}:
   test/concurrency.test.ts,project
   test/core.test.ts,project
   test/model.test.ts,project
+  test/writer-retry.test.ts,project
+  test/writer-retry.ts,project
 tests[2]{command,scope,timeout_seconds,provenance{author,created_at,source_kind,source_ref}}:
-  node --test --test-concurrency=2 test/concurrency.test.ts test/capacity.test.ts,project,480,codex-agent,"2026-11-06T19:08:18.632Z",local_mutation,feat/case
-  node --test --test-concurrency=1 --test-name-pattern=duplicate.receipt.bindings test/core.test.ts,project,120,codex-agent,"2026-11-06T21:09:56.429Z",local_mutation,feat/case
+  npm run build && node --test --test-concurrency=2 test/concurrency.test.ts test/capacity.test.ts,project,480,codex-agent,"2026-11-08T09:52:26.297Z",local_mutation,review/case-resume
+  npm run build && node --test --test-concurrency=1 --test-name-pattern=duplicate.receipt.bindings test/core.test.ts,project,120,codex-agent,"2026-11-08T09:52:26.297Z",local_mutation,review/case-resume
 docs[1]{path,scope}:
   ARCHITECTURE.md,project
 body: ""
