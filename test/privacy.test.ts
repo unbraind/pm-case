@@ -5,7 +5,22 @@ import { guardSubmitted, parse, KeySchema } from '../dist/src/schema.js';
 import { containsPrivateHomePath, privateHomeRoots } from '../dist/src/privacy.js';
 import { mkdir, symlink } from 'node:fs/promises';
 import { join } from 'node:path';
+import { spawnSync } from 'node:child_process';
+import { npmEnvironment, testEnvironment } from '../scripts/environment.ts';
 import { fixture, model, select, request, hasCode, source } from './helpers.ts';
+
+test('filesystem root home aliases never classify public slash tokens as private', () => {
+  const safe = ['pass / fail', '/', '/.', '/public/..', 'src/root.ts', 'https://example.org/public', 'C:/', 'Z:\\'];
+  const blocked = ['~', '$HOME', '%USERPROFILE%', '/root', ['', 'home', 'public'].join('/'), ['C:', 'Users', 'public'].join('\\')];
+  for (const root of ['/', '//', '/.', '/public/..', 'C:/', 'Z:\\']) {
+    for (const value of safe) assert.equal(containsPrivateHomePath(value, [root]), false, `${root}: ${value}`);
+    for (const value of blocked) assert.equal(containsPrivateHomePath(value, [root]), true, 'Explicit private aliases stay blocked');
+    assert.equal(containsPrivateHomePath('/profile/child', [root, '/profile']), true, 'Skipping root retains later configured homes');
+  }
+  const code = `import assert from 'node:assert/strict'; import { homedir } from 'node:os'; import { guardSubmitted } from './dist/src/schema.js'; assert.equal(homedir(), '/'); for (const value of ${JSON.stringify(safe)}) guardSubmitted(value); for (const value of ${JSON.stringify(blocked)}) assert.throws(() => guardSubmitted(value), e => e.code === 'invalid_input');`;
+  const result = spawnSync(process.execPath, ['--input-type=module', '--eval', code], { env: { ...testEnvironment(npmEnvironment(process.env)), HOME: '/', USERPROFILE: '/' }, encoding: 'utf8' });
+  assert.equal(result.status, 0, result.stdout + result.stderr);
+});
 
 test('must-refuse privacy corpus never reaches native immutable history', async t => {
   const { host, birth, native } = await fixture(t, false);

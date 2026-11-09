@@ -28,6 +28,7 @@ export function containsPrivateHomePath(text: string, homes: readonly string[] =
         if (/^\/\/(?:[?.]\/)?(?:unc\/)?(?:[^/]+\/){1,2}(?:users|home|root)(?:\/|$)/u.test(path)) return true;
         for (const home of homes) {
           const root = posix.resolve(home.replaceAll('\\', '/').replace(/^[a-z]:/iu, '')).toLowerCase();
+          if (root === '/') continue;
           if (path === root || path.startsWith(root + '/')) return true;
         }
       }

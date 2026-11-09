@@ -45,18 +45,29 @@ function workflowPackageIdentity(source: string): void {
   }
 }
 
-/** Reject literal PATH separators in any composed environment value, including array joins. */
+/** Read a static property spelling without evaluating computed expressions. */
+function propertyName(value: unknown): string | undefined {
+  if (typeof value !== 'object' || value === null) return undefined;
+  const node = value as { type?: string; name?: string; value?: string; expressions?: unknown[]; quasis?: { value: { cooked: string | null } }[] };
+  if (node.type === 'Identifier') return node.name;
+  if (node.type === 'StringLiteral') return node.value;
+  if (node.type === 'TemplateLiteral' && node.expressions?.length === 0) return node.quasis?.[0].value.cooked ?? undefined;
+  return undefined;
+}
+
+/** Reject literal PATH separators in string and template segments of composed environment values. */
 function pathConventions(source: string): void {
   walk(parse(source, { sourceType: 'module', plugins: ['typescript'] }), node => {
-    const key = node.key as { name?: string; value?: string } | undefined;
-    const left = node.left as { property?: { name?: string; value?: string } } | undefined;
-    const name = key?.name ?? key?.value ?? left?.property?.name ?? left?.property?.value;
+    const left = node.left as { property?: unknown } | undefined;
+    const name = propertyName(node.key) ?? propertyName(left?.property);
     if (typeof name !== 'string' || name.toLowerCase() !== 'path') return;
     const expression = node.value ?? node.right;
     let inherited = false; const separators: string[] = [];
     walk(expression, child => {
       if (child.type === 'Identifier' && typeof child.name === 'string' && child.name.toUpperCase() === 'PATH') inherited = true;
-      if (child.type === 'StringLiteral' && [':', ';'].includes(String(child.value))) separators.push(String(child.value));
+      const segments = child.type === 'StringLiteral' ? [String(child.value)] : child.type === 'TemplateElement' ? Object.values(child.value as { raw: string; cooked: string | null }).filter((value): value is string => typeof value === 'string') : [];
+      if (segments.some(segment => segment.toUpperCase() === 'PATH')) inherited = true;
+      for (const segment of segments) for (const separator of segment.match(/[:;]/gu) ?? []) separators.push(separator);
     });
     if (inherited) assert.deepEqual(separators, [], 'PATH composition must use the platform delimiter');
   });
@@ -112,13 +123,22 @@ test('all receipt producers and consumers validate planned coordinates before si
 });
 
 test('harness PATH composition and linked commands use platform conventions', () => {
-  for (const path of [...readdirSync('test'), ...readdirSync('scripts').map(name => `../scripts/${name}`)].filter(name => name.endsWith('.ts'))) {
+  for (const path of [...readdirSync('test', { recursive: true }).map(String), ...readdirSync('scripts', { recursive: true }).map(name => `../scripts/${name}`)].filter(name => name.endsWith('.ts'))) {
     const source = readFileSync(`test/${path}`, 'utf8');
     pathConventions(source);
   }
   for (const path of runtimeSources()) pathConventions(readFileSync(path, 'utf8'));
   for (const expression of ["bin + ':' + process.env.PATH", "[bin, process.env.PATH].join(':')", "[bin, process.env.PATH].join(';')"]) assert.throws(() => pathConventions(`const env = { PATH: ${expression} };`), assert.AssertionError);
+  for (const separator of [':', ';', '\\x3a', '\\u003b']) {
+    for (const inherited of ['process.env.PATH', "process.env['Path']", 'process.env[`PATH`]']) {
+      for (const expression of ['`${bin}' + separator + '${' + inherited + '}`', '`${bin}' + separator + 'extra${' + inherited + '}`', 'bin + "prefix' + separator + '" + ' + inherited, '[bin, ' + inherited + '].join(`' + separator + '`)']) {
+        for (const source of [`const env = { PATH: ${expression} };`, `const env = { 'Path': ${expression} };`, `const env = { [\`PATH\`]: ${expression} };`, `process.env.PATH = ${expression};`, `process.env['PATH'] = ${expression};`, `process.env[\`Path\`] = ${expression};`]) assert.throws(() => pathConventions(source), assert.AssertionError, source);
+      }
+    }
+  }
   pathConventions('const env = { PATH: [bin, process.env.PATH].join(delimiter) };');
+  pathConventions('const env = { PATH: `${bin}${delimiter}${process.env.PATH}` };');
+  pathConventions('process.env.PATH = bin + delimiter + process.env.PATH;');
   for (const path of ['test/public-harness.acceptance.ts', 'test/revert.acceptance.ts']) assert.match(readFileSync(path, 'utf8'), /\+\s*delimiter\s*\+/);
   const revert = readFileSync('test/revert.acceptance.ts', 'utf8');
   assert.doesNotMatch(revert, /spawnSync\('\/bin\/sh'/); assert.match(revert, /spawnSync\(command,\{\.\.\.options,shell:true\}\)/);
