@@ -65,7 +65,7 @@ test('aggregate byte ceiling refuses before schema provisioning and receipt keys
 test('aggregate text work counts repeated strings and shared subtrees before any write', async t => {
   const { host, native, birth } = await fixture(t, false);
   const long = 'x'.repeat(8000);
-  const variants = [Array(1000).fill({ text: long }), Array(200000).fill(long), Array.from({ length: 1000 }, (_, i) => long.slice(0, -4) + String(i).padStart(4, '0'))];
+  const variants = [Array(1000).fill({ text: long }), Array(199999).fill(long), Array.from({ length: 1000 }, (_, i) => long.slice(0, -4) + String(i).padStart(4, '0'))];
   for (const payload of variants) {
     assert.throws(() => guardSubmitted(payload), error => hasCode('invalid_input')(error) && error instanceof Error && error.message === 'Submitted input exceeds the text budget');
     const malformed = { ...birth, model: { ...birth.model, unexpected: payload } };
@@ -106,18 +106,29 @@ test('a throwing home lookup degrades to an empty home list while static rules s
 });
 
 
-test('sparse arrays refuse before schema parsing without native side effects', async t => {
+test('sparse arrays refuse before schema parsing and only dense arrays are admitted', async t => {
   const schema = z.array(KeySchema); const safeParse = schema.safeParse.bind(schema); let calls = 0;
   schema.safeParse = (...args) => { calls += 1; assert.ok((args[0] as unknown[]).length <= 200000, 'Oversized arrays must never reach schema parsing'); return safeParse(...args); };
-  for (const length of [200001, 5000000]) {
-    assert.throws(() => guardSubmitted(new Array(length)), hasCode('invalid_input'));
+  /** Both traversal-budget and dense-key refusals must fire before schema validation walks the array. */
+  const refused = (input: unknown, proof: string) => assert.throws(() => guardSubmitted(input), error => hasCode('invalid_input')(error) && error instanceof Error && /Submitted arrays exceed the traversal budget|Sparse arrays are not plain JSON data/u.test(error.message), proof);
+  for (const length of [200001, 5000000, 2 ** 31]) {
+    refused(new Array(length), 'proof:sparse_array_length');
     assert.throws(() => parse(schema, new Array(length)), hasCode('invalid_input'));
   }
   assert.equal(calls, 0, 'Sparse arrays must refuse before safeParse');
   assert.deepEqual(parse(schema, ['public']), ['public']); assert.equal(calls, 1);
-  assert.doesNotThrow(() => guardSubmitted(new Array(200000)), 'The existing traversal ceiling remains admitted');
+  // Holes are never JSON, whatever the length; a key count alone would accept named properties standing in for holes.
+  refused({ atoms: new Array(2) }, 'proof:sparse_array_hole');
+  refused({ atoms: Object.assign(new Array(2), { x: 'public', y: 'public' }) }, 'proof:sparse_array_named_keys');
+  assert.doesNotThrow(() => guardSubmitted(new Array(199999).fill('public')), 'The existing traversal ceiling remains admitted for dense arrays');
+  refused({ atoms: new Array(200000) }, 'proof:sparse_array_ceiling');
+  // A credential-shaped value inherited through a hole must never reach validation unscanned.
+  Object.defineProperty(Array.prototype, 0, { value: 'ghp_' + 'x'.repeat(36), configurable: true, writable: true });
+  try { refused({ atoms: Object.assign(new Array(2), { 1: 'public' }) }, 'proof:sparse_array_inherited'); }
+  finally { delete (Array.prototype as unknown as Record<number, unknown>)[0]; }
   const { host, native, birth } = await fixture(t, false);
   await assert.rejects(createCaseModel(host, { ...birth, related: new Array(200001) }), hasCode('invalid_input'));
+  await assert.rejects(createCaseModel(host, { ...birth, related: new Array(2) }), hasCode('invalid_input'));
   assert.equal((await native.schemaListFields()).fields.length, 0);
   await assert.rejects(native.get(birth.id), hasCode('item_not_found'));
 });

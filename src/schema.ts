@@ -103,7 +103,14 @@ export function guardSubmitted(value: unknown, seen = new Set<object>(), depth =
   } else if (value !== null && typeof value === 'object') {
     const prototype = Object.getPrototypeOf(value);
     insist(Array.isArray(value) || prototype === Object.prototype || prototype === null, 'invalid_input', 'Only plain JSON data is supported');
-    if (Array.isArray(value)) insist(value.length <= submittedNodeBudget, 'invalid_input', 'Submitted arrays exceed the traversal budget');
+    // JSON arrays never have holes. A hole lets schema validation walk empty slots and read values inherited from
+    // Array.prototype that this guard never scans, so only arrays whose keys are exactly the indices 0..length-1 are
+    // accepted. The length is checked against the traversal budget before the key list is allocated.
+    if (Array.isArray(value)) {
+      insist(visits.count + value.length <= submittedNodeBudget, 'invalid_input', 'Submitted arrays exceed the traversal budget');
+      const keys = Object.keys(value);
+      insist(keys.length === value.length && keys.every((key, index) => key === String(index)), 'invalid_input', 'Sparse arrays are not plain JSON data');
+    }
     insist(!seen.has(value), 'invalid_input', 'Cyclic input is forbidden'); seen.add(value);
     for (const name of Reflect.ownKeys(value)) {
       const descriptor = Object.getOwnPropertyDescriptor(value, name)!;

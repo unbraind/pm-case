@@ -1,0 +1,26 @@
+id: pm-case-budget
+title: Read the stored budget setting only when no explicit budget is given
+description: "An invalid stored case output_budget (0, -1, 1.5, 8193) threw before an explicit --budget was honored, because the eager integer(policy?.output_budget, 1600) fallback evaluated first. Read the stored setting lazily, only when no explicit budget transport is provided."
+type: Issue
+status: in_progress
+priority: 2
+tags: []
+created_at: "2026-11-09T19:46:28.641Z"
+updated_at: "2026-11-09T20:17:42.983Z"
+author: codex-agent
+acceptance_criteria: An explicit valid budget succeeds while the stored setting is invalid; Without a budget the invalid stored setting still refuses; Regression fails on revert
+comments[4]{created_at,author,text}:
+  "2026-11-09T19:46:34.861Z",codex-agent,"Plan: apply the lazy stored-setting fallback in the command dispatch (requested budget first, stored section only when no explicit transport), search for other eager stored-setting fallbacks, and add an extension-harness contract that writes an invalid stored output_budget with the SDK settings writer and proves an explicit budget still succeeds while the un-budgeted command still refuses."
+  "2026-11-09T19:49:44.629Z",codex-agent,"Revert proof: with only the two source changes reverted (commands dispatch restored to the eager integer(requested, integer(policy?.output_budget, 1600)) fallback and guardSubmitted restored to the length-only array bound), the focused privacy and contracts suites fail exactly on the two new regressions ('an explicit budget is not refused by an invalid stored budget setting' and 'sparse arrays refuse before schema parsing and only dense arrays are admitted') and pass again once the fix is restored (15/15). The stored 8193 case clamps to the package's 8192 fitting ceiling instead of refusing, which the contract records explicitly."
+  "2026-11-09T20:06:17.914Z",codex-agent,"Continuation preserves the existing changes and item. Correcting the prior test exception for stored 8193 to meet the requested refusal when it is selected as the fallback, adding host output-budget coverage, and checking the array length against the remaining aggregate traversal budget before allocating keys. The earlier revert receipt will be superseded with fresh isolated proofs."
+  "2026-11-09T20:17:42.172Z",codex-agent,"Fresh isolated revert proofs supersede the earlier receipt: restoring only base src/commands.ts and rebuilding fails 'an explicit budget is not refused by an invalid stored budget setting' (exit 1); restoring the fix and rebuilding passes. Restoring only base src/schema.ts and rebuilding fails 'sparse arrays refuse before schema parsing and only dense arrays are admitted' (exit 1); restoring the fixed guard and rebuilding passes. Both package --budget and host --output-budget, including unbounded, override stored 0, -1, 1.5 and 8193; all four stored values refuse when selected without an override. Invalid explicit budgets still refuse. Dense indices are checked after the remaining aggregate node bound and before schema parsing. The text-budget fixture stays below the node ceiling so it still exercises the independent text limit. No other eager stored-setting fallback remains. Focused suites and pinned pm test --run --progress: 15/15 passed. Complete npm test: 100/100 passed, zero skipped. npm run typecheck and npm run lint passed."
+files[4]{path,scope}:
+  src/commands.ts,project
+  src/schema.ts,project
+  test/contracts.test.ts,project
+  test/privacy.test.ts,project
+tests[1]{command,scope,provenance{author,created_at,source_kind,source_ref}}:
+  node --test --test-concurrency=2 test/privacy.test.ts test/contracts.test.ts,project,codex-agent,"2026-11-09T19:54:45.077Z",local_mutation,fix/explicit-budget-over-stored-setting
+docs[1]{path,scope}:
+  CHANGELOG.md,project
+body: ""

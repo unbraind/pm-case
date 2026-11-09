@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createExtensionTestHarness, decodeToon } from '@unbrained/pm-cli/sdk/testing';
-import { fitOutputEnvelope } from '@unbrained/pm-cli/sdk';
+import { fitOutputEnvelope, writeSettingsSection } from '@unbrained/pm-cli/sdk';
 import extension, { createCaseModel, recordCaseOutcome, readCaseModel, casePacket, envelope, fitEnvelope, CaseRefusal, digest } from '../dist/index.js';
 import { runCommand, inputJson } from '../dist/src/commands.js';
 import { wire } from '../dist/src/output.js';
@@ -69,4 +69,21 @@ test('all write budgets refuse before native item schema or history side effects
   const { host, native, birth, id } = await fixture(t, false); const fields = await native.schemaListFields(); await assert.rejects(createCaseModel(host, { ...birth, budget: 1 }), hasCode('output_budget')); assert.deepEqual((await native.schemaListFields()).fields, fields.fields); await assert.rejects(readCaseModel(host, id), hasCode('not_found'));
   await createCaseModel(host, birth); await select(host, id); const before = await readCaseModel(host, id); await assert.rejects(recordCaseOutcome(host, { ...await request(host, id, 'small'), budget: 1 }), hasCode('output_budget')); assert.equal((await readCaseModel(host, id)).revision, before.revision);
   await assert.rejects(recordCaseOutcome(host, { id, op: 'missing', revision: digest('revision'), outcome: observation(digest('missing'), 'missing') }), hasCode('revision_conflict'));
+});
+
+test('an explicit budget is not refused by an invalid stored budget setting', async t => {
+  const { pmRoot, id } = await fixture(t); const ext = await createExtensionTestHarness(extension, { capabilities: ['commands', 'schema', 'renderers'] }); t.after(() => ext.deactivate());
+  for (const stored of [0, -1, 1.5, 8193]) {
+    await writeSettingsSection(pmRoot, 'case', { output_budget: stored }, { author: 'fixture' });
+    for (const transport of [{ options: { budget: '1600' }, global: {} }, { options: {}, global: { outputBudget: '1600' } }, { options: {}, global: { outputBudget: 'unbounded' } }]) {
+      const ran = await ext.runCommand({ command: 'case packet', args: [id], options: { limit: '1', ...transport.options }, global: transport.global, pmRoot }); if (ran.cause) throw ran.cause;
+      assert.equal((ran.result as CaseResult).ok, true, `Explicit budget must override stored ${stored}`);
+    }
+    const fallback = await ext.runCommand({ command: 'case packet', args: [id], options: { limit: '1' }, pmRoot }); if (fallback.cause) throw fallback.cause;
+    assert.equal((fallback.result as CaseResult).ok, false, `Invalid stored ${stored} must still refuse without an explicit budget`);
+  }
+  for (const explicit of ['0', '-1', '1.5', []]) {
+    const ran = await ext.runCommand({ command: 'case packet', args: [id], options: { limit: '1', budget: explicit }, pmRoot }); if (ran.cause) throw ran.cause;
+    assert.equal((ran.result as CaseResult).ok, false, 'Invalid explicit budgets still refuse');
+  }
 });
