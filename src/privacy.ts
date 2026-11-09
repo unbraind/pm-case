@@ -6,7 +6,11 @@ import { posix } from 'node:path';
 export function privateHomeRoots(home: string): string[] {
   try { return [home, realpathSync(home)]; } catch { return [home]; }
 }
-const currentHomes = privateHomeRoots(homedir());
+/** Resolve the ambient home roots once at load; a throwing lookup degrades to an empty list. */
+export function currentHomeRoots(lookup: () => string = homedir): string[] {
+  try { return privateHomeRoots(lookup()); } catch { return []; }
+}
+const currentHomes = currentHomeRoots();
 
 /** Classify local home tokens without treating public URLs or relative documentation as paths. */
 export function containsPrivateHomePath(text: string, homes: readonly string[] = currentHomes): boolean {

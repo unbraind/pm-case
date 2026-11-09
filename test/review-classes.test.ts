@@ -1,7 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, readdirSync } from 'node:fs';
+import { join } from 'node:path';
 import { parse } from '@babel/parser';
+import { decode } from '@toon-format/toon';
 import { walk } from './syntax.ts';
 import { runtimeSources } from '../scripts/inventory.ts';
 
@@ -115,6 +117,7 @@ test('all receipt producers and consumers validate planned coordinates before si
   assert.match(producer, /command: publicHarnessCommand\(check\)/);
   for (const [path, validation, sideEffect] of [
     ['test/public-harness.acceptance.ts', 'harnessPlanBindings(results);', "await writeFile('docs/public-harness-receipt.json'"],
+    ['test/public-harness.acceptance.ts', "selectedTestFailed(red.stdout, check.pattern, check.file)", "results.push({...common,result:'fail'"],
     ['test/real-data-proof.ts', 'harnessPlanBindings(harness.results);', 'const root=await mkdtemp('],
   ]) {
     const source = readFileSync(path, 'utf8'); const guard = source.indexOf(validation);
@@ -144,6 +147,27 @@ test('harness PATH composition and linked commands use platform conventions', ()
   assert.doesNotMatch(revert, /spawnSync\('\/bin\/sh'/); assert.match(revert, /spawnSync\(command,\{\.\.\.options,shell:true\}\)/);
   assert.ok(revert.indexOf('const baseline=spawnSync(process.execPath') < revert.indexOf('await writeFile(path,original.replace'));
   assert.match(revert, /selectedTestFailed\(red.stdout,mutation.pattern,mutation.test\)/);
+});
+
+test('documented archive installs create and enter a fresh consumer directory outside the source checkout', () => {
+  const text = readFileSync('README.md', 'utf8'); let documented = 0;
+  for (const block of text.matchAll(/```sh\n([\s\S]*?)```/g)) {
+    const lines = block[1].split('\n');
+    const install = lines.findIndex(line => /^(?:npm install|bun add) .*pm-case.*\.tgz/.test(line));
+    if (install < 0) continue; documented += 1;
+    assert.ok(lines.slice(0, install).some(line => /^mkdir .+&& cd /.test(line)), 'Every documented archive install must create and enter a fresh consumer directory first');
+    assert.match(lines[install], /\.{2}\//, 'Archive paths must resolve from the consumer directory, never the package directory');
+  }
+  assert.ok(documented > 0, 'At least one documented archive install must exist');
+});
+
+test('linked release gates keep timeouts above the measured full-run duration', () => {
+  let gates = 0;
+  for (const path of readdirSync('.agents/pm', { recursive: true }).map(String).filter(name => name.endsWith('.toon'))) {
+    const decoded = decode(readFileSync(join('.agents/pm', path), 'utf8')) as { tests?: { command: string; timeout_seconds?: number }[] };
+    for (const entry of decoded.tests ?? []) if (/release:check/.test(entry.command)) { gates += 1; assert.ok((entry.timeout_seconds ?? 0) > 3000, `Linked release gates must exceed the measured 2552-second run: ${path}`); }
+  }
+  assert.ok(gates >= 2, 'Both npm and Bun release gates must stay linked with bounded timeouts');
 });
 
 test('all documented CLI and SDK installs initialize a tracker before package use', () => {

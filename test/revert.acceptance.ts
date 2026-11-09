@@ -36,6 +36,7 @@ try{
     {file:'kernel.js',before:'const memoized = memo.get(key);',after:'const memoized = undefined;',test:'core.test.ts',pattern:'^deterministic covers and domains are reused'},
   ];
   const additional = [
+    {file:'dist/src/privacy.js',before:'try {\n        return privateHomeRoots(lookup());\n    }\n    catch {\n        return [];\n    }',after:'return privateHomeRoots(lookup());',test:'privacy.test.ts',pattern:'^a throwing home lookup'},
     {file:'dist/src/privacy.js',before:"if (root === '/')\n                        continue;",after:'void root;',test:'privacy.test.ts',pattern:'^filesystem root home aliases'},
     {file:'test/review-classes.test.ts',before:"child.type === 'TemplateElement'",after:'false',test:'review-classes.test.ts',pattern:'^harness PATH composition'},
     ...[

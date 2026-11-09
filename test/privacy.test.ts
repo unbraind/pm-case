@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createCaseModel, readCaseModel, recordCaseOutcome, canonical, digest } from '../dist/index.js';
 import { guardSubmitted, parse, KeySchema } from '../dist/src/schema.js';
-import { containsPrivateHomePath, privateHomeRoots } from '../dist/src/privacy.js';
+import { containsPrivateHomePath, privateHomeRoots, currentHomeRoots } from '../dist/src/privacy.js';
 import { mkdir, symlink } from 'node:fs/promises';
 import { join } from 'node:path';
 import { spawnSync } from 'node:child_process';
@@ -95,4 +95,11 @@ test('home aliases punctuation WSL and resolved roots obey the same privacy rule
   }
   for (const safe of ['', '.', '...', 'src/root.ts', 'app/root', ['docs', 'Users', 'guide'].join('/'), '/rooted', '/public/root', 'https://example.org' + ['', 'home', 'page'].join('/'), 'ssh://host' + ['', 'home', 'public'].join('/'), 'custom://host' + ['', 'Users', 'public'].join('/'), '~public-example', '$HOMES', '%HOME%guide']) assert.equal(containsPrivateHomePath(safe, []), false, safe);
   assert.equal((await native.schemaListFields()).fields.length, 0);
+});
+
+test('a throwing home lookup degrades to an empty home list while static rules stay active', () => {
+  assert.doesNotThrow(() => currentHomeRoots(() => { throw new Error('unresolvable home'); }), 'A throwing home lookup must degrade without breaking module load or reads');
+  const home = ['', 'home', 'example'].join('/'); assert.deepEqual(currentHomeRoots(() => home), privateHomeRoots(home));
+  for (const text of [['see', ['', 'home', 'example', 'credential'].join('/'), 'now'].join(' '), ['C:', 'Users', 'example', 'credential'].join(String.fromCharCode(92)), ['', 'root', 'secret'].join('/'), '~/secret']) assert.equal(containsPrivateHomePath(text, []), true, 'Static private spellings stay blocked without a resolved home');
+  for (const text of ['https://example.org' + ['', 'home', 'page'].join('/'), 'src/root.ts', ['docs', 'Users', 'guide.md'].join('/')]) assert.equal(containsPrivateHomePath(text, []), false, 'Public text stays allowed without a resolved home');
 });

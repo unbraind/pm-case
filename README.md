@@ -15,10 +15,11 @@ npm pack
 
 This creates `pm-case-2026.11.6.tgz` in that directory. It is a newly built review archive, with no claim that its bytes match the captured, validated artifact from a previous run. The captured artifact is untracked; use a maintainer-supplied copy and its matching SHA-256 receipt when verifying that earlier run.
 
-Install the archive from the package directory alongside the host:
+Install the archive in a fresh consumer directory, never inside this source checkout, so `pm init` provisions a new tracker instead of the checkout's own:
 
 ```sh
-npm install ./pm-case-2026.11.6.tgz @unbrained/pm-cli@2026.11.5
+mkdir ../pm-case-demo && cd ../pm-case-demo
+npm install ../pm-case-2026.11.6.tgz @unbrained/pm-cli@2026.11.5
 npx --no-install pm init demo --defaults --agent-guidance skip --no-merge-fence
 npx --no-install pm package install ./node_modules/pm-case
 npx --no-install pm case --help
@@ -27,13 +28,13 @@ npx --no-install pm case --help
 After maintainer publication, the registry paths are:
 
 ```sh
-# npm project
+# Fresh npm project outside this checkout
 npm install pm-case @unbrained/pm-cli
 npx --no-install pm init demo --defaults --agent-guidance skip --no-merge-fence
 npx --no-install pm package install ./node_modules/pm-case
 npx --no-install pm case --help
 
-# Separate Bun project
+# Separate fresh Bun project
 bun add pm-case @unbrained/pm-cli
 bunx --bun --no-install pm init demo --defaults --agent-guidance skip --no-merge-fence
 bunx --bun --no-install pm package install ./node_modules/pm-case
