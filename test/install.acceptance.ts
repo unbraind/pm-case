@@ -7,7 +7,7 @@ import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { npmEnvironment } from '../scripts/environment.ts';
 import { observation, model } from './helpers.ts';
-import { packedRequirement, acceptanceRuntime } from './install-tools.ts';
+import { packedRequirement, acceptanceRuntime, packedToolNames } from './install-tools.ts';
 /** Run a credential-free consumer command and preserve only bounded diagnostics. */
 function execute(executable: string, args: string[], cwd: string, env: NodeJS.ProcessEnv, input?: string, expected = 0): string {
   const result = spawnSync(executable, args, { cwd, env, input, encoding: 'utf8', timeout: 180000, maxBuffer: 4 * 1024 * 1024 });
@@ -20,7 +20,7 @@ function privateRefusal(output: string, json: boolean, text: string): void {
 }
 test('one captured artifact supports npm Bun npx bunx and SDK with Git absent', () => {
   assert.equal(packedRequirement(process.platform), null, packedRequirement(process.platform) ?? '');
-  const tools = new Map(['bun', 'npm', 'npx'].flatMap(name => {
+  const tools = new Map<string, string>(packedToolNames.flatMap(name => {
     const found = spawnSync('bash', ['-c', `command -v ${name}`], { encoding: 'utf8', env: npmEnvironment(process.env) });
     return found.status === 0 && found.stdout.trim() !== '' ? [[name, found.stdout.trim()] as const] : [];
   }));

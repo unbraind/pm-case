@@ -18,8 +18,9 @@ This creates `pm-case-2026.11.6.tgz` in that directory. It is a newly built revi
 Install the archive in a fresh consumer directory, never inside this source checkout, so `pm init` provisions a new tracker instead of the checkout's own:
 
 ```sh
+archive="$(pwd)/pm-case-2026.11.6.tgz"
 mkdir ../pm-case-demo && cd ../pm-case-demo
-npm install ../pm-case-2026.11.6.tgz @unbrained/pm-cli@2026.11.5
+npm install "$archive" @unbrained/pm-cli@2026.11.5
 npx --no-install pm init demo --defaults --agent-guidance skip --no-merge-fence
 npx --no-install pm package install ./node_modules/pm-case
 npx --no-install pm case --help

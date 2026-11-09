@@ -66,7 +66,7 @@ test('stored owners remain readable across every SDK and CLI path without resubm
 
 test('every documented local archive install has preceding build prerequisites and provenance', async () => {
   const text = await readFile('README.md', 'utf8');
-  const installs = [...text.matchAll(/npm install (\.{1,2}\/[^\s`]+\.tgz)/g)]; assert.ok(installs.length > 0);
+  const installs = [...text.matchAll(/npm install (?:\.{1,2}\/[^\s`]+\.tgz|"\$archive")/g)]; assert.ok(installs.length > 0);
   for (const install of installs) {
     const preceding = text.slice(0, install.index);
     assert.match(preceding, /npm ci\s+npm pack/);

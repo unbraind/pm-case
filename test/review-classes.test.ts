@@ -1,7 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync, readdirSync } from 'node:fs';
+import { readFileSync, readdirSync, mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
+import { tmpdir } from 'node:os';
+import { spawnSync } from 'node:child_process';
+import { npmEnvironment, testEnvironment } from '../scripts/environment.ts';
 import { parse } from '@babel/parser';
 import { decode } from '@toon-format/toon';
 import { walk } from './syntax.ts';
@@ -23,11 +26,11 @@ function productionImports(source: string): void {
 
 /** Check every runtime setup rather than one currently reviewed line. */
 function runtimeProvisioning(source: string): void {
-  for (const step of source.split(/(?=^      - name:)/m)) {
+  for (const step of source.split(/(?=^[ \t]*- (?:name|uses):)/m)) {
     if (step.includes('uses: actions/setup-node@')) assert.match(step, /node-version: (?:22\.19\.0|26\.13\.0|\$\{\{ matrix\.node-version \}\})\s*\n/);
     if (step.includes('uses: oven-sh/setup-bun@')) assert.match(step, /bun-version: 1\.3\.5\s*\n/);
   }
-  for (const job of source.split(/(?=^  [a-z_]+:)/m).filter(job => job.includes('run: npm run release:check') || job.includes('run: npm run test:install'))) {
+  for (const job of source.split(/(?=^  [A-Za-z0-9_-]+:)/m).filter(job => /run: (?:npm|bun) run (?:release:check|test:install)/.test(job))) {
     for (const [major, version] of [['22', '22.19.0'], ['26', '26.13.0']]) {
       const setup = job.indexOf(`node-version: ${version}`); const retained = job.indexOf(`PM_CASE_NODE_${major}=$(command -v node)`);
       assert.ok(setup >= 0 && retained > setup && retained < job.indexOf('run: npm ci'), 'Full gates require both exact runtimes before dependency execution');
@@ -81,7 +84,7 @@ test('all production imports exclude static dynamic member and optional proof lo
 });
 
 test('all CI and release jobs provision their exact acceptance runtimes', () => {
-  for (const path of readdirSync('.github/workflows').filter(name => name.endsWith('.yml'))) {
+  for (const path of readdirSync('.github/workflows').filter(name => /\.ya?ml$/.test(name))) {
     const source = readFileSync(`.github/workflows/${path}`, 'utf8'); runtimeProvisioning(source);
     for (const version of ['22.19.0', '26.13.0', '1.3.5']) if (source.includes(`version: ${version}`)) assert.throws(() => runtimeProvisioning(source.replaceAll(`version: ${version}`, 'version: latest')), assert.AssertionError);
   }
@@ -152,14 +155,23 @@ test('harness PATH composition and linked commands use platform conventions', ()
 test('documented archive installs create and enter a fresh consumer directory outside the source checkout', () => {
   const text = readFileSync('README.md', 'utf8'); let documented = 0;
   for (const block of text.matchAll(/```sh\n([\s\S]*?)```/g)) {
-    const lines = block[1].split('\n');
-    const install = lines.findIndex(line => /^(?:npm install|bun add) .*pm-case.*\.tgz/.test(line));
+    if (!block[1].includes('.tgz')) continue;
+    const lines = block[1].trim().split('\n');
+    const install = lines.findIndex(line => /^npm install /.test(line));
     if (install < 0) continue; documented += 1;
     assert.ok(lines.slice(0, install).some(line => /^mkdir .+&& cd /.test(line)), 'Every documented archive install must create and enter a fresh consumer directory first');
-    assert.match(lines[install], /\.{2}\//, 'Archive paths must resolve from the consumer directory, never the package directory');
+    const root = mkdtempSync(join(tmpdir(), 'case-readme-')); const source = join(root, 'source checkout'); mkdirSync(source);
+    try {
+      const pkg = JSON.parse(readFileSync('package.json', 'utf8')) as { version: string };
+      writeFileSync(join(source, `pm-case-${pkg.version}.tgz`), 'synthetic archive');
+      const probe = 'npm() { [ "$1" = install ] && [ -f "$2" ]; }\n' + lines.slice(0, install + 1).join('\n');
+      const result = spawnSync('sh', ['-ec', probe], { cwd: source, env: testEnvironment(npmEnvironment(process.env)), encoding: 'utf8' });
+      assert.equal(result.status, 0, 'The documented install must locate the archive from the consumer directory: ' + result.stderr);
+    } finally { rmSync(root, { recursive: true, force: true }); }
   }
   assert.ok(documented > 0, 'At least one documented archive install must exist');
 });
+
 
 test('linked release gates keep timeouts above the measured full-run duration', () => {
   let gates = 0;
@@ -182,4 +194,23 @@ test('all documented CLI and SDK installs initialize a tracker before package us
   }
   assert.match(source, /await native\.init\(/);
   assert.match(readFileSync('docs/real-data.md', 'utf8'), /Packet-framing changes may require regenerating the receipt/);
+});
+
+
+test('runtime provisioning isolates hyphenated numbered jobs and unnamed setup steps', () => {
+  const source = readFileSync('.github/workflows/ci.yml', 'utf8'); runtimeProvisioning(source);
+  for (const id of ['verify-bun', 'Verify_2', 'gate42']) for (const manager of ['npm', 'bun']) for (const gate of ['release:check', 'test:install']) {
+    const job = `\n  ${id}:\n    runs-on: ubuntu-latest\n    steps:\n      - run: npm ci\n      - run: ${manager} run ${gate}\n`;
+    assert.throws(() => runtimeProvisioning(source + job), assert.AssertionError, 'Every independent full-gate job needs its own provisioning');
+  }
+  for (const indentation of ['    ', '      ', '        ']) for (const [action, key, pinned] of [['actions/setup-node', 'node-version', '26.13.0'], ['oven-sh/setup-bun', 'bun-version', '1.3.5']]) {
+    const step = `${indentation}- uses: ${action}@pinned\n${indentation}  with:\n${indentation}    ${key}: `;
+    const baseline = 'jobs:\n  test:\n    steps:\n' + step.replace('- uses:', '- name: Pinned runtime\n' + indentation + '  uses:') + pinned + '\n';
+    runtimeProvisioning(baseline);
+    assert.doesNotThrow(() => runtimeProvisioning(baseline + step + pinned + '\n'));
+    assert.throws(() => runtimeProvisioning(baseline + step + 'latest\n'), assert.AssertionError, 'A preceding pinned step cannot hide an unpinned unnamed setup');
+    const named = step.replace('- uses:', '- name: Extra runtime\n' + indentation + '  uses:');
+    assert.doesNotThrow(() => runtimeProvisioning(baseline + named + pinned + '\n'));
+    assert.throws(() => runtimeProvisioning(baseline + named + 'latest\n'), assert.AssertionError);
+  }
 });

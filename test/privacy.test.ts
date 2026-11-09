@@ -1,4 +1,5 @@
 import test from 'node:test';
+import { z } from 'zod';
 import assert from 'node:assert/strict';
 import { createCaseModel, readCaseModel, recordCaseOutcome, canonical, digest } from '../dist/index.js';
 import { guardSubmitted, parse, KeySchema } from '../dist/src/schema.js';
@@ -102,4 +103,21 @@ test('a throwing home lookup degrades to an empty home list while static rules s
   const home = ['', 'home', 'example'].join('/'); assert.deepEqual(currentHomeRoots(() => home), privateHomeRoots(home));
   for (const text of [['see', ['', 'home', 'example', 'credential'].join('/'), 'now'].join(' '), ['C:', 'Users', 'example', 'credential'].join(String.fromCharCode(92)), ['', 'root', 'secret'].join('/'), '~/secret']) assert.equal(containsPrivateHomePath(text, []), true, 'Static private spellings stay blocked without a resolved home');
   for (const text of ['https://example.org' + ['', 'home', 'page'].join('/'), 'src/root.ts', ['docs', 'Users', 'guide.md'].join('/')]) assert.equal(containsPrivateHomePath(text, []), false, 'Public text stays allowed without a resolved home');
+});
+
+
+test('sparse arrays refuse before schema parsing without native side effects', async t => {
+  const schema = z.array(KeySchema); const safeParse = schema.safeParse.bind(schema); let calls = 0;
+  schema.safeParse = (...args) => { calls += 1; assert.ok((args[0] as unknown[]).length <= 200000, 'Oversized arrays must never reach schema parsing'); return safeParse(...args); };
+  for (const length of [200001, 5000000]) {
+    assert.throws(() => guardSubmitted(new Array(length)), hasCode('invalid_input'));
+    assert.throws(() => parse(schema, new Array(length)), hasCode('invalid_input'));
+  }
+  assert.equal(calls, 0, 'Sparse arrays must refuse before safeParse');
+  assert.deepEqual(parse(schema, ['public']), ['public']); assert.equal(calls, 1);
+  assert.doesNotThrow(() => guardSubmitted(new Array(200000)), 'The existing traversal ceiling remains admitted');
+  const { host, native, birth } = await fixture(t, false);
+  await assert.rejects(createCaseModel(host, { ...birth, related: new Array(200001) }), hasCode('invalid_input'));
+  assert.equal((await native.schemaListFields()).fields.length, 0);
+  await assert.rejects(native.get(birth.id), hasCode('item_not_found'));
 });

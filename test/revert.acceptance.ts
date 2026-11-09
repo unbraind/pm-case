@@ -36,6 +36,11 @@ try{
     {file:'kernel.js',before:'const memoized = memo.get(key);',after:'const memoized = undefined;',test:'core.test.ts',pattern:'^deterministic covers and domains are reused'},
   ];
   const additional = [
+    {file:'dist/src/schema.js',before:"insist(value.length <= submittedNodeBudget, 'invalid_input', 'Submitted arrays exceed the traversal budget');",after:'void value.length;',test:'privacy.test.ts',pattern:'^sparse arrays refuse'},
+    {file:'README.md',before:'npm install "$archive"',after:'npm install ../pm-case-2026.11.6.tgz',test:'review-classes.test.ts',pattern:'^documented archive installs'},
+    {file:'test/install-tools.ts',before:"['bun', 'npm', 'npx', 'sha256sum'] as const",after:"['bun', 'npm', 'npx'] as const",test:'install-tools.test.ts',pattern:'^packed acceptance requires'},
+    {file:'test/review-classes.test.ts',before:'source.split(/(?=^  [A-Za-z0-9_-]+:)/m)',after:'source.split(/(?=^  [a-z_]+:)/m)',test:'review-classes.test.ts',pattern:'^runtime provisioning isolates'},
+    {file:'test/review-classes.test.ts',before:'source.split(/(?=^[ \\t]*- (?:name|uses):)/m)',after:'source.split(/(?=^      - name:)/m)',test:'review-classes.test.ts',pattern:'^runtime provisioning isolates'},
     {file:'dist/src/privacy.js',before:'try {\n        return privateHomeRoots(lookup());\n    }\n    catch {\n        return [];\n    }',after:'return privateHomeRoots(lookup());',test:'privacy.test.ts',pattern:'^a throwing home lookup'},
     {file:'dist/src/privacy.js',before:"if (root === '/')\n                        continue;",after:'void root;',test:'privacy.test.ts',pattern:'^filesystem root home aliases'},
     {file:'test/review-classes.test.ts',before:"child.type === 'TemplateElement'",after:'false',test:'review-classes.test.ts',pattern:'^harness PATH composition'},
