@@ -1,0 +1,242 @@
+[
+  {
+    "repo": "pm-csv",
+    "revision": "d48dd3e07cf3b2d7153b2b687fa581735cffad0a",
+    "item_id": "pm-csv-row-lineage",
+    "item_hash": "0c5757d541f873ab4935627de8ecbe70888a042f23cf3600f92e86b083884766",
+    "field_pointer": "/acceptance_criteria",
+    "text": "Corrected rejected rows can be replayed without reapplying successful rows; diagnostic exports exclude disallowed columns and include checksums.",
+    "content_digest": "03be573bd69eadb468fcdb06e7bf714c8a08ac28ef883ed3a5ec0a3c5b7a4ef6",
+    "url": "https://github.com/unbraind/pm-csv/blob/d48dd3e07cf3b2d7153b2b687fa581735cffad0a/.agents/pm/features/pm-csv-row-lineage.toon"
+  },
+  {
+    "repo": "pm-csv",
+    "revision": "d48dd3e07cf3b2d7153b2b687fa581735cffad0a",
+    "item_id": "pm-csv-row-lineage",
+    "item_hash": "0c5757d541f873ab4935627de8ecbe70888a042f23cf3600f92e86b083884766",
+    "field_pointer": "/comments/0/text",
+    "text": "Implementation uses native SDK explicit-ID creates, schema validation, locking and append-only history rather than a parallel item store. Portable JSON manifests hash permitted source cells and observed destination values with source row/column and a mapping revision. Retry CSVs retain stable keys and exclude successful rows and disallowed columns. Structural and output failures use typed remedies; row failures carry bounded codes. Tests exercise real non-git trackers with PATH excluding git, concurrent creates, retry history preservation and exact-byte artifact checksums. Current CLI registry version was verified as 2026.10.22; tracker writes use the unchanged repo pin 2026.10.15.",
+    "content_digest": "bba4f72e7449e74178760a5a0aafef4dc4d043c473ea232f3868404445ffb375",
+    "url": "https://github.com/unbraind/pm-csv/blob/d48dd3e07cf3b2d7153b2b687fa581735cffad0a/.agents/pm/features/pm-csv-row-lineage.toon"
+  },
+  {
+    "repo": "pm-csv",
+    "revision": "d48dd3e07cf3b2d7153b2b687fa581735cffad0a",
+    "item_id": "pm-csv-row-lineage",
+    "item_hash": "0c5757d541f873ab4935627de8ecbe70888a042f23cf3600f92e86b083884766",
+    "field_pointer": "/comments/1/text",
+    "text": "Public-data validation: immutable non-git copy of public main d5dbdb0a52e3e25ee79d95b98cf0b7585cd5602d, 120 certified items; selected 24 rows, imported 20 and rejected 4, corrected all 4, replayed all 4 with zero new creates. All 20 original successful histories and the complete read-only source snapshot stayed byte-identical. Verified 40 initial cell records, 1 excluded column, 2 exact-byte checksums, a 129-byte receipt and 10166 ms measured validation. Behavioral revert proof: changing only importLineage to include successful rows in rejects failed the count assertion; changing only its permitted-column projection to raw rows failed the disallowed-cell sentinel assertion. Both mutations restored. Targeted coverage reached 100 percent lines, branches and functions for lineage.ts. See docs/row-lineage-validation.md for reproduction.",
+    "content_digest": "2881a7ecb97378b83fa3724e6ebf10b394f467e85626efc58c07d07a4c86546e",
+    "url": "https://github.com/unbraind/pm-csv/blob/d48dd3e07cf3b2d7153b2b687fa581735cffad0a/.agents/pm/features/pm-csv-row-lineage.toon"
+  },
+  {
+    "repo": "pm-csv",
+    "revision": "d48dd3e07cf3b2d7153b2b687fa581735cffad0a",
+    "item_id": "pm-csv-row-lineage",
+    "item_hash": "0c5757d541f873ab4935627de8ecbe70888a042f23cf3600f92e86b083884766",
+    "field_pointer": "/comments/2/text",
+    "text": "Ready PR: https://github.com/unbraind/pm-csv/pull/182. Implementation commit d1df1a784b6adb80866f204f6efd3448f5420999 passed CI https://github.com/unbraind/pm-csv/actions/runs/39842704813: npm and Bun release gates on Node 22 and 26, unchanged thresholds. Node 26 logs report 319/319 tests per gate, zero failures and 100 percent gated lines/branches/functions; all three packed scenarios passed per gate, including the minimum host and real CLI lineage/replay counts. The complete matrix is green. Linked pm test ran 4/4 successfully; build/typecheck, test typecheck, lint, docstrings, duplicate and changelog checks passed locally. Local health reported inherited global-extension host skew and shared clone configuration drift; fresh CI tracker health passed in both jobs. No merge, release or reviewer approval claimed. This final evidence and claim release will be committed, with CI checked again on that final head.",
+    "content_digest": "8dde509d86f95fffd3728e15cbf1493be6bafa4123ec8be313276ede6ce7e030",
+    "url": "https://github.com/unbraind/pm-csv/blob/d48dd3e07cf3b2d7153b2b687fa581735cffad0a/.agents/pm/features/pm-csv-row-lineage.toon"
+  },
+  {
+    "repo": "pm-csv",
+    "revision": "d48dd3e07cf3b2d7153b2b687fa581735cffad0a",
+    "item_id": "pm-csv-row-lineage",
+    "item_hash": "0c5757d541f873ab4935627de8ecbe70888a042f23cf3600f92e86b083884766",
+    "field_pointer": "/comments/3/text",
+    "text": "DELIVERED: merged PR #182 (e6f21c6d84c90adb64acb8384f378a758326eb20) is an ancestor of audited main cca10876ae5a4fcb505ffe533e00211941659ecc. Inspected on main: test/lineage.test.ts, docs/row-lineage-validation.md. Corrected rejected rows replay without successful-row/history changes; permitted-column projection excludes disallowed values and exact-byte checksums accompany diagnostic exports. Public-copy and native no-git/full-CI evidence is retained. This tracker audit inspected existing tests/files; it does not claim a new full product test run.",
+    "content_digest": "54525a56c100e25cdc55603c4e9170b0076aae48e46e0e4e3711e4541d3a1385",
+    "url": "https://github.com/unbraind/pm-csv/blob/d48dd3e07cf3b2d7153b2b687fa581735cffad0a/.agents/pm/features/pm-csv-row-lineage.toon"
+  },
+  {
+    "repo": "pm-csv",
+    "revision": "d48dd3e07cf3b2d7153b2b687fa581735cffad0a",
+    "item_id": "pm-csv-zv31",
+    "item_hash": "13b693a80468f9b5ea301b8b8358c32046afa6f4e77a276aa8283bcd2b7e6c94",
+    "field_pointer": "/description",
+    "text": "Greptile exact-head review of PR 73 found that treating every nonzero close receipt as an unverified failure preserves markers even when the close mutation actually persisted and the item is terminal. The next import then mistakes the compensated row for an applied row and skips recreating it. Re-read status after a nonzero close receipt: clean markers only with exact closed evidence, otherwise retain them for reconciliation.",
+    "content_digest": "5b03cf3968be5de0a620b526f80903c04b72a3fac0bb58946309f8d84af7a6e3",
+    "url": "https://github.com/unbraind/pm-csv/blob/d48dd3e07cf3b2d7153b2b687fa581735cffad0a/.agents/pm/issues/pm-csv-zv31.toon"
+  },
+  {
+    "repo": "pm-csv",
+    "revision": "d48dd3e07cf3b2d7153b2b687fa581735cffad0a",
+    "item_id": "pm-csv-zv31",
+    "item_hash": "13b693a80468f9b5ea301b8b8358c32046afa6f4e77a276aa8283bcd2b7e6c94",
+    "field_pointer": "/acceptance_criteria",
+    "text": "A red real-tracker race regression persists close but returns exit 4 and proves old code retains markers; Compensation rechecks status after every nonzero close receipt; Exact closed evidence permits marker cleanup; Open or unknown status preserves both markers; Status lookup failure remains best-effort and never aborts the compensation sweep; npm run release:check passes exact 100/100/100/100",
+    "content_digest": "6dc8d1ef5ec15e2151351bc72ca56ffc1ad1443ba3aaed0aca2ded31e97064e9",
+    "url": "https://github.com/unbraind/pm-csv/blob/d48dd3e07cf3b2d7153b2b687fa581735cffad0a/.agents/pm/issues/pm-csv-zv31.toon"
+  },
+  {
+    "repo": "pm-csv",
+    "revision": "d48dd3e07cf3b2d7153b2b687fa581735cffad0a",
+    "item_id": "pm-csv-zv31",
+    "item_hash": "13b693a80468f9b5ea301b8b8358c32046afa6f4e77a276aa8283bcd2b7e6c94",
+    "field_pointer": "/repro_steps",
+    "text": "Create a marked open item; make the pm close wrapper persist the close but return exit 4; run compensateCreate; inspect status and transaction markers; retry would otherwise skip the closed tombstone.",
+    "content_digest": "f2b3f25b97391a4745fb2c6bfae52f87aee875150c957bec9362bf9b88bc6f78",
+    "url": "https://github.com/unbraind/pm-csv/blob/d48dd3e07cf3b2d7153b2b687fa581735cffad0a/.agents/pm/issues/pm-csv-zv31.toon"
+  },
+  {
+    "repo": "pm-csv",
+    "revision": "d48dd3e07cf3b2d7153b2b687fa581735cffad0a",
+    "item_id": "pm-csv-zv31",
+    "item_hash": "13b693a80468f9b5ea301b8b8358c32046afa6f4e77a276aa8283bcd2b7e6c94",
+    "field_pointer": "/expected_result",
+    "text": "After any nonzero close receipt, an exact closed status recheck permits marker cleanup; open or unknown status preserves both markers; no receipt alone is treated as closure evidence.",
+    "content_digest": "145f2c04d705435c010d37287bad477a20fe8aad4044ddbbcd17ee512ee19531",
+    "url": "https://github.com/unbraind/pm-csv/blob/d48dd3e07cf3b2d7153b2b687fa581735cffad0a/.agents/pm/issues/pm-csv-zv31.toon"
+  },
+  {
+    "repo": "pm-csv",
+    "revision": "d48dd3e07cf3b2d7153b2b687fa581735cffad0a",
+    "item_id": "pm-csv-zv31",
+    "item_hash": "13b693a80468f9b5ea301b8b8358c32046afa6f4e77a276aa8283bcd2b7e6c94",
+    "field_pointer": "/actual_result",
+    "text": "The post-apply exit-4 race now rechecks as closed and removes both markers, while the existing exit-4-with-open-state regression retains both markers. Status read overruns remain non-throwing in the compensation sweep.",
+    "content_digest": "57db82ac39093b285b1f1219541f1ae9ebe9519972fb67bb8a4c22005442edfb",
+    "url": "https://github.com/unbraind/pm-csv/blob/d48dd3e07cf3b2d7153b2b687fa581735cffad0a/.agents/pm/issues/pm-csv-zv31.toon"
+  },
+  {
+    "repo": "pm-beads",
+    "revision": "85b6392112929e967dfb5e174c773a0590124c35",
+    "item_id": "pm-beads-y6cp",
+    "item_hash": "7c5562068ad52ce7d3d1fd0032a19a98408b4112d585718839a8021dcbd73a58",
+    "field_pointer": "/description",
+    "text": "Overlap checked against beads validate, core relationship analytics, pm-graph analytics, and pm-csv provenance. This adds Beads JSONL row addresses and exact external identities plus revalidated edge-removal proposals. It does not replace core topology or CSV cell provenance.",
+    "content_digest": "bea996508ada8ba2fbb0b641cd572df2ca18ae541e7c829f6d0468703877fe11",
+    "url": "https://github.com/unbraind/pm-beads/blob/85b6392112929e967dfb5e174c773a0590124c35/.agents/pm/features/pm-beads-y6cp.toon"
+  },
+  {
+    "repo": "pm-beads",
+    "revision": "85b6392112929e967dfb5e174c773a0590124c35",
+    "item_id": "pm-beads-y6cp",
+    "item_hash": "7c5562068ad52ce7d3d1fd0032a19a98408b4112d585718839a8021dcbd73a58",
+    "field_pointer": "/acceptance_criteria",
+    "text": "A cycle involving three of 10000 rows returns those rows and edges within declared input, work and output budgets; every emitted candidate revalidates; malformed and unresolved references remain explicit gaps; no title-based identity inference.",
+    "content_digest": "8f12086a9c312daee53b697866965d3a7098689ea9a3dc28f4d594dcc8dbb731",
+    "url": "https://github.com/unbraind/pm-beads/blob/85b6392112929e967dfb5e174c773a0590124c35/.agents/pm/features/pm-beads-y6cp.toon"
+  },
+  {
+    "repo": "pm-beads",
+    "revision": "85b6392112929e967dfb5e174c773a0590124c35",
+    "item_id": "pm-beads-y6cp",
+    "item_hash": "7c5562068ad52ce7d3d1fd0032a19a98408b4112d585718839a8021dcbd73a58",
+    "field_pointer": "/expected_result",
+    "text": "A cycle involving three of 10000 rows returns those rows and edges within declared input, work and output budgets; every emitted candidate revalidates; malformed and unresolved references remain explicit gaps; no title-based identity inference.",
+    "content_digest": "8f12086a9c312daee53b697866965d3a7098689ea9a3dc28f4d594dcc8dbb731",
+    "url": "https://github.com/unbraind/pm-beads/blob/85b6392112929e967dfb5e174c773a0590124c35/.agents/pm/features/pm-beads-y6cp.toon"
+  },
+  {
+    "repo": "pm-beads",
+    "revision": "85b6392112929e967dfb5e174c773a0590124c35",
+    "item_id": "pm-beads-y6cp",
+    "item_hash": "7c5562068ad52ce7d3d1fd0032a19a98408b4112d585718839a8021dcbd73a58",
+    "field_pointer": "/actual_result",
+    "text": "PR #188 merged at 2026-10-28T22:18:29Z as f45fc81; required CI passed on the merged head.",
+    "content_digest": "240d782afebc3ca8ec8e3f8ed03951711a3666e02537323978c2b27b9915232f",
+    "url": "https://github.com/unbraind/pm-beads/blob/85b6392112929e967dfb5e174c773a0590124c35/.agents/pm/features/pm-beads-y6cp.toon"
+  },
+  {
+    "repo": "pm-beads",
+    "revision": "85b6392112929e967dfb5e174c773a0590124c35",
+    "item_id": "pm-beads-y6cp",
+    "item_hash": "7c5562068ad52ce7d3d1fd0032a19a98408b4112d585718839a8021dcbd73a58",
+    "field_pointer": "/resolution",
+    "text": "Delivered by PR #188 (f45fc81): Explain Beads dependency errors with bounded repair packets",
+    "content_digest": "9b1fd640b5ccd76fbddd988008d2c4d55446d7869b40c4920693458c8231f7a9",
+    "url": "https://github.com/unbraind/pm-beads/blob/85b6392112929e967dfb5e174c773a0590124c35/.agents/pm/features/pm-beads-y6cp.toon"
+  },
+  {
+    "repo": "pm-beads",
+    "revision": "85b6392112929e967dfb5e174c773a0590124c35",
+    "item_id": "pm-beads-y6cp",
+    "item_hash": "7c5562068ad52ce7d3d1fd0032a19a98408b4112d585718839a8021dcbd73a58",
+    "field_pointer": "/comments/0/text",
+    "text": "Overlap: beads validate already reports invalid JSON, dangling blockers and cycle messages; pm-graph owns workspace analytics; pm-csv owns table provenance. Use core RelationshipGraph and analyzeRelationshipExecution over opaque row tokens to preserve case-sensitive external identities. Add a read-only repair packet, bounded candidate edge removals, explicit gaps and source-byte revision guards. No tracker writes, journals or role-based lifecycle decisions are added.",
+    "content_digest": "da74bae8966f1bfba27f3b5d7a23d93b06ab8cb9a72a2361640592f8c6fb6036",
+    "url": "https://github.com/unbraind/pm-beads/blob/85b6392112929e967dfb5e174c773a0590124c35/.agents/pm/features/pm-beads-y6cp.toon"
+  },
+  {
+    "repo": "pm-beads",
+    "revision": "85b6392112929e967dfb5e174c773a0590124c35",
+    "item_id": "pm-beads-y6cp",
+    "item_hash": "7c5562068ad52ce7d3d1fd0032a19a98408b4112d585718839a8021dcbd73a58",
+    "field_pointer": "/comments/1/text",
+    "text": "Implementation: typed read-only packet and preview APIs, canonical CLI plus alias, lazy public graph SDK loading, exact UTF-8 source revision guard, isolated row gaps, integer work/input/output ceilings, and bounded fully revalidated edge-removal candidates. Targeted numeric/alias/extreme-value corpora and 512 seeded graph operation sequences compare an independent transitive-closure model, preserve every untouched native field, replay older inputs and verify native state read back through the real SDK. Existing import/export/transfer/reconciliation/outgoing model suites remain in the unchanged CI full gate. Behavioral revert in a disposable non-git copy suppressed only the new cycle witness; the 10000-row regression failed (expected one cycle, got zero). New module measured 100% lines, branches and functions. Follow-up required for previously ignored blocks-only provider rows; repair keeps them explicit gaps.",
+    "content_digest": "9ea94aab9c7613743c18bcdcdba8f506ccc374a137d49607f526c8c437812b0e",
+    "url": "https://github.com/unbraind/pm-beads/blob/85b6392112929e967dfb5e174c773a0590124c35/.agents/pm/features/pm-beads-y6cp.toon"
+  },
+  {
+    "repo": "pm-ops",
+    "revision": "274c15895a88a12bec3d154a7a0ebf61e014b799",
+    "item_id": "ops-sdk-adoption-1025",
+    "item_hash": "009a459d63edbf2acb69ed41a03afa1db4057620fcd5efb7b99b5a50a6d7ca19",
+    "field_pointer": "/description",
+    "text": "Replace both unused SDK findings from the October audit. Preserve observational snapshots, independent byte-scope checks and live history verification; prove equivalence against public tracker copies and behavioural reverts.",
+    "content_digest": "97f232b1b2c25fa910b34842d084ecefeb9147657cfe0556a559e9b70e68c5d6",
+    "url": "https://github.com/unbraind/pm-ops/blob/274c15895a88a12bec3d154a7a0ebf61e014b799/.agents/pm/tasks/ops-sdk-adoption-1025.toon"
+  },
+  {
+    "repo": "pm-ops",
+    "revision": "274c15895a88a12bec3d154a7a0ebf61e014b799",
+    "item_id": "ops-sdk-adoption-1025",
+    "item_hash": "009a459d63edbf2acb69ed41a03afa1db4057620fcd5efb7b99b5a50a6d7ca19",
+    "field_pointer": "/expected_result",
+    "text": "Canonical SDK backend/diagnostic reads preserve healthy outputs, observational source bytes and independently verified history.",
+    "content_digest": "7b3aced643f467267677fe03cce3e6d55fa9b77e534f5700676e7727e6bdd20d",
+    "url": "https://github.com/unbraind/pm-ops/blob/274c15895a88a12bec3d154a7a0ebf61e014b799/.agents/pm/tasks/ops-sdk-adoption-1025.toon"
+  },
+  {
+    "repo": "pm-ops",
+    "revision": "274c15895a88a12bec3d154a7a0ebf61e014b799",
+    "item_id": "ops-sdk-adoption-1025",
+    "item_hash": "009a459d63edbf2acb69ed41a03afa1db4057620fcd5efb7b99b5a50a6d7ca19",
+    "field_pointer": "/actual_result",
+    "text": "Inspected both SDK delegation paths and integrity checks on main; the linked focused regression suite passes. Two historical opt-in live-fleet cases remain explicitly outside the default suite.",
+    "content_digest": "4ca3ff7c08366448e8144457d26d824a3a33636422823870c78bc7e40782031c",
+    "url": "https://github.com/unbraind/pm-ops/blob/274c15895a88a12bec3d154a7a0ebf61e014b799/.agents/pm/tasks/ops-sdk-adoption-1025.toon"
+  },
+  {
+    "repo": "pm-ops",
+    "revision": "274c15895a88a12bec3d154a7a0ebf61e014b799",
+    "item_id": "ops-sdk-adoption-1025",
+    "item_hash": "009a459d63edbf2acb69ed41a03afa1db4057620fcd5efb7b99b5a50a6d7ca19",
+    "field_pointer": "/resolution",
+    "text": "Delivered by PR #208, merge 11607ad5e9f5a841768a8e47bb91b0970c38091d, merged 2026-10-25T18:36:20Z. backend-capabilities.ts uses PmClient.listAllComplete/get; diagnostic-probes.ts uses listAllItemMetadata while retaining raw scope checks and fresh verifyHistoryEntries. test/backend-capabilities.test.ts and test/diagnostic-plans.test.ts exercise non-git read-only sources, identity refusals and corruption after cache priming. docs/sdk-adoption-1025.md retains differential and behavioural revert receipts.",
+    "content_digest": "dd5288511e5533c3496fd3b7e2f8d112309acecec9e2ad1e9f69922063ac2943",
+    "url": "https://github.com/unbraind/pm-ops/blob/274c15895a88a12bec3d154a7a0ebf61e014b799/.agents/pm/tasks/ops-sdk-adoption-1025.toon"
+  },
+  {
+    "repo": "pm-ops",
+    "revision": "274c15895a88a12bec3d154a7a0ebf61e014b799",
+    "item_id": "ops-sdk-adoption-1025",
+    "item_hash": "009a459d63edbf2acb69ed41a03afa1db4057620fcd5efb7b99b5a50a6d7ca19",
+    "field_pointer": "/comments/0/text",
+    "text": "Related SDK adoption: ops-3w9m (canonical fleet metric reads), ops-hiee (SDK certification), ops-sdk-settlement-floor (separate receipt-history assurance floor). Scope: backend-capabilities.ts list/get via PmClient complete-list/get and diagnostic-probes.ts enumeration via listAllItemMetadata; retain independent scope and document/history verification. No dependency pin changes.",
+    "content_digest": "d959c6c4acc9369d04e5811bb4c4c685f3a54c607869dcd9e69b47304f157975",
+    "url": "https://github.com/unbraind/pm-ops/blob/274c15895a88a12bec3d154a7a0ebf61e014b799/.agents/pm/tasks/ops-sdk-adoption-1025.toon"
+  },
+  {
+    "repo": "pm-ops",
+    "revision": "274c15895a88a12bec3d154a7a0ebf61e014b799",
+    "item_id": "ops-sdk-adoption-1025",
+    "item_hash": "009a459d63edbf2acb69ed41a03afa1db4057620fcd5efb7b99b5a50a6d7ca19",
+    "field_pointer": "/comments/1/text",
+    "text": "Implemented PmClient.listAllComplete/get in disposable backend snapshots and listAllItemMetadata in diagnostic snapshots. Independent physical count, UTF-8 and SDK format-version checks preserve failures normalized enumeration would otherwise hide. History still uses readHistorySnapshot plus verifyHistoryEntries against freshly read source documents. Added cache-then-corrupt coverage with real metadata/event caches. The low-level SDK list accepts ahead-of-runtime format versions, so scanItemFormatVersions explicitly retains the previous refusal.",
+    "content_digest": "88128d27dcb54c04bda2659648a26a7fab4e3666ba5b5f38c83de7cc2f58585a",
+    "url": "https://github.com/unbraind/pm-ops/blob/274c15895a88a12bec3d154a7a0ebf61e014b799/.agents/pm/tasks/ops-sdk-adoption-1025.toon"
+  },
+  {
+    "repo": "pm-ops",
+    "revision": "274c15895a88a12bec3d154a7a0ebf61e014b799",
+    "item_id": "ops-sdk-adoption-1025",
+    "item_hash": "009a459d63edbf2acb69ed41a03afa1db4057620fcd5efb7b99b5a50a6d7ca19",
+    "field_pointer": "/comments/2/text",
+    "text": "Differential proof: origin/main build 2f28e15 versus candidate on read-only public pm-ops and pm-context tracker exports in non-git temporary directories, empty PATH and Git ceiling. Eight complete outputs identical: 246 items and 3126 verified history entries; source byte fingerprints unchanged. Details and exact commands: docs/sdk-adoption-1025.md.",
+    "content_digest": "c455df1498b37781fac1f0a600e9a6cbb1b0321cd60c095680df1f77424215dc",
+    "url": "https://github.com/unbraind/pm-ops/blob/274c15895a88a12bec3d154a7a0ebf61e014b799/.agents/pm/tasks/ops-sdk-adoption-1025.toon"
+  }
+]

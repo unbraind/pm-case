@@ -39,13 +39,31 @@ jobs:
           fetch-tags: true
           persist-credentials: false
 
+      - name: Provision minimum acceptance runtime
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
+        with:
+          node-version: 22.19.0
+
+      - name: Retain minimum acceptance runtime
+        run: echo "PM_CASE_NODE_22=$(command -v node)" >> "$GITHUB_ENV"
+
+      - name: Provision current acceptance runtime
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
+        with:
+          node-version: 26.13.0
+
+      - name: Retain current acceptance runtime
+        run: echo "PM_CASE_NODE_26=$(command -v node)" >> "$GITHUB_ENV"
+
       - name: Setup Node.js
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
         with:
-          node-version: 22
+          node-version: 22.19.0
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: 1.3.5
 
       - name: Install dependencies
         run: npm ci
@@ -253,7 +271,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
         with:
-          node-version: 22
+          node-version: 22.19.0
           registry-url: "https://registry.npmjs.org"
 
       - name: Use an npm that supports trusted publishing
@@ -466,8 +484,8 @@ jobs:
               --repo "$GITHUB_REPOSITORY" \
               --base main \
               --head "$release_branch" \
-              --title "Release pm-unit ${RELEASE_TAG}" \
-              --body "Automated daily release metadata for \`${RELEASE_TAG}\`. The release gate passed before this PR was created; npm publication and tagging remain blocked until this protected PR is merged. Tracking: [pm-unit-release](https://github.com/unbraind/pm-unit/blob/main/.agents/pm/epics/pm-unit-release.toon).")"
+              --title "Release pm-case ${RELEASE_TAG}" \
+              --body "Automated daily release metadata for \`${RELEASE_TAG}\`. The release gate passed before this PR was created; npm publication and tagging remain blocked until this protected PR is merged. Tracking: [pm-case-release](https://github.com/unbraind/pm-case/blob/main/.agents/pm/epics/pm-case-release.toon).")"
             pr_number="${pr_url##*/}"
           fi
 
@@ -922,6 +940,8 @@ jobs:
     steps:
       - name: Setup Bun acceptance
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: 1.3.5
 
       - name: Verify bun install of published package
         id: verify_bun
@@ -930,7 +950,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          pkg_name="pm-unit"
+          pkg_name="pm-case"
           pkg_version="${NPM_VERSION}"
           mkdir -p "$RUNNER_TEMP/bun-verify"
           cd "$RUNNER_TEMP/bun-verify"

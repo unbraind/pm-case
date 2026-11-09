@@ -1,0 +1,18 @@
+id: pm-case-dev-audit
+title: Review development-only glob audit advisory
+description: "Credential-free npm audit reports three moderate development-only entries: c8 and test-exclude depend on glob affected by GHSA-3g3m-2fjr-6pw4 (AbortSignal cancellation bypass permits traversal after timeout). Production-only audit reports zero vulnerabilities. Package and lockfile are unchanged by review round six. Review the development dependency graph in a separate change; npm suggests a major-version c8 change, so do not apply audit fix automatically."
+type: Task
+status: open
+priority: 3
+tags[3]: dependencies,dev-only,security
+created_at: "2026-11-09T06:14:26.009Z"
+updated_at: "2026-11-09T06:14:34.768Z"
+author: codex-agent
+acceptance_criteria: "Choose a supported remediation, preserve coverage thresholds, and run the complete release gates; npm audit --omit=dev must remain clean."
+parent: pm-case-release
+files[2]{path,scope}:
+  package-lock.json,project
+  package.json,project
+docs[1]{path,scope}:
+  "https://github.com/advisories/GHSA-3g3m-2fjr-6pw4",project
+body: ""

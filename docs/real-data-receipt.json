@@ -1,0 +1,2128 @@
+{
+  "schema_version": 1,
+  "passages": 24,
+  "source_revisions": [
+    "d48dd3e07cf3b2d7153b2b687fa581735cffad0a",
+    "85b6392112929e967dfb5e174c773a0590124c35",
+    "274c15895a88a12bec3d154a7a0ebf61e014b799"
+  ],
+  "matrices": [
+    {
+      "model": {
+        "model_key": "pm-csv",
+        "factors": [
+          {
+            "factor_id": "runtime",
+            "values": [
+              "node",
+              "bun"
+            ],
+            "label": "runtime",
+            "source_refs": [
+              {
+                "item_id": "pm-csv-row-lineage",
+                "item_hash": "0c5757d541f873ab4935627de8ecbe70888a042f23cf3600f92e86b083884766",
+                "field_pointer": "/acceptance_criteria",
+                "content_digest": "03be573bd69eadb468fcdb06e7bf714c8a08ac28ef883ed3a5ec0a3c5b7a4ef6"
+              },
+              {
+                "item_id": "pm-csv-row-lineage",
+                "item_hash": "0c5757d541f873ab4935627de8ecbe70888a042f23cf3600f92e86b083884766",
+                "field_pointer": "/comments/0/text",
+                "content_digest": "bba4f72e7449e74178760a5a0aafef4dc4d043c473ea232f3868404445ffb375"
+              },
+              {
+                "item_id": "pm-csv-row-lineage",
+                "item_hash": "0c5757d541f873ab4935627de8ecbe70888a042f23cf3600f92e86b083884766",
+                "field_pointer": "/comments/1/text",
+                "content_digest": "2881a7ecb97378b83fa3724e6ebf10b394f467e85626efc58c07d07a4c86546e"
+              },
+              {
+                "item_id": "pm-csv-row-lineage",
+                "item_hash": "0c5757d541f873ab4935627de8ecbe70888a042f23cf3600f92e86b083884766",
+                "field_pointer": "/comments/2/text",
+                "content_digest": "8dde509d86f95fffd3728e15cbf1493be6bafa4123ec8be313276ede6ce7e030"
+              },
+              {
+                "item_id": "pm-csv-row-lineage",
+                "item_hash": "0c5757d541f873ab4935627de8ecbe70888a042f23cf3600f92e86b083884766",
+                "field_pointer": "/comments/3/text",
+                "content_digest": "54525a56c100e25cdc55603c4e9170b0076aae48e46e0e4e3711e4541d3a1385"
+              },
+              {
+                "item_id": "pm-csv-zv31",
+                "item_hash": "13b693a80468f9b5ea301b8b8358c32046afa6f4e77a276aa8283bcd2b7e6c94",
+                "field_pointer": "/description",
+                "content_digest": "5b03cf3968be5de0a620b526f80903c04b72a3fac0bb58946309f8d84af7a6e3"
+              },
+              {
+                "item_id": "pm-csv-zv31",
+                "item_hash": "13b693a80468f9b5ea301b8b8358c32046afa6f4e77a276aa8283bcd2b7e6c94",
+                "field_pointer": "/acceptance_criteria",
+                "content_digest": "6dc8d1ef5ec15e2151351bc72ca56ffc1ad1443ba3aaed0aca2ded31e97064e9"
+              },
+              {
+                "item_id": "pm-csv-zv31",
+                "item_hash": "13b693a80468f9b5ea301b8b8358c32046afa6f4e77a276aa8283bcd2b7e6c94",
+                "field_pointer": "/repro_steps",
+                "content_digest": "f2b3f25b97391a4745fb2c6bfae52f87aee875150c957bec9362bf9b88bc6f78"
+              },
+              {
+                "item_id": "pm-csv-zv31",
+                "item_hash": "13b693a80468f9b5ea301b8b8358c32046afa6f4e77a276aa8283bcd2b7e6c94",
+                "field_pointer": "/expected_result",
+                "content_digest": "145f2c04d705435c010d37287bad477a20fe8aad4044ddbbcd17ee512ee19531"
+              },
+              {
+                "item_id": "pm-csv-zv31",
+                "item_hash": "13b693a80468f9b5ea301b8b8358c32046afa6f4e77a276aa8283bcd2b7e6c94",
+                "field_pointer": "/actual_result",
+                "content_digest": "57db82ac39093b285b1f1219541f1ae9ebe9519972fb67bb8a4c22005442edfb"
+              }
+            ]
+          },
+          {
+            "factor_id": "close_receipt",
+            "values": [
+              "ok",
+              "conflict"
+            ],
+            "label": "close_receipt",
+            "source_refs": [
+              {
+                "item_id": "pm-csv-row-lineage",
+                "item_hash": "0c5757d541f873ab4935627de8ecbe70888a042f23cf3600f92e86b083884766",
+                "field_pointer": "/acceptance_criteria",
+                "content_digest": "03be573bd69eadb468fcdb06e7bf714c8a08ac28ef883ed3a5ec0a3c5b7a4ef6"
+              },
+              {
+                "item_id": "pm-csv-row-lineage",
+                "item_hash": "0c5757d541f873ab4935627de8ecbe70888a042f23cf3600f92e86b083884766",
+                "field_pointer": "/comments/0/text",
+                "content_digest": "bba4f72e7449e74178760a5a0aafef4dc4d043c473ea232f3868404445ffb375"
+              },
+              {
+                "item_id": "pm-csv-row-lineage",
+                "item_hash": "0c5757d541f873ab4935627de8ecbe70888a042f23cf3600f92e86b083884766",
+                "field_pointer": "/comments/1/text",
+                "content_digest": "2881a7ecb97378b83fa3724e6ebf10b394f467e85626efc58c07d07a4c86546e"
+              },
+              {
+                "item_id": "pm-csv-row-lineage",
+                "item_hash": "0c5757d541f873ab4935627de8ecbe70888a042f23cf3600f92e86b083884766",
+                "field_pointer": "/comments/2/text",
+                "content_digest": "8dde509d86f95fffd3728e15cbf1493be6bafa4123ec8be313276ede6ce7e030"
+              },
+              {
+                "item_id": "pm-csv-row-lineage",
+                "item_hash": "0c5757d541f873ab4935627de8ecbe70888a042f23cf3600f92e86b083884766",
+                "field_pointer": "/comments/3/text",
+                "content_digest": "54525a56c100e25cdc55603c4e9170b0076aae48e46e0e4e3711e4541d3a1385"
+              },
+              {
+                "item_id": "pm-csv-zv31",
+                "item_hash": "13b693a80468f9b5ea301b8b8358c32046afa6f4e77a276aa8283bcd2b7e6c94",
+                "field_pointer": "/description",
+                "content_digest": "5b03cf3968be5de0a620b526f80903c04b72a3fac0bb58946309f8d84af7a6e3"
+              },
+              {
+                "item_id": "pm-csv-zv31",
+                "item_hash": "13b693a80468f9b5ea301b8b8358c32046afa6f4e77a276aa8283bcd2b7e6c94",
+                "field_pointer": "/acceptance_criteria",
+                "content_digest": "6dc8d1ef5ec15e2151351bc72ca56ffc1ad1443ba3aaed0aca2ded31e97064e9"
+              },
+              {
+                "item_id": "pm-csv-zv31",
+                "item_hash": "13b693a80468f9b5ea301b8b8358c32046afa6f4e77a276aa8283bcd2b7e6c94",
+                "field_pointer": "/repro_steps",
+                "content_digest": "f2b3f25b97391a4745fb2c6bfae52f87aee875150c957bec9362bf9b88bc6f78"
+              },
+              {
+                "item_id": "pm-csv-zv31",
+                "item_hash": "13b693a80468f9b5ea301b8b8358c32046afa6f4e77a276aa8283bcd2b7e6c94",
+                "field_pointer": "/expected_result",
+                "content_digest": "145f2c04d705435c010d37287bad477a20fe8aad4044ddbbcd17ee512ee19531"
+              },
+              {
+                "item_id": "pm-csv-zv31",
+                "item_hash": "13b693a80468f9b5ea301b8b8358c32046afa6f4e77a276aa8283bcd2b7e6c94",
+                "field_pointer": "/actual_result",
+                "content_digest": "57db82ac39093b285b1f1219541f1ae9ebe9519972fb67bb8a4c22005442edfb"
+              }
+            ]
+          },
+          {
+            "factor_id": "persisted_status",
+            "values": [
+              "closed",
+              "open"
+            ],
+            "label": "persisted_status",
+            "source_refs": [
+              {
+                "item_id": "pm-csv-row-lineage",
+                "item_hash": "0c5757d541f873ab4935627de8ecbe70888a042f23cf3600f92e86b083884766",
+                "field_pointer": "/acceptance_criteria",
+                "content_digest": "03be573bd69eadb468fcdb06e7bf714c8a08ac28ef883ed3a5ec0a3c5b7a4ef6"
+              },
+              {
+                "item_id": "pm-csv-row-lineage",
+                "item_hash": "0c5757d541f873ab4935627de8ecbe70888a042f23cf3600f92e86b083884766",
+                "field_pointer": "/comments/0/text",
+                "content_digest": "bba4f72e7449e74178760a5a0aafef4dc4d043c473ea232f3868404445ffb375"
+              },
+              {
+                "item_id": "pm-csv-row-lineage",
+                "item_hash": "0c5757d541f873ab4935627de8ecbe70888a042f23cf3600f92e86b083884766",
+                "field_pointer": "/comments/1/text",
+                "content_digest": "2881a7ecb97378b83fa3724e6ebf10b394f467e85626efc58c07d07a4c86546e"
+              },
+              {
+                "item_id": "pm-csv-row-lineage",
+                "item_hash": "0c5757d541f873ab4935627de8ecbe70888a042f23cf3600f92e86b083884766",
+                "field_pointer": "/comments/2/text",
+                "content_digest": "8dde509d86f95fffd3728e15cbf1493be6bafa4123ec8be313276ede6ce7e030"
+              },
+              {
+                "item_id": "pm-csv-row-lineage",
+                "item_hash": "0c5757d541f873ab4935627de8ecbe70888a042f23cf3600f92e86b083884766",
+                "field_pointer": "/comments/3/text",
+                "content_digest": "54525a56c100e25cdc55603c4e9170b0076aae48e46e0e4e3711e4541d3a1385"
+              },
+              {
+                "item_id": "pm-csv-zv31",
+                "item_hash": "13b693a80468f9b5ea301b8b8358c32046afa6f4e77a276aa8283bcd2b7e6c94",
+                "field_pointer": "/description",
+                "content_digest": "5b03cf3968be5de0a620b526f80903c04b72a3fac0bb58946309f8d84af7a6e3"
+              },
+              {
+                "item_id": "pm-csv-zv31",
+                "item_hash": "13b693a80468f9b5ea301b8b8358c32046afa6f4e77a276aa8283bcd2b7e6c94",
+                "field_pointer": "/acceptance_criteria",
+                "content_digest": "6dc8d1ef5ec15e2151351bc72ca56ffc1ad1443ba3aaed0aca2ded31e97064e9"
+              },
+              {
+                "item_id": "pm-csv-zv31",
+                "item_hash": "13b693a80468f9b5ea301b8b8358c32046afa6f4e77a276aa8283bcd2b7e6c94",
+                "field_pointer": "/repro_steps",
+                "content_digest": "f2b3f25b97391a4745fb2c6bfae52f87aee875150c957bec9362bf9b88bc6f78"
+              },
+              {
+                "item_id": "pm-csv-zv31",
+                "item_hash": "13b693a80468f9b5ea301b8b8358c32046afa6f4e77a276aa8283bcd2b7e6c94",
+                "field_pointer": "/expected_result",
+                "content_digest": "145f2c04d705435c010d37287bad477a20fe8aad4044ddbbcd17ee512ee19531"
+              },
+              {
+                "item_id": "pm-csv-zv31",
+                "item_hash": "13b693a80468f9b5ea301b8b8358c32046afa6f4e77a276aa8283bcd2b7e6c94",
+                "field_pointer": "/actual_result",
+                "content_digest": "57db82ac39093b285b1f1219541f1ae9ebe9519972fb67bb8a4c22005442edfb"
+              }
+            ]
+          },
+          {
+            "factor_id": "cleanup",
+            "values": [
+              "ok",
+              "fail"
+            ],
+            "label": "cleanup",
+            "source_refs": [
+              {
+                "item_id": "pm-csv-row-lineage",
+                "item_hash": "0c5757d541f873ab4935627de8ecbe70888a042f23cf3600f92e86b083884766",
+                "field_pointer": "/acceptance_criteria",
+                "content_digest": "03be573bd69eadb468fcdb06e7bf714c8a08ac28ef883ed3a5ec0a3c5b7a4ef6"
+              },
+              {
+                "item_id": "pm-csv-row-lineage",
+                "item_hash": "0c5757d541f873ab4935627de8ecbe70888a042f23cf3600f92e86b083884766",
+                "field_pointer": "/comments/0/text",
+                "content_digest": "bba4f72e7449e74178760a5a0aafef4dc4d043c473ea232f3868404445ffb375"
+              },
+              {
+                "item_id": "pm-csv-row-lineage",
+                "item_hash": "0c5757d541f873ab4935627de8ecbe70888a042f23cf3600f92e86b083884766",
+                "field_pointer": "/comments/1/text",
+                "content_digest": "2881a7ecb97378b83fa3724e6ebf10b394f467e85626efc58c07d07a4c86546e"
+              },
+              {
+                "item_id": "pm-csv-row-lineage",
+                "item_hash": "0c5757d541f873ab4935627de8ecbe70888a042f23cf3600f92e86b083884766",
+                "field_pointer": "/comments/2/text",
+                "content_digest": "8dde509d86f95fffd3728e15cbf1493be6bafa4123ec8be313276ede6ce7e030"
+              },
+              {
+                "item_id": "pm-csv-row-lineage",
+                "item_hash": "0c5757d541f873ab4935627de8ecbe70888a042f23cf3600f92e86b083884766",
+                "field_pointer": "/comments/3/text",
+                "content_digest": "54525a56c100e25cdc55603c4e9170b0076aae48e46e0e4e3711e4541d3a1385"
+              },
+              {
+                "item_id": "pm-csv-zv31",
+                "item_hash": "13b693a80468f9b5ea301b8b8358c32046afa6f4e77a276aa8283bcd2b7e6c94",
+                "field_pointer": "/description",
+                "content_digest": "5b03cf3968be5de0a620b526f80903c04b72a3fac0bb58946309f8d84af7a6e3"
+              },
+              {
+                "item_id": "pm-csv-zv31",
+                "item_hash": "13b693a80468f9b5ea301b8b8358c32046afa6f4e77a276aa8283bcd2b7e6c94",
+                "field_pointer": "/acceptance_criteria",
+                "content_digest": "6dc8d1ef5ec15e2151351bc72ca56ffc1ad1443ba3aaed0aca2ded31e97064e9"
+              },
+              {
+                "item_id": "pm-csv-zv31",
+                "item_hash": "13b693a80468f9b5ea301b8b8358c32046afa6f4e77a276aa8283bcd2b7e6c94",
+                "field_pointer": "/repro_steps",
+                "content_digest": "f2b3f25b97391a4745fb2c6bfae52f87aee875150c957bec9362bf9b88bc6f78"
+              },
+              {
+                "item_id": "pm-csv-zv31",
+                "item_hash": "13b693a80468f9b5ea301b8b8358c32046afa6f4e77a276aa8283bcd2b7e6c94",
+                "field_pointer": "/expected_result",
+                "content_digest": "145f2c04d705435c010d37287bad477a20fe8aad4044ddbbcd17ee512ee19531"
+              },
+              {
+                "item_id": "pm-csv-zv31",
+                "item_hash": "13b693a80468f9b5ea301b8b8358c32046afa6f4e77a276aa8283bcd2b7e6c94",
+                "field_pointer": "/actual_result",
+                "content_digest": "57db82ac39093b285b1f1219541f1ae9ebe9519972fb67bb8a4c22005442edfb"
+              }
+            ]
+          }
+        ],
+        "strength": 2,
+        "forbidden_tuples": [
+          {
+            "assignment": {
+              "close_receipt": "ok",
+              "persisted_status": "open"
+            },
+            "rationale": "Excluded by the scoped operation contract documented in docs/real-data.md",
+            "source_refs": [
+              {
+                "item_id": "pm-csv-row-lineage",
+                "item_hash": "0c5757d541f873ab4935627de8ecbe70888a042f23cf3600f92e86b083884766",
+                "field_pointer": "/acceptance_criteria",
+                "content_digest": "03be573bd69eadb468fcdb06e7bf714c8a08ac28ef883ed3a5ec0a3c5b7a4ef6"
+              },
+              {
+                "item_id": "pm-csv-row-lineage",
+                "item_hash": "0c5757d541f873ab4935627de8ecbe70888a042f23cf3600f92e86b083884766",
+                "field_pointer": "/comments/0/text",
+                "content_digest": "bba4f72e7449e74178760a5a0aafef4dc4d043c473ea232f3868404445ffb375"
+              },
+              {
+                "item_id": "pm-csv-row-lineage",
+                "item_hash": "0c5757d541f873ab4935627de8ecbe70888a042f23cf3600f92e86b083884766",
+                "field_pointer": "/comments/1/text",
+                "content_digest": "2881a7ecb97378b83fa3724e6ebf10b394f467e85626efc58c07d07a4c86546e"
+              },
+              {
+                "item_id": "pm-csv-row-lineage",
+                "item_hash": "0c5757d541f873ab4935627de8ecbe70888a042f23cf3600f92e86b083884766",
+                "field_pointer": "/comments/2/text",
+                "content_digest": "8dde509d86f95fffd3728e15cbf1493be6bafa4123ec8be313276ede6ce7e030"
+              },
+              {
+                "item_id": "pm-csv-row-lineage",
+                "item_hash": "0c5757d541f873ab4935627de8ecbe70888a042f23cf3600f92e86b083884766",
+                "field_pointer": "/comments/3/text",
+                "content_digest": "54525a56c100e25cdc55603c4e9170b0076aae48e46e0e4e3711e4541d3a1385"
+              },
+              {
+                "item_id": "pm-csv-zv31",
+                "item_hash": "13b693a80468f9b5ea301b8b8358c32046afa6f4e77a276aa8283bcd2b7e6c94",
+                "field_pointer": "/description",
+                "content_digest": "5b03cf3968be5de0a620b526f80903c04b72a3fac0bb58946309f8d84af7a6e3"
+              },
+              {
+                "item_id": "pm-csv-zv31",
+                "item_hash": "13b693a80468f9b5ea301b8b8358c32046afa6f4e77a276aa8283bcd2b7e6c94",
+                "field_pointer": "/acceptance_criteria",
+                "content_digest": "6dc8d1ef5ec15e2151351bc72ca56ffc1ad1443ba3aaed0aca2ded31e97064e9"
+              },
+              {
+                "item_id": "pm-csv-zv31",
+                "item_hash": "13b693a80468f9b5ea301b8b8358c32046afa6f4e77a276aa8283bcd2b7e6c94",
+                "field_pointer": "/repro_steps",
+                "content_digest": "f2b3f25b97391a4745fb2c6bfae52f87aee875150c957bec9362bf9b88bc6f78"
+              },
+              {
+                "item_id": "pm-csv-zv31",
+                "item_hash": "13b693a80468f9b5ea301b8b8358c32046afa6f4e77a276aa8283bcd2b7e6c94",
+                "field_pointer": "/expected_result",
+                "content_digest": "145f2c04d705435c010d37287bad477a20fe8aad4044ddbbcd17ee512ee19531"
+              },
+              {
+                "item_id": "pm-csv-zv31",
+                "item_hash": "13b693a80468f9b5ea301b8b8358c32046afa6f4e77a276aa8283bcd2b7e6c94",
+                "field_pointer": "/actual_result",
+                "content_digest": "57db82ac39093b285b1f1219541f1ae9ebe9519972fb67bb8a4c22005442edfb"
+              }
+            ]
+          }
+        ],
+        "mandatory_cases": [
+          {
+            "runtime": "node",
+            "close_receipt": "conflict",
+            "persisted_status": "closed",
+            "cleanup": "ok"
+          }
+        ],
+        "subject_digest": "a59fa30a4977e8196c82991627eb94d8d536c70e94408649143bbc2c5f21409e"
+      },
+      "owner_id": "proof-pm-csv",
+      "owner_revision": "9f9448bf6bb2e31adc49e603964cc1150db8597166257bc5284c4ebdcb19c45e",
+      "outcomes": [
+        {
+          "execution_id": "public-harness",
+          "case_id": "6c3fbc5eb50cc13f3fc6c1b610162f2edff24e190977748dc8dce3a90c1f936c",
+          "subject_digest": "a59fa30a4977e8196c82991627eb94d8d536c70e94408649143bbc2c5f21409e",
+          "oracle_digest": "c4432a3dccfc52e22988938e745f3e2849f72edf0796f270bc0d5539ed2d9219",
+          "result": "pass",
+          "reason": "Scoped public test harness passed for the explicitly pinned coordinates",
+          "source_refs": [
+            {
+              "item_id": "proof-evidence",
+              "item_hash": "c247e2525790c70818f099f81627c16b2b773273fd12e9a3a6a152473657d089",
+              "field_pointer": "/description",
+              "content_digest": "1bd5e1b54bad64e908d47ef23064892ae74a980244facabbfd0f91d66d1a4a6d"
+            }
+          ],
+          "observed_at": "2026-11-06T00:00:00Z",
+          "recorder": "public-proof",
+          "evidence_grade": "reported"
+        },
+        {
+          "execution_id": "unavailable",
+          "case_id": "f99f1c7a5731e88266726ba5b1a0e636e2f9a68e39758e6af48b31561c24cc5b",
+          "subject_digest": "a59fa30a4977e8196c82991627eb94d8d536c70e94408649143bbc2c5f21409e",
+          "oracle_digest": "c4432a3dccfc52e22988938e745f3e2849f72edf0796f270bc0d5539ed2d9219",
+          "result": "unresolved",
+          "reason": "This selected combination has not been run; no execution evidence is claimed",
+          "source_refs": [
+            {
+              "item_id": "proof-evidence",
+              "item_hash": "c247e2525790c70818f099f81627c16b2b773273fd12e9a3a6a152473657d089",
+              "field_pointer": "/description",
+              "content_digest": "1bd5e1b54bad64e908d47ef23064892ae74a980244facabbfd0f91d66d1a4a6d"
+            }
+          ],
+          "observed_at": "2026-11-06T00:00:00Z",
+          "recorder": "public-proof",
+          "evidence_grade": "reported"
+        }
+      ],
+      "model_digest": "155eba3253ee93bdd0a4d34475db4d75c17770eca0ad782d27de065cdeee4192",
+      "gold_pair_sha256": "9bce701f6aadddc381aa794699da617cde7f53023e86afcc3578a93634250f9e",
+      "gold_feasible_pairs": [
+        "[[\"cleanup\",\"fail\"],[\"close_receipt\",\"conflict\"]]",
+        "[[\"cleanup\",\"fail\"],[\"close_receipt\",\"ok\"]]",
+        "[[\"cleanup\",\"fail\"],[\"persisted_status\",\"closed\"]]",
+        "[[\"cleanup\",\"fail\"],[\"persisted_status\",\"open\"]]",
+        "[[\"cleanup\",\"fail\"],[\"runtime\",\"bun\"]]",
+        "[[\"cleanup\",\"fail\"],[\"runtime\",\"node\"]]",
+        "[[\"cleanup\",\"ok\"],[\"close_receipt\",\"conflict\"]]",
+        "[[\"cleanup\",\"ok\"],[\"close_receipt\",\"ok\"]]",
+        "[[\"cleanup\",\"ok\"],[\"persisted_status\",\"closed\"]]",
+        "[[\"cleanup\",\"ok\"],[\"persisted_status\",\"open\"]]",
+        "[[\"cleanup\",\"ok\"],[\"runtime\",\"bun\"]]",
+        "[[\"cleanup\",\"ok\"],[\"runtime\",\"node\"]]",
+        "[[\"close_receipt\",\"conflict\"],[\"persisted_status\",\"closed\"]]",
+        "[[\"close_receipt\",\"conflict\"],[\"persisted_status\",\"open\"]]",
+        "[[\"close_receipt\",\"conflict\"],[\"runtime\",\"bun\"]]",
+        "[[\"close_receipt\",\"conflict\"],[\"runtime\",\"node\"]]",
+        "[[\"close_receipt\",\"ok\"],[\"persisted_status\",\"closed\"]]",
+        "[[\"close_receipt\",\"ok\"],[\"runtime\",\"bun\"]]",
+        "[[\"close_receipt\",\"ok\"],[\"runtime\",\"node\"]]",
+        "[[\"persisted_status\",\"closed\"],[\"runtime\",\"bun\"]]",
+        "[[\"persisted_status\",\"closed\"],[\"runtime\",\"node\"]]",
+        "[[\"persisted_status\",\"open\"],[\"runtime\",\"bun\"]]",
+        "[[\"persisted_status\",\"open\"],[\"runtime\",\"node\"]]"
+      ],
+      "cartesian": 16,
+      "feasible": 12,
+      "pairwise_cases": 6,
+      "planned": {
+        "covered": 23,
+        "total": 23
+      },
+      "recorded": {
+        "covered": 6,
+        "total": 23
+      },
+      "case_counts": {
+        "pass": 1,
+        "fail": 0,
+        "unresolved": 1,
+        "unobserved": 5
+      },
+      "excluded": [
+        {
+          "tuple_id": "b0cbe27ace2a119b02748b703db920582f0301d917321b3f55034547f27bb2e2",
+          "assignment": {
+            "close_receipt": "ok",
+            "persisted_status": "open"
+          }
+        }
+      ],
+      "gaps": [
+        {
+          "tuple_id": "de4242f42a5095a051f0508d12e3e5ddaa7bb6021bc529d0859d9ee121d1ad68",
+          "assignment": {
+            "cleanup": "fail",
+            "close_receipt": "conflict"
+          },
+          "reason": "no_comparable_execution"
+        },
+        {
+          "tuple_id": "04c995df5c478329186742f5a641dd27f0c3b858d93d981cd674888909ba27b6",
+          "assignment": {
+            "cleanup": "fail",
+            "close_receipt": "ok"
+          },
+          "reason": "no_comparable_execution"
+        },
+        {
+          "tuple_id": "fdf5f4191455d96dd4f6fa529a09c181132373ea044bcc2134891342cb14d3fd",
+          "assignment": {
+            "cleanup": "ok",
+            "close_receipt": "ok"
+          },
+          "reason": "no_comparable_execution"
+        },
+        {
+          "tuple_id": "78efec5f531041a4568bd7a1cd2f2792b0bf918232298d0bfe39490468a74908",
+          "assignment": {
+            "cleanup": "fail",
+            "persisted_status": "closed"
+          },
+          "reason": "no_comparable_execution"
+        },
+        {
+          "tuple_id": "5a3e4b370dafc05aff73b14e051fa5c4dfa72c1377ea3e85c4108d9de5122dda",
+          "assignment": {
+            "cleanup": "fail",
+            "persisted_status": "open"
+          },
+          "reason": "no_comparable_execution"
+        },
+        {
+          "tuple_id": "bb11ddf419620c63efd8ecb06ba0801e2bb080f5eb37379d003b387dba261c7c",
+          "assignment": {
+            "cleanup": "ok",
+            "persisted_status": "open"
+          },
+          "reason": "no_comparable_execution"
+        },
+        {
+          "tuple_id": "bee9fe49c83001944993317efc38b4c6f07f17c66c39a3a7da25914781387e71",
+          "assignment": {
+            "cleanup": "fail",
+            "runtime": "bun"
+          },
+          "reason": "no_comparable_execution"
+        },
+        {
+          "tuple_id": "ad9ad7329dc130fa9028d5468811cf4c79da2989c21cd2c9353b21472b5d0195",
+          "assignment": {
+            "cleanup": "fail",
+            "runtime": "node"
+          },
+          "reason": "no_comparable_execution"
+        },
+        {
+          "tuple_id": "2c1b1ecb160b2572259f8e5f5b8f0c21e37bcc98cb2cd0359cdaa0f06efe7b22",
+          "assignment": {
+            "cleanup": "ok",
+            "runtime": "bun"
+          },
+          "reason": "no_comparable_execution"
+        },
+        {
+          "tuple_id": "f11e804ce1da1008b265c61c519edb6b7cbc7c3387f8db7006bae5a49318e77b",
+          "assignment": {
+            "close_receipt": "conflict",
+            "persisted_status": "open"
+          },
+          "reason": "no_comparable_execution"
+        },
+        {
+          "tuple_id": "03c2c35caadf3bc6b829396cedb1fec3d8280a5c88b27eb1a05426b9bedf2be1",
+          "assignment": {
+            "close_receipt": "ok",
+            "persisted_status": "closed"
+          },
+          "reason": "no_comparable_execution"
+        },
+        {
+          "tuple_id": "bba412723e5445df09a2e1146209178b1ce0e398495eb3fa5f2b86ab3111f768",
+          "assignment": {
+            "close_receipt": "conflict",
+            "runtime": "bun"
+          },
+          "reason": "no_comparable_execution"
+        },
+        {
+          "tuple_id": "96b0344b6d902bc25ec37985f9a3850f178052816f7b2780d79cb0b28a701b18",
+          "assignment": {
+            "close_receipt": "ok",
+            "runtime": "bun"
+          },
+          "reason": "no_comparable_execution"
+        },
+        {
+          "tuple_id": "42cee1d6fd65b672ae742952c3744af3f72283e2ee9f42461e91ee84795dec26",
+          "assignment": {
+            "close_receipt": "ok",
+            "runtime": "node"
+          },
+          "reason": "no_comparable_execution"
+        },
+        {
+          "tuple_id": "9c941402398aa7974f440c66cafa74c5f218c7432f01ac20bc99b4b050873025",
+          "assignment": {
+            "persisted_status": "closed",
+            "runtime": "bun"
+          },
+          "reason": "no_comparable_execution"
+        },
+        {
+          "tuple_id": "17a2ee38a3cd701f0e4d5a30bd6fbf3fd035b63ee3f4690d4b51c637c0dd06f2",
+          "assignment": {
+            "persisted_status": "open",
+            "runtime": "bun"
+          },
+          "reason": "no_comparable_execution"
+        },
+        {
+          "tuple_id": "8949411cfc86e92f67d7e3a1432b4b97972b4ea4ed944059798137d255694ade",
+          "assignment": {
+            "persisted_status": "open",
+            "runtime": "node"
+          },
+          "reason": "no_comparable_execution"
+        }
+      ],
+      "selected_cases": [
+        {
+          "case_id": "6c3fbc5eb50cc13f3fc6c1b610162f2edff24e190977748dc8dce3a90c1f936c",
+          "assignment": {
+            "runtime": "node",
+            "close_receipt": "conflict",
+            "persisted_status": "closed",
+            "cleanup": "ok"
+          }
+        },
+        {
+          "case_id": "f99f1c7a5731e88266726ba5b1a0e636e2f9a68e39758e6af48b31561c24cc5b",
+          "assignment": {
+            "cleanup": "fail",
+            "close_receipt": "conflict",
+            "persisted_status": "open",
+            "runtime": "bun"
+          }
+        },
+        {
+          "case_id": "1cc980eba58c4b5ffceaf4b0af6c0c249673b7f0ea84f8d6a46fad0f0dd1f6a8",
+          "assignment": {
+            "cleanup": "fail",
+            "close_receipt": "ok",
+            "persisted_status": "closed",
+            "runtime": "bun"
+          }
+        },
+        {
+          "case_id": "4d513df0125754f8476e484fa12ae591ad939ace081c3300adcec671301bc678",
+          "assignment": {
+            "cleanup": "fail",
+            "close_receipt": "conflict",
+            "persisted_status": "open",
+            "runtime": "node"
+          }
+        },
+        {
+          "case_id": "35eb5ffc7dbf23f5302f5cf4dad26d2350a5471e138375b6ea699c0468ebf5f0",
+          "assignment": {
+            "cleanup": "ok",
+            "close_receipt": "conflict",
+            "persisted_status": "open",
+            "runtime": "bun"
+          }
+        },
+        {
+          "case_id": "06e15dfee3ce08f21356ef1d107579bf42a1a69d95d281acbd0a580838c4508a",
+          "assignment": {
+            "cleanup": "ok",
+            "close_receipt": "ok",
+            "persisted_status": "closed",
+            "runtime": "node"
+          }
+        }
+      ],
+      "packet_bytes": 2661,
+      "packet_estimated_tokens": 666,
+      "naive_bytes": 11444,
+      "naive_estimated_tokens": 2861,
+      "three_way": {
+        "product_supported": false,
+        "reason": "v1 refuses strengths above two",
+        "feasible_obligations": 28,
+        "full_assignment_reference_cases": 12
+      }
+    },
+    {
+      "model": {
+        "model_key": "pm-beads",
+        "factors": [
+          {
+            "factor_id": "runtime",
+            "values": [
+              "node",
+              "bun"
+            ],
+            "label": "runtime",
+            "source_refs": [
+              {
+                "item_id": "pm-beads-y6cp",
+                "item_hash": "7c5562068ad52ce7d3d1fd0032a19a98408b4112d585718839a8021dcbd73a58",
+                "field_pointer": "/description",
+                "content_digest": "bea996508ada8ba2fbb0b641cd572df2ca18ae541e7c829f6d0468703877fe11"
+              },
+              {
+                "item_id": "pm-beads-y6cp",
+                "item_hash": "7c5562068ad52ce7d3d1fd0032a19a98408b4112d585718839a8021dcbd73a58",
+                "field_pointer": "/acceptance_criteria",
+                "content_digest": "8f12086a9c312daee53b697866965d3a7098689ea9a3dc28f4d594dcc8dbb731"
+              },
+              {
+                "item_id": "pm-beads-y6cp",
+                "item_hash": "7c5562068ad52ce7d3d1fd0032a19a98408b4112d585718839a8021dcbd73a58",
+                "field_pointer": "/expected_result",
+                "content_digest": "8f12086a9c312daee53b697866965d3a7098689ea9a3dc28f4d594dcc8dbb731"
+              },
+              {
+                "item_id": "pm-beads-y6cp",
+                "item_hash": "7c5562068ad52ce7d3d1fd0032a19a98408b4112d585718839a8021dcbd73a58",
+                "field_pointer": "/actual_result",
+                "content_digest": "240d782afebc3ca8ec8e3f8ed03951711a3666e02537323978c2b27b9915232f"
+              },
+              {
+                "item_id": "pm-beads-y6cp",
+                "item_hash": "7c5562068ad52ce7d3d1fd0032a19a98408b4112d585718839a8021dcbd73a58",
+                "field_pointer": "/resolution",
+                "content_digest": "9b1fd640b5ccd76fbddd988008d2c4d55446d7869b40c4920693458c8231f7a9"
+              },
+              {
+                "item_id": "pm-beads-y6cp",
+                "item_hash": "7c5562068ad52ce7d3d1fd0032a19a98408b4112d585718839a8021dcbd73a58",
+                "field_pointer": "/comments/0/text",
+                "content_digest": "da74bae8966f1bfba27f3b5d7a23d93b06ab8cb9a72a2361640592f8c6fb6036"
+              },
+              {
+                "item_id": "pm-beads-y6cp",
+                "item_hash": "7c5562068ad52ce7d3d1fd0032a19a98408b4112d585718839a8021dcbd73a58",
+                "field_pointer": "/comments/1/text",
+                "content_digest": "9ea94aab9c7613743c18bcdcdba8f506ccc374a137d49607f526c8c437812b0e"
+              }
+            ]
+          },
+          {
+            "factor_id": "line_ending",
+            "values": [
+              "lf",
+              "crlf"
+            ],
+            "label": "line_ending",
+            "source_refs": [
+              {
+                "item_id": "pm-beads-y6cp",
+                "item_hash": "7c5562068ad52ce7d3d1fd0032a19a98408b4112d585718839a8021dcbd73a58",
+                "field_pointer": "/description",
+                "content_digest": "bea996508ada8ba2fbb0b641cd572df2ca18ae541e7c829f6d0468703877fe11"
+              },
+              {
+                "item_id": "pm-beads-y6cp",
+                "item_hash": "7c5562068ad52ce7d3d1fd0032a19a98408b4112d585718839a8021dcbd73a58",
+                "field_pointer": "/acceptance_criteria",
+                "content_digest": "8f12086a9c312daee53b697866965d3a7098689ea9a3dc28f4d594dcc8dbb731"
+              },
+              {
+                "item_id": "pm-beads-y6cp",
+                "item_hash": "7c5562068ad52ce7d3d1fd0032a19a98408b4112d585718839a8021dcbd73a58",
+                "field_pointer": "/expected_result",
+                "content_digest": "8f12086a9c312daee53b697866965d3a7098689ea9a3dc28f4d594dcc8dbb731"
+              },
+              {
+                "item_id": "pm-beads-y6cp",
+                "item_hash": "7c5562068ad52ce7d3d1fd0032a19a98408b4112d585718839a8021dcbd73a58",
+                "field_pointer": "/actual_result",
+                "content_digest": "240d782afebc3ca8ec8e3f8ed03951711a3666e02537323978c2b27b9915232f"
+              },
+              {
+                "item_id": "pm-beads-y6cp",
+                "item_hash": "7c5562068ad52ce7d3d1fd0032a19a98408b4112d585718839a8021dcbd73a58",
+                "field_pointer": "/resolution",
+                "content_digest": "9b1fd640b5ccd76fbddd988008d2c4d55446d7869b40c4920693458c8231f7a9"
+              },
+              {
+                "item_id": "pm-beads-y6cp",
+                "item_hash": "7c5562068ad52ce7d3d1fd0032a19a98408b4112d585718839a8021dcbd73a58",
+                "field_pointer": "/comments/0/text",
+                "content_digest": "da74bae8966f1bfba27f3b5d7a23d93b06ab8cb9a72a2361640592f8c6fb6036"
+              },
+              {
+                "item_id": "pm-beads-y6cp",
+                "item_hash": "7c5562068ad52ce7d3d1fd0032a19a98408b4112d585718839a8021dcbd73a58",
+                "field_pointer": "/comments/1/text",
+                "content_digest": "9ea94aab9c7613743c18bcdcdba8f506ccc374a137d49607f526c8c437812b0e"
+              }
+            ]
+          },
+          {
+            "factor_id": "source",
+            "values": [
+              "stable",
+              "changed"
+            ],
+            "label": "source",
+            "source_refs": [
+              {
+                "item_id": "pm-beads-y6cp",
+                "item_hash": "7c5562068ad52ce7d3d1fd0032a19a98408b4112d585718839a8021dcbd73a58",
+                "field_pointer": "/description",
+                "content_digest": "bea996508ada8ba2fbb0b641cd572df2ca18ae541e7c829f6d0468703877fe11"
+              },
+              {
+                "item_id": "pm-beads-y6cp",
+                "item_hash": "7c5562068ad52ce7d3d1fd0032a19a98408b4112d585718839a8021dcbd73a58",
+                "field_pointer": "/acceptance_criteria",
+                "content_digest": "8f12086a9c312daee53b697866965d3a7098689ea9a3dc28f4d594dcc8dbb731"
+              },
+              {
+                "item_id": "pm-beads-y6cp",
+                "item_hash": "7c5562068ad52ce7d3d1fd0032a19a98408b4112d585718839a8021dcbd73a58",
+                "field_pointer": "/expected_result",
+                "content_digest": "8f12086a9c312daee53b697866965d3a7098689ea9a3dc28f4d594dcc8dbb731"
+              },
+              {
+                "item_id": "pm-beads-y6cp",
+                "item_hash": "7c5562068ad52ce7d3d1fd0032a19a98408b4112d585718839a8021dcbd73a58",
+                "field_pointer": "/actual_result",
+                "content_digest": "240d782afebc3ca8ec8e3f8ed03951711a3666e02537323978c2b27b9915232f"
+              },
+              {
+                "item_id": "pm-beads-y6cp",
+                "item_hash": "7c5562068ad52ce7d3d1fd0032a19a98408b4112d585718839a8021dcbd73a58",
+                "field_pointer": "/resolution",
+                "content_digest": "9b1fd640b5ccd76fbddd988008d2c4d55446d7869b40c4920693458c8231f7a9"
+              },
+              {
+                "item_id": "pm-beads-y6cp",
+                "item_hash": "7c5562068ad52ce7d3d1fd0032a19a98408b4112d585718839a8021dcbd73a58",
+                "field_pointer": "/comments/0/text",
+                "content_digest": "da74bae8966f1bfba27f3b5d7a23d93b06ab8cb9a72a2361640592f8c6fb6036"
+              },
+              {
+                "item_id": "pm-beads-y6cp",
+                "item_hash": "7c5562068ad52ce7d3d1fd0032a19a98408b4112d585718839a8021dcbd73a58",
+                "field_pointer": "/comments/1/text",
+                "content_digest": "9ea94aab9c7613743c18bcdcdba8f506ccc374a137d49607f526c8c437812b0e"
+              }
+            ]
+          },
+          {
+            "factor_id": "topology",
+            "values": [
+              "cycle",
+              "acyclic"
+            ],
+            "label": "topology",
+            "source_refs": [
+              {
+                "item_id": "pm-beads-y6cp",
+                "item_hash": "7c5562068ad52ce7d3d1fd0032a19a98408b4112d585718839a8021dcbd73a58",
+                "field_pointer": "/description",
+                "content_digest": "bea996508ada8ba2fbb0b641cd572df2ca18ae541e7c829f6d0468703877fe11"
+              },
+              {
+                "item_id": "pm-beads-y6cp",
+                "item_hash": "7c5562068ad52ce7d3d1fd0032a19a98408b4112d585718839a8021dcbd73a58",
+                "field_pointer": "/acceptance_criteria",
+                "content_digest": "8f12086a9c312daee53b697866965d3a7098689ea9a3dc28f4d594dcc8dbb731"
+              },
+              {
+                "item_id": "pm-beads-y6cp",
+                "item_hash": "7c5562068ad52ce7d3d1fd0032a19a98408b4112d585718839a8021dcbd73a58",
+                "field_pointer": "/expected_result",
+                "content_digest": "8f12086a9c312daee53b697866965d3a7098689ea9a3dc28f4d594dcc8dbb731"
+              },
+              {
+                "item_id": "pm-beads-y6cp",
+                "item_hash": "7c5562068ad52ce7d3d1fd0032a19a98408b4112d585718839a8021dcbd73a58",
+                "field_pointer": "/actual_result",
+                "content_digest": "240d782afebc3ca8ec8e3f8ed03951711a3666e02537323978c2b27b9915232f"
+              },
+              {
+                "item_id": "pm-beads-y6cp",
+                "item_hash": "7c5562068ad52ce7d3d1fd0032a19a98408b4112d585718839a8021dcbd73a58",
+                "field_pointer": "/resolution",
+                "content_digest": "9b1fd640b5ccd76fbddd988008d2c4d55446d7869b40c4920693458c8231f7a9"
+              },
+              {
+                "item_id": "pm-beads-y6cp",
+                "item_hash": "7c5562068ad52ce7d3d1fd0032a19a98408b4112d585718839a8021dcbd73a58",
+                "field_pointer": "/comments/0/text",
+                "content_digest": "da74bae8966f1bfba27f3b5d7a23d93b06ab8cb9a72a2361640592f8c6fb6036"
+              },
+              {
+                "item_id": "pm-beads-y6cp",
+                "item_hash": "7c5562068ad52ce7d3d1fd0032a19a98408b4112d585718839a8021dcbd73a58",
+                "field_pointer": "/comments/1/text",
+                "content_digest": "9ea94aab9c7613743c18bcdcdba8f506ccc374a137d49607f526c8c437812b0e"
+              }
+            ]
+          },
+          {
+            "factor_id": "action",
+            "values": [
+              "explain",
+              "preview"
+            ],
+            "label": "action",
+            "source_refs": [
+              {
+                "item_id": "pm-beads-y6cp",
+                "item_hash": "7c5562068ad52ce7d3d1fd0032a19a98408b4112d585718839a8021dcbd73a58",
+                "field_pointer": "/description",
+                "content_digest": "bea996508ada8ba2fbb0b641cd572df2ca18ae541e7c829f6d0468703877fe11"
+              },
+              {
+                "item_id": "pm-beads-y6cp",
+                "item_hash": "7c5562068ad52ce7d3d1fd0032a19a98408b4112d585718839a8021dcbd73a58",
+                "field_pointer": "/acceptance_criteria",
+                "content_digest": "8f12086a9c312daee53b697866965d3a7098689ea9a3dc28f4d594dcc8dbb731"
+              },
+              {
+                "item_id": "pm-beads-y6cp",
+                "item_hash": "7c5562068ad52ce7d3d1fd0032a19a98408b4112d585718839a8021dcbd73a58",
+                "field_pointer": "/expected_result",
+                "content_digest": "8f12086a9c312daee53b697866965d3a7098689ea9a3dc28f4d594dcc8dbb731"
+              },
+              {
+                "item_id": "pm-beads-y6cp",
+                "item_hash": "7c5562068ad52ce7d3d1fd0032a19a98408b4112d585718839a8021dcbd73a58",
+                "field_pointer": "/actual_result",
+                "content_digest": "240d782afebc3ca8ec8e3f8ed03951711a3666e02537323978c2b27b9915232f"
+              },
+              {
+                "item_id": "pm-beads-y6cp",
+                "item_hash": "7c5562068ad52ce7d3d1fd0032a19a98408b4112d585718839a8021dcbd73a58",
+                "field_pointer": "/resolution",
+                "content_digest": "9b1fd640b5ccd76fbddd988008d2c4d55446d7869b40c4920693458c8231f7a9"
+              },
+              {
+                "item_id": "pm-beads-y6cp",
+                "item_hash": "7c5562068ad52ce7d3d1fd0032a19a98408b4112d585718839a8021dcbd73a58",
+                "field_pointer": "/comments/0/text",
+                "content_digest": "da74bae8966f1bfba27f3b5d7a23d93b06ab8cb9a72a2361640592f8c6fb6036"
+              },
+              {
+                "item_id": "pm-beads-y6cp",
+                "item_hash": "7c5562068ad52ce7d3d1fd0032a19a98408b4112d585718839a8021dcbd73a58",
+                "field_pointer": "/comments/1/text",
+                "content_digest": "9ea94aab9c7613743c18bcdcdba8f506ccc374a137d49607f526c8c437812b0e"
+              }
+            ]
+          }
+        ],
+        "strength": 2,
+        "forbidden_tuples": [
+          {
+            "assignment": {
+              "topology": "acyclic",
+              "action": "preview"
+            },
+            "rationale": "Excluded by the scoped operation contract documented in docs/real-data.md",
+            "source_refs": [
+              {
+                "item_id": "pm-beads-y6cp",
+                "item_hash": "7c5562068ad52ce7d3d1fd0032a19a98408b4112d585718839a8021dcbd73a58",
+                "field_pointer": "/description",
+                "content_digest": "bea996508ada8ba2fbb0b641cd572df2ca18ae541e7c829f6d0468703877fe11"
+              },
+              {
+                "item_id": "pm-beads-y6cp",
+                "item_hash": "7c5562068ad52ce7d3d1fd0032a19a98408b4112d585718839a8021dcbd73a58",
+                "field_pointer": "/acceptance_criteria",
+                "content_digest": "8f12086a9c312daee53b697866965d3a7098689ea9a3dc28f4d594dcc8dbb731"
+              },
+              {
+                "item_id": "pm-beads-y6cp",
+                "item_hash": "7c5562068ad52ce7d3d1fd0032a19a98408b4112d585718839a8021dcbd73a58",
+                "field_pointer": "/expected_result",
+                "content_digest": "8f12086a9c312daee53b697866965d3a7098689ea9a3dc28f4d594dcc8dbb731"
+              },
+              {
+                "item_id": "pm-beads-y6cp",
+                "item_hash": "7c5562068ad52ce7d3d1fd0032a19a98408b4112d585718839a8021dcbd73a58",
+                "field_pointer": "/actual_result",
+                "content_digest": "240d782afebc3ca8ec8e3f8ed03951711a3666e02537323978c2b27b9915232f"
+              },
+              {
+                "item_id": "pm-beads-y6cp",
+                "item_hash": "7c5562068ad52ce7d3d1fd0032a19a98408b4112d585718839a8021dcbd73a58",
+                "field_pointer": "/resolution",
+                "content_digest": "9b1fd640b5ccd76fbddd988008d2c4d55446d7869b40c4920693458c8231f7a9"
+              },
+              {
+                "item_id": "pm-beads-y6cp",
+                "item_hash": "7c5562068ad52ce7d3d1fd0032a19a98408b4112d585718839a8021dcbd73a58",
+                "field_pointer": "/comments/0/text",
+                "content_digest": "da74bae8966f1bfba27f3b5d7a23d93b06ab8cb9a72a2361640592f8c6fb6036"
+              },
+              {
+                "item_id": "pm-beads-y6cp",
+                "item_hash": "7c5562068ad52ce7d3d1fd0032a19a98408b4112d585718839a8021dcbd73a58",
+                "field_pointer": "/comments/1/text",
+                "content_digest": "9ea94aab9c7613743c18bcdcdba8f506ccc374a137d49607f526c8c437812b0e"
+              }
+            ]
+          }
+        ],
+        "mandatory_cases": [
+          {
+            "runtime": "node",
+            "line_ending": "lf",
+            "source": "changed",
+            "topology": "cycle",
+            "action": "preview"
+          }
+        ],
+        "subject_digest": "67d17f362aeafa6d5f7b69820462554442afff5bafcc9ad34e7dd7b7f679a77b"
+      },
+      "owner_id": "proof-pm-beads",
+      "owner_revision": "86359c380829391cc548604fcb561ceef14958fbd53f2b112c00dc429ab33d25",
+      "outcomes": [
+        {
+          "execution_id": "public-harness",
+          "case_id": "d0344b3eed620976765ed1fa1f1a33ff6df629cc459a458f95fc8d9844afd990",
+          "subject_digest": "67d17f362aeafa6d5f7b69820462554442afff5bafcc9ad34e7dd7b7f679a77b",
+          "oracle_digest": "b68540841055d4295224a6d1917ab787206554da2bf74fe852ff4c5107865777",
+          "result": "pass",
+          "reason": "Scoped public test harness passed for the explicitly pinned coordinates",
+          "source_refs": [
+            {
+              "item_id": "proof-evidence",
+              "item_hash": "c247e2525790c70818f099f81627c16b2b773273fd12e9a3a6a152473657d089",
+              "field_pointer": "/description",
+              "content_digest": "1bd5e1b54bad64e908d47ef23064892ae74a980244facabbfd0f91d66d1a4a6d"
+            }
+          ],
+          "observed_at": "2026-11-06T00:00:00Z",
+          "recorder": "public-proof",
+          "evidence_grade": "reported"
+        },
+        {
+          "execution_id": "unavailable",
+          "case_id": "248824fbac0d0a394ac02618f00748f5b5eaf9929d5de9f4fb3b2e1251b0d684",
+          "subject_digest": "67d17f362aeafa6d5f7b69820462554442afff5bafcc9ad34e7dd7b7f679a77b",
+          "oracle_digest": "b68540841055d4295224a6d1917ab787206554da2bf74fe852ff4c5107865777",
+          "result": "unresolved",
+          "reason": "This selected combination has not been run; no execution evidence is claimed",
+          "source_refs": [
+            {
+              "item_id": "proof-evidence",
+              "item_hash": "c247e2525790c70818f099f81627c16b2b773273fd12e9a3a6a152473657d089",
+              "field_pointer": "/description",
+              "content_digest": "1bd5e1b54bad64e908d47ef23064892ae74a980244facabbfd0f91d66d1a4a6d"
+            }
+          ],
+          "observed_at": "2026-11-06T00:00:00Z",
+          "recorder": "public-proof",
+          "evidence_grade": "reported"
+        }
+      ],
+      "model_digest": "3bf13406379bee48321517d3461e21cddcd24fb531eea179f2d6ead9a4a845ea",
+      "gold_pair_sha256": "e31d82fcb3048489927b67ecb6325c9542bfbb665b75be7ed239669582989f7d",
+      "gold_feasible_pairs": [
+        "[[\"action\",\"explain\"],[\"line_ending\",\"crlf\"]]",
+        "[[\"action\",\"explain\"],[\"line_ending\",\"lf\"]]",
+        "[[\"action\",\"explain\"],[\"runtime\",\"bun\"]]",
+        "[[\"action\",\"explain\"],[\"runtime\",\"node\"]]",
+        "[[\"action\",\"explain\"],[\"source\",\"changed\"]]",
+        "[[\"action\",\"explain\"],[\"source\",\"stable\"]]",
+        "[[\"action\",\"explain\"],[\"topology\",\"acyclic\"]]",
+        "[[\"action\",\"explain\"],[\"topology\",\"cycle\"]]",
+        "[[\"action\",\"preview\"],[\"line_ending\",\"crlf\"]]",
+        "[[\"action\",\"preview\"],[\"line_ending\",\"lf\"]]",
+        "[[\"action\",\"preview\"],[\"runtime\",\"bun\"]]",
+        "[[\"action\",\"preview\"],[\"runtime\",\"node\"]]",
+        "[[\"action\",\"preview\"],[\"source\",\"changed\"]]",
+        "[[\"action\",\"preview\"],[\"source\",\"stable\"]]",
+        "[[\"action\",\"preview\"],[\"topology\",\"cycle\"]]",
+        "[[\"line_ending\",\"crlf\"],[\"runtime\",\"bun\"]]",
+        "[[\"line_ending\",\"crlf\"],[\"runtime\",\"node\"]]",
+        "[[\"line_ending\",\"crlf\"],[\"source\",\"changed\"]]",
+        "[[\"line_ending\",\"crlf\"],[\"source\",\"stable\"]]",
+        "[[\"line_ending\",\"crlf\"],[\"topology\",\"acyclic\"]]",
+        "[[\"line_ending\",\"crlf\"],[\"topology\",\"cycle\"]]",
+        "[[\"line_ending\",\"lf\"],[\"runtime\",\"bun\"]]",
+        "[[\"line_ending\",\"lf\"],[\"runtime\",\"node\"]]",
+        "[[\"line_ending\",\"lf\"],[\"source\",\"changed\"]]",
+        "[[\"line_ending\",\"lf\"],[\"source\",\"stable\"]]",
+        "[[\"line_ending\",\"lf\"],[\"topology\",\"acyclic\"]]",
+        "[[\"line_ending\",\"lf\"],[\"topology\",\"cycle\"]]",
+        "[[\"runtime\",\"bun\"],[\"source\",\"changed\"]]",
+        "[[\"runtime\",\"bun\"],[\"source\",\"stable\"]]",
+        "[[\"runtime\",\"bun\"],[\"topology\",\"acyclic\"]]",
+        "[[\"runtime\",\"bun\"],[\"topology\",\"cycle\"]]",
+        "[[\"runtime\",\"node\"],[\"source\",\"changed\"]]",
+        "[[\"runtime\",\"node\"],[\"source\",\"stable\"]]",
+        "[[\"runtime\",\"node\"],[\"topology\",\"acyclic\"]]",
+        "[[\"runtime\",\"node\"],[\"topology\",\"cycle\"]]",
+        "[[\"source\",\"changed\"],[\"topology\",\"acyclic\"]]",
+        "[[\"source\",\"changed\"],[\"topology\",\"cycle\"]]",
+        "[[\"source\",\"stable\"],[\"topology\",\"acyclic\"]]",
+        "[[\"source\",\"stable\"],[\"topology\",\"cycle\"]]"
+      ],
+      "cartesian": 32,
+      "feasible": 24,
+      "pairwise_cases": 6,
+      "planned": {
+        "covered": 39,
+        "total": 39
+      },
+      "recorded": {
+        "covered": 10,
+        "total": 39
+      },
+      "case_counts": {
+        "pass": 1,
+        "fail": 0,
+        "unresolved": 1,
+        "unobserved": 5
+      },
+      "excluded": [
+        {
+          "tuple_id": "77096f109f68b00d181876593a6150256737eec66fe1cf56d3032bee7b34c9ef",
+          "assignment": {
+            "action": "preview",
+            "topology": "acyclic"
+          }
+        }
+      ],
+      "gaps": [
+        {
+          "tuple_id": "784944078641d0534607b32d8c70c9f6ac03730710f157d1b88a8eb28e5b292c",
+          "assignment": {
+            "action": "explain",
+            "line_ending": "crlf"
+          },
+          "reason": "no_comparable_execution"
+        },
+        {
+          "tuple_id": "26f90908903ad3a4d3148ddae79bd5b7724f6bfc2dc38b3efba32cd8f427eb33",
+          "assignment": {
+            "action": "explain",
+            "line_ending": "lf"
+          },
+          "reason": "no_comparable_execution"
+        },
+        {
+          "tuple_id": "c2560073eeb318f658b443d02dcd0bcf4103ee14f677046980107dc31a825247",
+          "assignment": {
+            "action": "preview",
+            "line_ending": "crlf"
+          },
+          "reason": "no_comparable_execution"
+        },
+        {
+          "tuple_id": "311693fd4911ae5cc87d69065552a6e762bb2312e14fcfaeb9dd63449c9fc8c6",
+          "assignment": {
+            "action": "explain",
+            "runtime": "bun"
+          },
+          "reason": "no_comparable_execution"
+        },
+        {
+          "tuple_id": "32202f83378c6cc0ba10b788b39ef55c7d71221d0ca4514dba622ca8b785bcec",
+          "assignment": {
+            "action": "explain",
+            "runtime": "node"
+          },
+          "reason": "no_comparable_execution"
+        },
+        {
+          "tuple_id": "932ffde8d6bef32b7da5173d86d5e01b11953abb98e2fbbf781323686a7de19f",
+          "assignment": {
+            "action": "preview",
+            "runtime": "bun"
+          },
+          "reason": "no_comparable_execution"
+        },
+        {
+          "tuple_id": "02bb2451b58145288edb2cf92fbcdeb19987632fca4b4167b73ccd8d78306223",
+          "assignment": {
+            "action": "explain",
+            "source": "changed"
+          },
+          "reason": "no_comparable_execution"
+        },
+        {
+          "tuple_id": "4496c95261cb28c7ef28e3c9af1e20d91c6e18d96d547b16ac063752d0ce46ee",
+          "assignment": {
+            "action": "explain",
+            "source": "stable"
+          },
+          "reason": "no_comparable_execution"
+        },
+        {
+          "tuple_id": "c5d3960449cd56153f44a9a6bae0c81d75d1b3e9aef513df33c95942cffc7072",
+          "assignment": {
+            "action": "preview",
+            "source": "stable"
+          },
+          "reason": "no_comparable_execution"
+        },
+        {
+          "tuple_id": "80dfa59abd4bf77fc1b0ea6c6f11f70b76ba70fa64e3cf510d7d040b72738386",
+          "assignment": {
+            "action": "explain",
+            "topology": "acyclic"
+          },
+          "reason": "no_comparable_execution"
+        },
+        {
+          "tuple_id": "c50bf44b2106eddc1a7c498a16ff9d9a2024a6602d35661e7ea54eaa6c91b819",
+          "assignment": {
+            "action": "explain",
+            "topology": "cycle"
+          },
+          "reason": "no_comparable_execution"
+        },
+        {
+          "tuple_id": "383870d4867a146f990ad3c8783ec50e6e7ebd48bc736cb0198a7d968163db2e",
+          "assignment": {
+            "line_ending": "crlf",
+            "runtime": "bun"
+          },
+          "reason": "no_comparable_execution"
+        },
+        {
+          "tuple_id": "db8a3d052b50b3e4af9f97fce1881a656ebd259f68766baa5765541cca7ab8c7",
+          "assignment": {
+            "line_ending": "crlf",
+            "runtime": "node"
+          },
+          "reason": "no_comparable_execution"
+        },
+        {
+          "tuple_id": "2601cfccb5b6647a4a406ccad0dabe3145766f5064c51375494f7e5c8f29f517",
+          "assignment": {
+            "line_ending": "lf",
+            "runtime": "bun"
+          },
+          "reason": "no_comparable_execution"
+        },
+        {
+          "tuple_id": "dba15fb5c13dc8f4a0bdb0a0876ab7ee9592ffa974d7b57da3b493352d71ce7a",
+          "assignment": {
+            "line_ending": "crlf",
+            "source": "changed"
+          },
+          "reason": "no_comparable_execution"
+        },
+        {
+          "tuple_id": "9ecb59a9770ce074e5e0368304dfbc8497939e9b257ef4ba271aff25cf39a8c0",
+          "assignment": {
+            "line_ending": "crlf",
+            "source": "stable"
+          },
+          "reason": "no_comparable_execution"
+        },
+        {
+          "tuple_id": "37fccd4f226cd62abe8e57d2f1edbbe3dc601bec2b529039e9d9682ebf8ad34e",
+          "assignment": {
+            "line_ending": "lf",
+            "source": "stable"
+          },
+          "reason": "no_comparable_execution"
+        },
+        {
+          "tuple_id": "114ab2684508cb85abf61ae9733286ea14d8405aa5a0687f38455a7d752910a6",
+          "assignment": {
+            "line_ending": "crlf",
+            "topology": "acyclic"
+          },
+          "reason": "no_comparable_execution"
+        },
+        {
+          "tuple_id": "1d4bd2aa93405a7447f95e52eb0c46d96dfc405282f14c70d2acd6153401b2c9",
+          "assignment": {
+            "line_ending": "crlf",
+            "topology": "cycle"
+          },
+          "reason": "no_comparable_execution"
+        },
+        {
+          "tuple_id": "2a6e0942b55629af346fb9e96fd29d5de703c0136bca76a8eb7526d3cca24bf9",
+          "assignment": {
+            "line_ending": "lf",
+            "topology": "acyclic"
+          },
+          "reason": "no_comparable_execution"
+        },
+        {
+          "tuple_id": "901c6dd375da7a4eb4852e431b0573381c1f8c46c69236a09fe695aead4609e9",
+          "assignment": {
+            "runtime": "bun",
+            "source": "changed"
+          },
+          "reason": "no_comparable_execution"
+        },
+        {
+          "tuple_id": "7d12c0d35bb643c71b558e13e6e7cbdaa6a5b9315d503299035825da16232f27",
+          "assignment": {
+            "runtime": "bun",
+            "source": "stable"
+          },
+          "reason": "no_comparable_execution"
+        },
+        {
+          "tuple_id": "f4edde685422ef3a3bf01ad915a74e5f21ea06d3a7afb4450341d1e52a385c05",
+          "assignment": {
+            "runtime": "node",
+            "source": "stable"
+          },
+          "reason": "no_comparable_execution"
+        },
+        {
+          "tuple_id": "fe47383951334a7c9680ececf69d774b79c8ede26f28356a23eefb88fa20b91d",
+          "assignment": {
+            "runtime": "bun",
+            "topology": "acyclic"
+          },
+          "reason": "no_comparable_execution"
+        },
+        {
+          "tuple_id": "e71722ae218c833094f141fb1ce449eebb332b3dad658e9dc51ef2dd0f07e425",
+          "assignment": {
+            "runtime": "bun",
+            "topology": "cycle"
+          },
+          "reason": "no_comparable_execution"
+        },
+        {
+          "tuple_id": "c16115e2cbac223caf2178b1dc0553cb6d4f1f537ce36c211841d5522eeb3984",
+          "assignment": {
+            "runtime": "node",
+            "topology": "acyclic"
+          },
+          "reason": "no_comparable_execution"
+        },
+        {
+          "tuple_id": "e0a07d8b32fbdc00326c5573712f55275ed0bf7a4c23a5d9ebcb8eac621e6f9c",
+          "assignment": {
+            "source": "changed",
+            "topology": "acyclic"
+          },
+          "reason": "no_comparable_execution"
+        },
+        {
+          "tuple_id": "19c8367f3a90ab4952793c9e57e2fc54fef8924500a15e06a832fadd02c22428",
+          "assignment": {
+            "source": "stable",
+            "topology": "acyclic"
+          },
+          "reason": "no_comparable_execution"
+        },
+        {
+          "tuple_id": "3bfcdf2d79da55b756d8b98b34f8d43071070d256bb43dbe4c56e0ed0f50718e",
+          "assignment": {
+            "source": "stable",
+            "topology": "cycle"
+          },
+          "reason": "no_comparable_execution"
+        }
+      ],
+      "selected_cases": [
+        {
+          "case_id": "d0344b3eed620976765ed1fa1f1a33ff6df629cc459a458f95fc8d9844afd990",
+          "assignment": {
+            "runtime": "node",
+            "line_ending": "lf",
+            "source": "changed",
+            "topology": "cycle",
+            "action": "preview"
+          }
+        },
+        {
+          "case_id": "248824fbac0d0a394ac02618f00748f5b5eaf9929d5de9f4fb3b2e1251b0d684",
+          "assignment": {
+            "action": "explain",
+            "line_ending": "crlf",
+            "runtime": "bun",
+            "source": "changed",
+            "topology": "acyclic"
+          }
+        },
+        {
+          "case_id": "4e64297a1227a196f843988638ce1a50a769105be22be9e3408cf449a2aeba96",
+          "assignment": {
+            "action": "explain",
+            "line_ending": "crlf",
+            "runtime": "node",
+            "source": "stable",
+            "topology": "cycle"
+          }
+        },
+        {
+          "case_id": "46946872ac5f1e84059b9afcfe2b1917b83f1e2df2e79e2665710f47789b1e10",
+          "assignment": {
+            "action": "explain",
+            "line_ending": "lf",
+            "runtime": "bun",
+            "source": "stable",
+            "topology": "acyclic"
+          }
+        },
+        {
+          "case_id": "42e351a7cc56b215f63c454a1476312c6cdf08c068aaf63f705568ad33671b57",
+          "assignment": {
+            "action": "preview",
+            "line_ending": "crlf",
+            "runtime": "bun",
+            "source": "stable",
+            "topology": "cycle"
+          }
+        },
+        {
+          "case_id": "1e59b5ff0ccd3a1af8e0493f469260cb7bafce07b651716ed3cbf797942d6cb4",
+          "assignment": {
+            "action": "explain",
+            "line_ending": "crlf",
+            "runtime": "node",
+            "source": "changed",
+            "topology": "acyclic"
+          }
+        }
+      ],
+      "packet_bytes": 2684,
+      "packet_estimated_tokens": 671,
+      "naive_bytes": 9158,
+      "naive_estimated_tokens": 2290,
+      "three_way": {
+        "product_supported": false,
+        "reason": "v1 refuses strengths above two",
+        "feasible_obligations": 74,
+        "full_assignment_reference_cases": 24
+      }
+    },
+    {
+      "model": {
+        "model_key": "pm-ops",
+        "factors": [
+          {
+            "factor_id": "runtime",
+            "values": [
+              "node",
+              "bun"
+            ],
+            "label": "runtime",
+            "source_refs": [
+              {
+                "item_id": "ops-sdk-adoption-1025",
+                "item_hash": "009a459d63edbf2acb69ed41a03afa1db4057620fcd5efb7b99b5a50a6d7ca19",
+                "field_pointer": "/description",
+                "content_digest": "97f232b1b2c25fa910b34842d084ecefeb9147657cfe0556a559e9b70e68c5d6"
+              },
+              {
+                "item_id": "ops-sdk-adoption-1025",
+                "item_hash": "009a459d63edbf2acb69ed41a03afa1db4057620fcd5efb7b99b5a50a6d7ca19",
+                "field_pointer": "/expected_result",
+                "content_digest": "7b3aced643f467267677fe03cce3e6d55fa9b77e534f5700676e7727e6bdd20d"
+              },
+              {
+                "item_id": "ops-sdk-adoption-1025",
+                "item_hash": "009a459d63edbf2acb69ed41a03afa1db4057620fcd5efb7b99b5a50a6d7ca19",
+                "field_pointer": "/actual_result",
+                "content_digest": "4ca3ff7c08366448e8144457d26d824a3a33636422823870c78bc7e40782031c"
+              },
+              {
+                "item_id": "ops-sdk-adoption-1025",
+                "item_hash": "009a459d63edbf2acb69ed41a03afa1db4057620fcd5efb7b99b5a50a6d7ca19",
+                "field_pointer": "/resolution",
+                "content_digest": "dd5288511e5533c3496fd3b7e2f8d112309acecec9e2ad1e9f69922063ac2943"
+              },
+              {
+                "item_id": "ops-sdk-adoption-1025",
+                "item_hash": "009a459d63edbf2acb69ed41a03afa1db4057620fcd5efb7b99b5a50a6d7ca19",
+                "field_pointer": "/comments/0/text",
+                "content_digest": "d959c6c4acc9369d04e5811bb4c4c685f3a54c607869dcd9e69b47304f157975"
+              },
+              {
+                "item_id": "ops-sdk-adoption-1025",
+                "item_hash": "009a459d63edbf2acb69ed41a03afa1db4057620fcd5efb7b99b5a50a6d7ca19",
+                "field_pointer": "/comments/1/text",
+                "content_digest": "88128d27dcb54c04bda2659648a26a7fab4e3666ba5b5f38c83de7cc2f58585a"
+              },
+              {
+                "item_id": "ops-sdk-adoption-1025",
+                "item_hash": "009a459d63edbf2acb69ed41a03afa1db4057620fcd5efb7b99b5a50a6d7ca19",
+                "field_pointer": "/comments/2/text",
+                "content_digest": "c455df1498b37781fac1f0a600e9a6cbb1b0321cd60c095680df1f77424215dc"
+              }
+            ]
+          },
+          {
+            "factor_id": "permissions",
+            "values": [
+              "readonly",
+              "writable"
+            ],
+            "label": "permissions",
+            "source_refs": [
+              {
+                "item_id": "ops-sdk-adoption-1025",
+                "item_hash": "009a459d63edbf2acb69ed41a03afa1db4057620fcd5efb7b99b5a50a6d7ca19",
+                "field_pointer": "/description",
+                "content_digest": "97f232b1b2c25fa910b34842d084ecefeb9147657cfe0556a559e9b70e68c5d6"
+              },
+              {
+                "item_id": "ops-sdk-adoption-1025",
+                "item_hash": "009a459d63edbf2acb69ed41a03afa1db4057620fcd5efb7b99b5a50a6d7ca19",
+                "field_pointer": "/expected_result",
+                "content_digest": "7b3aced643f467267677fe03cce3e6d55fa9b77e534f5700676e7727e6bdd20d"
+              },
+              {
+                "item_id": "ops-sdk-adoption-1025",
+                "item_hash": "009a459d63edbf2acb69ed41a03afa1db4057620fcd5efb7b99b5a50a6d7ca19",
+                "field_pointer": "/actual_result",
+                "content_digest": "4ca3ff7c08366448e8144457d26d824a3a33636422823870c78bc7e40782031c"
+              },
+              {
+                "item_id": "ops-sdk-adoption-1025",
+                "item_hash": "009a459d63edbf2acb69ed41a03afa1db4057620fcd5efb7b99b5a50a6d7ca19",
+                "field_pointer": "/resolution",
+                "content_digest": "dd5288511e5533c3496fd3b7e2f8d112309acecec9e2ad1e9f69922063ac2943"
+              },
+              {
+                "item_id": "ops-sdk-adoption-1025",
+                "item_hash": "009a459d63edbf2acb69ed41a03afa1db4057620fcd5efb7b99b5a50a6d7ca19",
+                "field_pointer": "/comments/0/text",
+                "content_digest": "d959c6c4acc9369d04e5811bb4c4c685f3a54c607869dcd9e69b47304f157975"
+              },
+              {
+                "item_id": "ops-sdk-adoption-1025",
+                "item_hash": "009a459d63edbf2acb69ed41a03afa1db4057620fcd5efb7b99b5a50a6d7ca19",
+                "field_pointer": "/comments/1/text",
+                "content_digest": "88128d27dcb54c04bda2659648a26a7fab4e3666ba5b5f38c83de7cc2f58585a"
+              },
+              {
+                "item_id": "ops-sdk-adoption-1025",
+                "item_hash": "009a459d63edbf2acb69ed41a03afa1db4057620fcd5efb7b99b5a50a6d7ca19",
+                "field_pointer": "/comments/2/text",
+                "content_digest": "c455df1498b37781fac1f0a600e9a6cbb1b0321cd60c095680df1f77424215dc"
+              }
+            ]
+          },
+          {
+            "factor_id": "format",
+            "values": [
+              "current",
+              "future"
+            ],
+            "label": "format",
+            "source_refs": [
+              {
+                "item_id": "ops-sdk-adoption-1025",
+                "item_hash": "009a459d63edbf2acb69ed41a03afa1db4057620fcd5efb7b99b5a50a6d7ca19",
+                "field_pointer": "/description",
+                "content_digest": "97f232b1b2c25fa910b34842d084ecefeb9147657cfe0556a559e9b70e68c5d6"
+              },
+              {
+                "item_id": "ops-sdk-adoption-1025",
+                "item_hash": "009a459d63edbf2acb69ed41a03afa1db4057620fcd5efb7b99b5a50a6d7ca19",
+                "field_pointer": "/expected_result",
+                "content_digest": "7b3aced643f467267677fe03cce3e6d55fa9b77e534f5700676e7727e6bdd20d"
+              },
+              {
+                "item_id": "ops-sdk-adoption-1025",
+                "item_hash": "009a459d63edbf2acb69ed41a03afa1db4057620fcd5efb7b99b5a50a6d7ca19",
+                "field_pointer": "/actual_result",
+                "content_digest": "4ca3ff7c08366448e8144457d26d824a3a33636422823870c78bc7e40782031c"
+              },
+              {
+                "item_id": "ops-sdk-adoption-1025",
+                "item_hash": "009a459d63edbf2acb69ed41a03afa1db4057620fcd5efb7b99b5a50a6d7ca19",
+                "field_pointer": "/resolution",
+                "content_digest": "dd5288511e5533c3496fd3b7e2f8d112309acecec9e2ad1e9f69922063ac2943"
+              },
+              {
+                "item_id": "ops-sdk-adoption-1025",
+                "item_hash": "009a459d63edbf2acb69ed41a03afa1db4057620fcd5efb7b99b5a50a6d7ca19",
+                "field_pointer": "/comments/0/text",
+                "content_digest": "d959c6c4acc9369d04e5811bb4c4c685f3a54c607869dcd9e69b47304f157975"
+              },
+              {
+                "item_id": "ops-sdk-adoption-1025",
+                "item_hash": "009a459d63edbf2acb69ed41a03afa1db4057620fcd5efb7b99b5a50a6d7ca19",
+                "field_pointer": "/comments/1/text",
+                "content_digest": "88128d27dcb54c04bda2659648a26a7fab4e3666ba5b5f38c83de7cc2f58585a"
+              },
+              {
+                "item_id": "ops-sdk-adoption-1025",
+                "item_hash": "009a459d63edbf2acb69ed41a03afa1db4057620fcd5efb7b99b5a50a6d7ca19",
+                "field_pointer": "/comments/2/text",
+                "content_digest": "c455df1498b37781fac1f0a600e9a6cbb1b0321cd60c095680df1f77424215dc"
+              }
+            ]
+          },
+          {
+            "factor_id": "history",
+            "values": [
+              "healthy",
+              "corrupt"
+            ],
+            "label": "history",
+            "source_refs": [
+              {
+                "item_id": "ops-sdk-adoption-1025",
+                "item_hash": "009a459d63edbf2acb69ed41a03afa1db4057620fcd5efb7b99b5a50a6d7ca19",
+                "field_pointer": "/description",
+                "content_digest": "97f232b1b2c25fa910b34842d084ecefeb9147657cfe0556a559e9b70e68c5d6"
+              },
+              {
+                "item_id": "ops-sdk-adoption-1025",
+                "item_hash": "009a459d63edbf2acb69ed41a03afa1db4057620fcd5efb7b99b5a50a6d7ca19",
+                "field_pointer": "/expected_result",
+                "content_digest": "7b3aced643f467267677fe03cce3e6d55fa9b77e534f5700676e7727e6bdd20d"
+              },
+              {
+                "item_id": "ops-sdk-adoption-1025",
+                "item_hash": "009a459d63edbf2acb69ed41a03afa1db4057620fcd5efb7b99b5a50a6d7ca19",
+                "field_pointer": "/actual_result",
+                "content_digest": "4ca3ff7c08366448e8144457d26d824a3a33636422823870c78bc7e40782031c"
+              },
+              {
+                "item_id": "ops-sdk-adoption-1025",
+                "item_hash": "009a459d63edbf2acb69ed41a03afa1db4057620fcd5efb7b99b5a50a6d7ca19",
+                "field_pointer": "/resolution",
+                "content_digest": "dd5288511e5533c3496fd3b7e2f8d112309acecec9e2ad1e9f69922063ac2943"
+              },
+              {
+                "item_id": "ops-sdk-adoption-1025",
+                "item_hash": "009a459d63edbf2acb69ed41a03afa1db4057620fcd5efb7b99b5a50a6d7ca19",
+                "field_pointer": "/comments/0/text",
+                "content_digest": "d959c6c4acc9369d04e5811bb4c4c685f3a54c607869dcd9e69b47304f157975"
+              },
+              {
+                "item_id": "ops-sdk-adoption-1025",
+                "item_hash": "009a459d63edbf2acb69ed41a03afa1db4057620fcd5efb7b99b5a50a6d7ca19",
+                "field_pointer": "/comments/1/text",
+                "content_digest": "88128d27dcb54c04bda2659648a26a7fab4e3666ba5b5f38c83de7cc2f58585a"
+              },
+              {
+                "item_id": "ops-sdk-adoption-1025",
+                "item_hash": "009a459d63edbf2acb69ed41a03afa1db4057620fcd5efb7b99b5a50a6d7ca19",
+                "field_pointer": "/comments/2/text",
+                "content_digest": "c455df1498b37781fac1f0a600e9a6cbb1b0321cd60c095680df1f77424215dc"
+              }
+            ]
+          }
+        ],
+        "strength": 2,
+        "forbidden_tuples": [],
+        "mandatory_cases": [
+          {
+            "runtime": "node",
+            "permissions": "readonly",
+            "format": "current",
+            "history": "healthy"
+          }
+        ],
+        "subject_digest": "ec0004f5e395a3fe09eb8e00c996ac0f54955f359159c639c75706595072a1b2"
+      },
+      "owner_id": "proof-pm-ops",
+      "owner_revision": "fb0b4aa7abadaf9e431050a9e9ea9870237e891dcb452a36251e1f9fbeac2700",
+      "outcomes": [
+        {
+          "execution_id": "public-harness",
+          "case_id": "72de19ae33f2782727f1d1aab7dd2903018d583357e06641745573172f9eeaf0",
+          "subject_digest": "ec0004f5e395a3fe09eb8e00c996ac0f54955f359159c639c75706595072a1b2",
+          "oracle_digest": "bdbcc85bc7fb7a91d3df6bbc47c12859eaa9e1eb32996c69867dcf9dffb1a5c1",
+          "result": "pass",
+          "reason": "Scoped public test harness passed for the explicitly pinned coordinates",
+          "source_refs": [
+            {
+              "item_id": "proof-evidence",
+              "item_hash": "c247e2525790c70818f099f81627c16b2b773273fd12e9a3a6a152473657d089",
+              "field_pointer": "/description",
+              "content_digest": "1bd5e1b54bad64e908d47ef23064892ae74a980244facabbfd0f91d66d1a4a6d"
+            }
+          ],
+          "observed_at": "2026-11-06T00:00:00Z",
+          "recorder": "public-proof",
+          "evidence_grade": "reported"
+        },
+        {
+          "execution_id": "unavailable",
+          "case_id": "7c9c4c4cec848daf0a3917867f15f2ee59a0a646adb7576b6beb38df99d931a8",
+          "subject_digest": "ec0004f5e395a3fe09eb8e00c996ac0f54955f359159c639c75706595072a1b2",
+          "oracle_digest": "bdbcc85bc7fb7a91d3df6bbc47c12859eaa9e1eb32996c69867dcf9dffb1a5c1",
+          "result": "unresolved",
+          "reason": "This selected combination has not been run; no execution evidence is claimed",
+          "source_refs": [
+            {
+              "item_id": "proof-evidence",
+              "item_hash": "c247e2525790c70818f099f81627c16b2b773273fd12e9a3a6a152473657d089",
+              "field_pointer": "/description",
+              "content_digest": "1bd5e1b54bad64e908d47ef23064892ae74a980244facabbfd0f91d66d1a4a6d"
+            }
+          ],
+          "observed_at": "2026-11-06T00:00:00Z",
+          "recorder": "public-proof",
+          "evidence_grade": "reported"
+        }
+      ],
+      "model_digest": "693343d3d250890fb691bce9175da8365af0d24e923c64224f44ea43affd0094",
+      "gold_pair_sha256": "a31ea8389b593bb7927df6b7406966122310c68757a6231638ad82ff10705d31",
+      "gold_feasible_pairs": [
+        "[[\"format\",\"current\"],[\"history\",\"corrupt\"]]",
+        "[[\"format\",\"current\"],[\"history\",\"healthy\"]]",
+        "[[\"format\",\"current\"],[\"permissions\",\"readonly\"]]",
+        "[[\"format\",\"current\"],[\"permissions\",\"writable\"]]",
+        "[[\"format\",\"current\"],[\"runtime\",\"bun\"]]",
+        "[[\"format\",\"current\"],[\"runtime\",\"node\"]]",
+        "[[\"format\",\"future\"],[\"history\",\"corrupt\"]]",
+        "[[\"format\",\"future\"],[\"history\",\"healthy\"]]",
+        "[[\"format\",\"future\"],[\"permissions\",\"readonly\"]]",
+        "[[\"format\",\"future\"],[\"permissions\",\"writable\"]]",
+        "[[\"format\",\"future\"],[\"runtime\",\"bun\"]]",
+        "[[\"format\",\"future\"],[\"runtime\",\"node\"]]",
+        "[[\"history\",\"corrupt\"],[\"permissions\",\"readonly\"]]",
+        "[[\"history\",\"corrupt\"],[\"permissions\",\"writable\"]]",
+        "[[\"history\",\"corrupt\"],[\"runtime\",\"bun\"]]",
+        "[[\"history\",\"corrupt\"],[\"runtime\",\"node\"]]",
+        "[[\"history\",\"healthy\"],[\"permissions\",\"readonly\"]]",
+        "[[\"history\",\"healthy\"],[\"permissions\",\"writable\"]]",
+        "[[\"history\",\"healthy\"],[\"runtime\",\"bun\"]]",
+        "[[\"history\",\"healthy\"],[\"runtime\",\"node\"]]",
+        "[[\"permissions\",\"readonly\"],[\"runtime\",\"bun\"]]",
+        "[[\"permissions\",\"readonly\"],[\"runtime\",\"node\"]]",
+        "[[\"permissions\",\"writable\"],[\"runtime\",\"bun\"]]",
+        "[[\"permissions\",\"writable\"],[\"runtime\",\"node\"]]"
+      ],
+      "cartesian": 16,
+      "feasible": 16,
+      "pairwise_cases": 6,
+      "planned": {
+        "covered": 24,
+        "total": 24
+      },
+      "recorded": {
+        "covered": 6,
+        "total": 24
+      },
+      "case_counts": {
+        "pass": 1,
+        "fail": 0,
+        "unresolved": 1,
+        "unobserved": 5
+      },
+      "excluded": [],
+      "gaps": [
+        {
+          "tuple_id": "37fa88c8c7ae6b2d7600f9a9cdf644d6689720a672ab21a36f28d76ce7e5baea",
+          "assignment": {
+            "format": "current",
+            "history": "corrupt"
+          },
+          "reason": "no_comparable_execution"
+        },
+        {
+          "tuple_id": "dbefb1e4334b88ee3a3550eea5effcae1d1f0e7b93b939d759e9aeb7da73526e",
+          "assignment": {
+            "format": "future",
+            "history": "corrupt"
+          },
+          "reason": "no_comparable_execution"
+        },
+        {
+          "tuple_id": "5ce0430ed91661c5e211add1de95bb9cda6d8ac6fad0a0a34308e229cbde7613",
+          "assignment": {
+            "format": "future",
+            "history": "healthy"
+          },
+          "reason": "no_comparable_execution"
+        },
+        {
+          "tuple_id": "c3b2c8ef9aa3f08700ba5a15a16db945acefe59751b39bec35fd9b80a56e6c4b",
+          "assignment": {
+            "format": "current",
+            "permissions": "writable"
+          },
+          "reason": "no_comparable_execution"
+        },
+        {
+          "tuple_id": "43e0eb73f0937198938faae59cdee5cf6018bf0c00f4a7b55a6f487a5b2b8f89",
+          "assignment": {
+            "format": "future",
+            "permissions": "readonly"
+          },
+          "reason": "no_comparable_execution"
+        },
+        {
+          "tuple_id": "d2d7df407ff0c76a15667d13c4c0419e40fc14a8a39706d15a6f6c5c05fa77d4",
+          "assignment": {
+            "format": "future",
+            "permissions": "writable"
+          },
+          "reason": "no_comparable_execution"
+        },
+        {
+          "tuple_id": "c60b4bc1f04f3e35f34285d40124856b2617f84fa63680d687963ef14d375f1a",
+          "assignment": {
+            "format": "current",
+            "runtime": "bun"
+          },
+          "reason": "no_comparable_execution"
+        },
+        {
+          "tuple_id": "56bd1bd891e3420d48ca14f38f48d5b3b11c0899768ec21d03bfb267d058520e",
+          "assignment": {
+            "format": "future",
+            "runtime": "bun"
+          },
+          "reason": "no_comparable_execution"
+        },
+        {
+          "tuple_id": "f06a90a563bf9722617139c3c911de87159c94576dde961023cff3ee21c19cca",
+          "assignment": {
+            "format": "future",
+            "runtime": "node"
+          },
+          "reason": "no_comparable_execution"
+        },
+        {
+          "tuple_id": "a0bc31c81a41a7f8e8cde53284187a0812c4f94a8a7619ffc542646fae1dcdf4",
+          "assignment": {
+            "history": "corrupt",
+            "permissions": "readonly"
+          },
+          "reason": "no_comparable_execution"
+        },
+        {
+          "tuple_id": "3e5665ef7107f06556c4d100b5b570321c9b22575b0d67708c8593108881574f",
+          "assignment": {
+            "history": "corrupt",
+            "permissions": "writable"
+          },
+          "reason": "no_comparable_execution"
+        },
+        {
+          "tuple_id": "1d02c6757f296c72a030e42f4db82d3c4064cf9e5e78f0c3e23f6fe3c324e2c1",
+          "assignment": {
+            "history": "healthy",
+            "permissions": "writable"
+          },
+          "reason": "no_comparable_execution"
+        },
+        {
+          "tuple_id": "0f52253b421822141fcf7c7e9fe90d1439a557b9af15e3ba2711fc112b894bd2",
+          "assignment": {
+            "history": "corrupt",
+            "runtime": "bun"
+          },
+          "reason": "no_comparable_execution"
+        },
+        {
+          "tuple_id": "3d5878ab58d7f489beed5fd73adedfa7e08c1b20390ca10252889d5fab00705f",
+          "assignment": {
+            "history": "corrupt",
+            "runtime": "node"
+          },
+          "reason": "no_comparable_execution"
+        },
+        {
+          "tuple_id": "0e5e3773b56d1f9968cd0a0ae3255c80fcaab97494d5927cf5d3fd0af5816a69",
+          "assignment": {
+            "history": "healthy",
+            "runtime": "bun"
+          },
+          "reason": "no_comparable_execution"
+        },
+        {
+          "tuple_id": "e40c58a94ebbd500bf53f46e456d558c1eac374b483bf1d78c084645381ec522",
+          "assignment": {
+            "permissions": "readonly",
+            "runtime": "bun"
+          },
+          "reason": "no_comparable_execution"
+        },
+        {
+          "tuple_id": "b9a252f32f09cd8ea7cd48f6456d981183cd69d9f6af357e94c75944706ea547",
+          "assignment": {
+            "permissions": "writable",
+            "runtime": "bun"
+          },
+          "reason": "no_comparable_execution"
+        },
+        {
+          "tuple_id": "238dfca673b84e9505ec09e7b6f98b6be1b240548eeef844eeeca972bf2efbcd",
+          "assignment": {
+            "permissions": "writable",
+            "runtime": "node"
+          },
+          "reason": "no_comparable_execution"
+        }
+      ],
+      "selected_cases": [
+        {
+          "case_id": "72de19ae33f2782727f1d1aab7dd2903018d583357e06641745573172f9eeaf0",
+          "assignment": {
+            "runtime": "node",
+            "permissions": "readonly",
+            "format": "current",
+            "history": "healthy"
+          }
+        },
+        {
+          "case_id": "7c9c4c4cec848daf0a3917867f15f2ee59a0a646adb7576b6beb38df99d931a8",
+          "assignment": {
+            "format": "current",
+            "history": "corrupt",
+            "permissions": "writable",
+            "runtime": "bun"
+          }
+        },
+        {
+          "case_id": "a3f7240d6c8ee4bdea306ca174ab0e3cdcb30e3413fc789dcbae562a34caf737",
+          "assignment": {
+            "format": "future",
+            "history": "corrupt",
+            "permissions": "readonly",
+            "runtime": "bun"
+          }
+        },
+        {
+          "case_id": "0334a98c00c53cf8a0034e4e3f686754515b241aab05f1b6038be03e445ff84b",
+          "assignment": {
+            "format": "future",
+            "history": "healthy",
+            "permissions": "writable",
+            "runtime": "node"
+          }
+        },
+        {
+          "case_id": "930b6d735057621a3dd80422362ef222f47f918820c9485cee576837540c13fa",
+          "assignment": {
+            "format": "current",
+            "history": "corrupt",
+            "permissions": "readonly",
+            "runtime": "node"
+          }
+        },
+        {
+          "case_id": "848f9c0b9a3e0e934301726389b88f91874a95402ffc712f0e9315977da5a81c",
+          "assignment": {
+            "format": "current",
+            "history": "healthy",
+            "permissions": "readonly",
+            "runtime": "bun"
+          }
+        }
+      ],
+      "packet_bytes": 2655,
+      "packet_estimated_tokens": 664,
+      "naive_bytes": 8229,
+      "naive_estimated_tokens": 2058,
+      "three_way": {
+        "product_supported": false,
+        "reason": "v1 refuses strengths above two",
+        "feasible_obligations": 32,
+        "full_assignment_reference_cases": 16
+      }
+    }
+  ],
+  "questions": [
+    {
+      "model": "pm-csv",
+      "question": "how many feasible pairs lack comparable execution",
+      "expected": 17,
+      "actual": 17,
+      "calls": 1,
+      "elapsed_ms": 112,
+      "packet_bytes": 2661,
+      "max_page_bytes": 2661,
+      "naive_bytes": 11444
+    },
+    {
+      "model": "pm-csv",
+      "question": "how many selected cases have unavailable outcomes",
+      "expected": 1,
+      "actual": 1,
+      "calls": 1,
+      "elapsed_ms": 126,
+      "packet_bytes": 2661,
+      "max_page_bytes": 2661,
+      "naive_bytes": 11444
+    },
+    {
+      "model": "pm-csv",
+      "question": "which selected cases have contradictory comparable outcomes",
+      "expected": [],
+      "actual": [],
+      "calls": 1,
+      "elapsed_ms": 125,
+      "packet_bytes": 2661,
+      "max_page_bytes": 2661,
+      "naive_bytes": 11444
+    },
+    {
+      "model": "pm-csv",
+      "question": "which exact feasible pair assignments remain unobserved",
+      "expected": [
+        "{\"cleanup\":\"fail\",\"close_receipt\":\"conflict\"}",
+        "{\"cleanup\":\"fail\",\"close_receipt\":\"ok\"}",
+        "{\"cleanup\":\"fail\",\"persisted_status\":\"closed\"}",
+        "{\"cleanup\":\"fail\",\"persisted_status\":\"open\"}",
+        "{\"cleanup\":\"fail\",\"runtime\":\"bun\"}",
+        "{\"cleanup\":\"fail\",\"runtime\":\"node\"}",
+        "{\"cleanup\":\"ok\",\"close_receipt\":\"ok\"}",
+        "{\"cleanup\":\"ok\",\"persisted_status\":\"open\"}",
+        "{\"cleanup\":\"ok\",\"runtime\":\"bun\"}",
+        "{\"close_receipt\":\"conflict\",\"persisted_status\":\"open\"}",
+        "{\"close_receipt\":\"conflict\",\"runtime\":\"bun\"}",
+        "{\"close_receipt\":\"ok\",\"persisted_status\":\"closed\"}",
+        "{\"close_receipt\":\"ok\",\"runtime\":\"bun\"}",
+        "{\"close_receipt\":\"ok\",\"runtime\":\"node\"}",
+        "{\"persisted_status\":\"closed\",\"runtime\":\"bun\"}",
+        "{\"persisted_status\":\"open\",\"runtime\":\"bun\"}",
+        "{\"persisted_status\":\"open\",\"runtime\":\"node\"}"
+      ],
+      "actual": [
+        "{\"cleanup\":\"fail\",\"close_receipt\":\"conflict\"}",
+        "{\"cleanup\":\"fail\",\"close_receipt\":\"ok\"}",
+        "{\"cleanup\":\"fail\",\"persisted_status\":\"closed\"}",
+        "{\"cleanup\":\"fail\",\"persisted_status\":\"open\"}",
+        "{\"cleanup\":\"fail\",\"runtime\":\"bun\"}",
+        "{\"cleanup\":\"fail\",\"runtime\":\"node\"}",
+        "{\"cleanup\":\"ok\",\"close_receipt\":\"ok\"}",
+        "{\"cleanup\":\"ok\",\"persisted_status\":\"open\"}",
+        "{\"cleanup\":\"ok\",\"runtime\":\"bun\"}",
+        "{\"close_receipt\":\"conflict\",\"persisted_status\":\"open\"}",
+        "{\"close_receipt\":\"conflict\",\"runtime\":\"bun\"}",
+        "{\"close_receipt\":\"ok\",\"persisted_status\":\"closed\"}",
+        "{\"close_receipt\":\"ok\",\"runtime\":\"bun\"}",
+        "{\"close_receipt\":\"ok\",\"runtime\":\"node\"}",
+        "{\"persisted_status\":\"closed\",\"runtime\":\"bun\"}",
+        "{\"persisted_status\":\"open\",\"runtime\":\"bun\"}",
+        "{\"persisted_status\":\"open\",\"runtime\":\"node\"}"
+      ],
+      "calls": 5,
+      "elapsed_ms": 471,
+      "packet_bytes": 18044,
+      "max_page_bytes": 3836,
+      "naive_bytes": 11444
+    },
+    {
+      "model": "pm-beads",
+      "question": "how many feasible pairs lack comparable execution",
+      "expected": 29,
+      "actual": 29,
+      "calls": 1,
+      "elapsed_ms": 44,
+      "packet_bytes": 2684,
+      "max_page_bytes": 2684,
+      "naive_bytes": 9158
+    },
+    {
+      "model": "pm-beads",
+      "question": "how many selected cases have unavailable outcomes",
+      "expected": 1,
+      "actual": 1,
+      "calls": 1,
+      "elapsed_ms": 61,
+      "packet_bytes": 2684,
+      "max_page_bytes": 2684,
+      "naive_bytes": 9158
+    },
+    {
+      "model": "pm-beads",
+      "question": "which selected cases have contradictory comparable outcomes",
+      "expected": [],
+      "actual": [],
+      "calls": 1,
+      "elapsed_ms": 73,
+      "packet_bytes": 2684,
+      "max_page_bytes": 2684,
+      "naive_bytes": 9158
+    },
+    {
+      "model": "pm-ops",
+      "question": "how many feasible pairs lack comparable execution",
+      "expected": 18,
+      "actual": 18,
+      "calls": 1,
+      "elapsed_ms": 43,
+      "packet_bytes": 2655,
+      "max_page_bytes": 2655,
+      "naive_bytes": 8229
+    },
+    {
+      "model": "pm-ops",
+      "question": "how many selected cases have unavailable outcomes",
+      "expected": 1,
+      "actual": 1,
+      "calls": 1,
+      "elapsed_ms": 30,
+      "packet_bytes": 2655,
+      "max_page_bytes": 2655,
+      "naive_bytes": 8229
+    },
+    {
+      "model": "pm-ops",
+      "question": "which selected cases have contradictory comparable outcomes",
+      "expected": [],
+      "actual": [],
+      "calls": 1,
+      "elapsed_ms": 59,
+      "packet_bytes": 2655,
+      "max_page_bytes": 2655,
+      "naive_bytes": 8229
+    }
+  ],
+  "totals": {
+    "calls": 14,
+    "packet_bytes": 42044,
+    "naive_bytes": 97937,
+    "reduction_percent": 57.070361558961366
+  },
+  "regression": {
+    "subject_digest": "0f99f494eb9ab3007a77b25224ac6fc521d5b9f496b3d95f313b9771852a2bbe",
+    "planned": {
+      "covered": 23,
+      "total": 23
+    },
+    "recorded": {
+      "covered": 6,
+      "total": 23
+    },
+    "case_counts": {
+      "pass": 0,
+      "fail": 1,
+      "unresolved": 0,
+      "unobserved": 5
+    }
+  },
+  "limitations": [
+    "V1 does not generate three-way suites; exhaustive triple reference only.",
+    "Harness receipts are reported evidence, not authenticated execution.",
+    "No native database or MCP provider certification."
+  ]
+}

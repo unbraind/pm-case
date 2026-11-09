@@ -11,13 +11,20 @@ permissions:
 
 jobs:
   test:
+    # Keep the check names stable (test (22), test (26)): branch protection requires them, and an exact
+    # patch version in the name would block every PR whenever the pinned patch moves.
+    name: test (${{ matrix.major }})
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         # 22 is the floor declared in `engines` and the first line that strips
         # TypeScript without a flag; 26 is what the fleet develops against.
-        node-version: [22, 26]
+        include:
+          - node-version: '22.19.0'
+            major: 22
+          - node-version: '26.13.0'
+            major: 26
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
@@ -25,6 +32,22 @@ jobs:
           fetch-depth: 0
           fetch-tags: true
           persist-credentials: false
+
+      - name: Provision minimum acceptance runtime
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
+        with:
+          node-version: 22.19.0
+
+      - name: Retain minimum acceptance runtime
+        run: echo "PM_CASE_NODE_22=$(command -v node)" >> "$GITHUB_ENV"
+
+      - name: Provision current acceptance runtime
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
+        with:
+          node-version: 26.13.0
+
+      - name: Retain current acceptance runtime
+        run: echo "PM_CASE_NODE_26=$(command -v node)" >> "$GITHUB_ENV"
 
       - name: Setup Node.js
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
@@ -34,6 +57,8 @@ jobs:
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: 1.3.5
 
       - name: Install dependencies
         run: npm ci
@@ -83,5 +108,5 @@ jobs:
         run: npm run test:install
 
       - name: Bun release gates
-        if: matrix.node-version == 26
+        if: matrix.node-version == '26.13.0'
         run: bun run release:check

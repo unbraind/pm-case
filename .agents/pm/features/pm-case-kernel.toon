@@ -1,0 +1,27 @@
+id: pm-case-kernel
+title: Finite model and exact coverage algebra
+description: ""
+type: Feature
+status: in_progress
+priority: 2
+tags: []
+created_at: "2026-11-06T18:18:53.831Z"
+updated_at: "2026-11-08T10:24:11.608Z"
+author: codex-agent
+acceptance_criteria: Independent exhaustive oracle; deterministic complete and partial covers; constraints and mandatory cases.
+parent: pm-case-release
+comments[4]{created_at,author,text}:
+  "2026-11-06T18:29:07.548Z",codex-agent,"Seven focused tests passed. Independent mixed-radix oracle checks all 32 small constraint masks; mandatory cases, partial covers, exclusion witnesses, immutable model binding and contradictory reported outcomes are exercised. V1 follows the specification exhaustive deterministic greedy algorithm and strength one or two; higher strength is deferred in pm-case-later."
+  "2026-11-06T19:11:12.212Z",codex-agent,"Implemented all seven commands and shared typed SDK kernels. The v1 specification deliberately uses bounded exhaustive enumeration and deterministic greedy selection with canonical ties and fixed seed zero. Strength above two and alternate IPOG strategies are deferred in pm-case-later. Independent brute-force and 24 seeded proposal/apply sequences pass; linked kernel run passes 11 tests. Stored plans also bind their latest selection receipt, and packet omissions count earlier pages separately from remaining continuation."
+  "2026-11-08T07:02:11.817Z",codex-agent,"Review round two fixes for the kernel and guard threads: deterministic covers and domains are now served through bounded content-keyed reuse (a fresh twelve-binary-factor cover still measures about one second, while equal-content recomputation and every later packet page add zero fresh computations), the submitted-text guard rejects only absolute home paths at path-token starts so public URLs and relative paths pass, and guardSubmitted enforces an aggregate 200000-visit traversal budget that counts shared-subtree revisits. Reuse returns isolated copies, stays keyed by exact model content so a changed model recomputes, and readState still refuses tampered stored plans. Regression tests: covers-and-domains reuse across equal models and packet pages, a public-path must-allow corpus, and a shared-subtree DAG refusal. Behavioral revert proof: with reuse bypassed, the budget removed and the path pattern rolled back, each focused test fails red with AssertionError and all eight restored variants pass green."
+  "2026-11-08T10:24:04.595Z",codex-agent,"Final review follow-up validates and normalizes every submitted model before either bounded cache lookup, so unknown undefined fields and accessors cannot borrow a cached result. Returned plans/domains remain isolated copies and every stored plan still undergoes deterministic integrity comparison. The shallow shared DAG test verifies the traversal-budget refusal specifically, independently of the depth limit. Reverts of both cache validations, reuse, the path boundary and traversal budget fail their focused tests; restored implementations pass. Complete npm and Bun source runs each pass 75 tests with 100 percent of 560 statements, 306 branches, 167 functions and 446 lines over all eight emitted runtime modules."
+files[4]{path,scope}:
+  src/kernel.ts,project
+  src/schema.ts,project
+  test/core.test.ts,project
+  test/proposal.test.ts,project
+tests[1]{command,scope,provenance{author,created_at,source_kind,source_ref}}:
+  npm run build && node --test --test-concurrency=2 test/core.test.ts test/proposal.test.ts,project,codex-agent,"2026-11-08T09:52:24.031Z",local_mutation,review/case-resume
+docs[1]{path,scope}:
+  ARCHITECTURE.md,project
+body: ""

@@ -1,0 +1,85 @@
+{
+  "schema_version": 1,
+  "automatic_execution_in_product": false,
+  "results": [
+    {
+      "repo": "pm-csv",
+      "revision": "d48dd3e07cf3b2d7153b2b687fa581735cffad0a",
+      "test_file": "test/atomic.test.ts",
+      "test_name": "^a nonzero close receipt cleans markers only after a status recheck proves closure$",
+      "assignment": {
+        "runtime": "node",
+        "close_receipt": "conflict",
+        "persisted_status": "closed",
+        "cleanup": "ok"
+      },
+      "oracle_digest": "c4432a3dccfc52e22988938e745f3e2849f72edf0796f270bc0d5539ed2d9219",
+      "result": "pass",
+      "exit_code": 0,
+      "elapsed_ms": 7562,
+      "output_sha256": "77a449f9521e8ed371a2326059d53a20b3503b40fb1442562e9fbe3da8fa09da",
+      "command": "node \"--test\" \"--test-concurrency=1\" \"--test-reporter\" \"test/harness-reporter.ts\" \"--test-name-pattern\" \"^a nonzero close receipt cleans markers only after a status recheck proves closure$\" \"test/atomic.test.ts\"",
+      "source_visibility": "public"
+    },
+    {
+      "repo": "pm-csv",
+      "revision": "d48dd3e07cf3b2d7153b2b687fa581735cffad0a",
+      "test_file": "test/atomic.test.ts",
+      "test_name": "^a nonzero close receipt cleans markers only after a status recheck proves closure$",
+      "assignment": {
+        "runtime": "node",
+        "close_receipt": "conflict",
+        "persisted_status": "closed",
+        "cleanup": "ok"
+      },
+      "oracle_digest": "c4432a3dccfc52e22988938e745f3e2849f72edf0796f270bc0d5539ed2d9219",
+      "result": "fail",
+      "exit_code": 1,
+      "elapsed_ms": 4852,
+      "output_sha256": "4f825aa8d285201fcff9dd3c3400a0e5785e2db8b13452e9635d0130985efdc6",
+      "command": "node \"--test\" \"--test-concurrency=1\" \"--test-reporter\" \"test/harness-reporter.ts\" \"--test-name-pattern\" \"^a nonzero close receipt cleans markers only after a status recheck proves closure$\" \"test/atomic.test.ts\"",
+      "source_visibility": "public",
+      "variant": "historical nonzero-receipt shortcut",
+      "source_digest": "0f99f494eb9ab3007a77b25224ac6fc521d5b9f496b3d95f313b9771852a2bbe"
+    },
+    {
+      "repo": "pm-beads",
+      "revision": "85b6392112929e967dfb5e174c773a0590124c35",
+      "test_file": "test/repair.test.ts",
+      "test_name": "^proposals bind exact source revisions, revalidate current text and reject forged or sparse edits$",
+      "assignment": {
+        "runtime": "node",
+        "line_ending": "lf",
+        "source": "changed",
+        "topology": "cycle",
+        "action": "preview"
+      },
+      "oracle_digest": "b68540841055d4295224a6d1917ab787206554da2bf74fe852ff4c5107865777",
+      "result": "pass",
+      "exit_code": 0,
+      "elapsed_ms": 970,
+      "output_sha256": "8921c12a02bbaee18bd5b9a55e44332289cf0dc46f485f05063af703c9a630d5",
+      "command": "node \"--test\" \"--test-concurrency=1\" \"--test-reporter\" \"test/harness-reporter.ts\" \"--test-name-pattern\" \"^proposals bind exact source revisions, revalidate current text and reject forged or sparse edits$\" \"test/repair.test.ts\"",
+      "source_visibility": "public"
+    },
+    {
+      "repo": "pm-ops",
+      "revision": "274c15895a88a12bec3d154a7a0ebf61e014b799",
+      "test_file": "test/backend-capabilities.test.ts",
+      "test_name": "^read-only source directories are unchanged and disposable copies are cleaned$",
+      "assignment": {
+        "runtime": "node",
+        "permissions": "readonly",
+        "format": "current",
+        "history": "healthy"
+      },
+      "oracle_digest": "bdbcc85bc7fb7a91d3df6bbc47c12859eaa9e1eb32996c69867dcf9dffb1a5c1",
+      "result": "pass",
+      "exit_code": 0,
+      "elapsed_ms": 3996,
+      "output_sha256": "8e6515fda658fdd46038744458d42b343c9e94d1ceace850f59e3edac42c8c97",
+      "command": "node \"--test\" \"--test-concurrency=1\" \"--test-reporter\" \"test/harness-reporter.ts\" \"--test-name-pattern\" \"^read-only source directories are unchanged and disposable copies are cleaned$\" \"test/backend-capabilities.test.ts\"",
+      "source_visibility": "public"
+    }
+  ]
+}

@@ -21,7 +21,8 @@
     "CHANGELOG.md",
     "ARCHITECTURE.md",
     "docs/real-data.md",
-    "docs/real-data-receipt.json"
+    "docs/real-data-receipt.json",
+    "docs/public-harness-receipt.json"
   ],
   "scripts": {
     "build": "tsc",
@@ -48,7 +49,8 @@
     "test:real-data": "npm run build && node test/real-data.acceptance.ts",
     "test:revert": "npm run build && node test/revert.acceptance.ts",
     "tracker:health": "node scripts/tracker-health.ts",
-    "test:core": "npm run build && node --test --test-concurrency=2 test/core.test.ts"
+    "test:core": "npm run build && node --test --test-concurrency=2 test/core.test.ts",
+    "test:public-harness": "npm run build && node test/public-harness.acceptance.ts"
   },
   "peerDependencies": {
     "@unbrained/pm-cli": ">=2026.11.5"
