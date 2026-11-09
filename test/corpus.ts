@@ -53,7 +53,7 @@ export async function harvest(): Promise<Passage[]> {
         let accepted = 0;
         for (const [field_pointer, text] of fields) {
           if (typeof text !== 'string' || text.length < 20 || text.length > 5000) continue;
-          try { guardSubmitted(text); } catch { continue; }
+          try { guardSubmitted(text); } catch (error) { if (error instanceof Error && 'code' in error && error.code === 'invalid_input') continue; throw error; }
           if (/pm-observer|pm-web-hosted|pm-gpt/i.test(text)) continue;
           const folder = item.type === 'Issue' ? 'issues' : item.type === 'Feature' ? 'features' : 'tasks';
           passages.push({ repo, revision, item_id: id, item_hash: String(result.item_hash), field_pointer, text, content_digest: createHash('sha256').update(text).digest('hex'), url: `https://github.com/unbraind/${repo}/blob/${revision}/.agents/pm/${folder}/${id}.toon` });

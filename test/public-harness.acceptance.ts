@@ -26,12 +26,13 @@ try {
     const common = { repo: source.repo, revision: source.revision, test_file: check.file, test_name: check.pattern, assignment: check.assignment, oracle_digest: oracleDigest, result: 'pass', exit_code: run.status!, elapsed_ms: Math.round(performance.now()-started), output_sha256: createHash('sha256').update(run.stdout+run.stderr).digest('hex'), command: publicHarnessCommand(check), source_visibility: 'public' };
     results.push(common);
     if (historicalChecks.some(row => row.repo === source.repo)) {
-      const path = join(copy,'index.ts'); const fixed = await readFile(path,'utf8'); const before = 'const postCloseStatus = compensationItemStatus(pmRoot, id);'; assert.equal(fixed.split(before).length,2);
-      const reverted = fixed.replace(before,'const postCloseStatus = undefined;'); await writeFile(path,reverted);
+      const path = join(copy,'index.ts'); const fixed = await readFile(path); const before = 'const postCloseStatus = compensationItemStatus(pmRoot, id);'; assert.equal(fixed.toString('utf8').split(before).length,2);
+      const reverted = fixed.toString('utf8').replace(before,'const postCloseStatus = undefined;');
       try {
+        await writeFile(path,reverted);
         const redStarted=performance.now(); const red=spawnSync(process.execPath,args,{cwd:copy,env,encoding:'utf8',timeout:180000,maxBuffer:4*1024*1024}); await writeFile('public-regression.local.log',red.stdout+red.stderr); assert.notEqual(red.status,0); selectedTestFailed(red.stdout, check.pattern, check.file); assert.match(red.stdout+red.stderr,/confirmed closure removes the batch marker/);
         results.push({...common,result:'fail',exit_code:red.status!,elapsed_ms:Math.round(performance.now()-redStarted),variant:'historical nonzero-receipt shortcut',source_digest:createHash('sha256').update(reverted).digest('hex'),output_sha256:createHash('sha256').update(red.stdout+red.stderr).digest('hex')});
-      } finally { await writeFile(path,fixed); }
+      } finally { await writeFile(path,fixed); assert.deepEqual(await readFile(path),fixed,'Mutation target must restore its original bytes'); }
       const restored=spawnSync(process.execPath,args,{cwd:copy,env,encoding:'utf8',timeout:180000,maxBuffer:4*1024*1024}); assert.equal(restored.status,0,'Restored public regression must pass');
       selectedTestPassed(restored.stdout, check.pattern, check.file);
     }

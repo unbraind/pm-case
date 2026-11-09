@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
+import { runInNewContext } from 'node:vm';
 import { parse } from '@babel/parser';
 import { walk } from './syntax.ts';
 import { passages, matrices } from './matrices.ts';
@@ -53,4 +54,15 @@ test('public passages and domain fixtures retain only verified public coordinate
   for(const path of ['docs/real-data-receipt.json','docs/public-harness-receipt.json','docs/real-data.md','README.md','ARCHITECTURE.md'])checkPublic(readFileSync(path,'utf8'));
   for(const row of passages){assert.ok(publicTrackers.some(entry=>entry.repo===row.repo&&entry.revision===row.revision));assert.equal(row.content_digest,createHash('sha256').update(row.text).digest('hex'));assert.ok(row.url.startsWith(`https://github.com/unbraind/${row.repo}/blob/${row.revision}/.agents/pm/`));}
   for(const name of privateRepositories){assert.throws(()=>checkPublic(name));assert.throws(()=>checkPublic(name.toUpperCase()));checkPublic(name+'-tools');}
+});
+test('corpus guard skips only invalid_input and propagates unexpected failures',()=>{
+  const statement=readFileSync('test/corpus.ts','utf8').match(/try \{ guardSubmitted\(text\); \} catch[^\n]+/);
+  assert.ok(statement,'The corpus passage guard must be exercised');
+  const script=`let accepted=false; for (const text of ['public passage']) { ${statement[0]} accepted=true; } accepted;`;
+  assert.equal(runInNewContext(script,{guardSubmitted:()=>{},Error}),true);
+  const refused=Object.assign(new Error('Expected refusal'),{code:'invalid_input'});
+  assert.equal(runInNewContext(script,{guardSubmitted:()=>{throw refused;},Error}),false);
+  for(const error of [new TypeError('Unexpected guard defect'),Object.assign(new Error('Unexpected refusal'),{code:'outcome_unknown'})]) {
+    assert.throws(()=>runInNewContext(script,{guardSubmitted:()=>{throw error;},Error}),actual=>actual===error);
+  }
 });
