@@ -36,7 +36,11 @@ function runtimeProvisioning(source: string): void {
       assert.ok(setup >= 0 && retained > setup && retained < job.indexOf('run: npm ci'), 'Full gates require both exact runtimes before dependency execution');
     }
   }
-  if (source.includes('matrix.node-version')) assert.match(source, /node-version: \['22\.19\.0', '26\.13\.0'\]/);
+  if (source.includes('matrix.node-version')) {
+    // The matrix may list the versions or include them with a major key that keeps check names stable.
+    const included = [...source.matchAll(/^[ \t]+- node-version: '([^']+)'\s*\n[ \t]+major: (\d+)[ \t]*$/gm)].map(entry => `${entry[2]}=${entry[1]}`).join(',');
+    assert.ok(/node-version: \['22\.19\.0', '26\.13\.0'\]/.test(source) || included === '22=22.19.0,26=26.13.0', 'The test matrix provisions exactly the two acceptance runtimes');
+  }
 }
 
 /** Bind release metadata to the package owner and reject inherited scaffold identity anywhere. */

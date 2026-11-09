@@ -11,13 +11,20 @@ permissions:
 
 jobs:
   test:
+    # Keep the check names stable (test (22), test (26)): branch protection requires them, and an exact
+    # patch version in the name would block every PR whenever the pinned patch moves.
+    name: test (${{ matrix.major }})
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         # 22 is the floor declared in `engines` and the first line that strips
         # TypeScript without a flag; 26 is what the fleet develops against.
-        node-version: ['22.19.0', '26.13.0']
+        include:
+          - node-version: '22.19.0'
+            major: 22
+          - node-version: '26.13.0'
+            major: 26
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
