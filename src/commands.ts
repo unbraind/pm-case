@@ -40,7 +40,9 @@ export async function runCommand(command: string, ctx: CommandHandlerContext): P
     insist(ctx.global.outputInclude === undefined && ctx.global.outputSession === undefined && ctx.global.outputRowContract === undefined, 'invalid_input', 'Generic projection would omit mandatory coverage witnesses', 'Use case packet --limit');
     insist(flags.budget === undefined || ctx.global.outputBudget === undefined, 'invalid_input', 'Choose one budget transport');
     const requested = flags.budget === undefined ? ctx.global.outputBudget : flags.budget;
-    const budget = requested === 'unbounded' ? 8192 : integer(requested, integer(policy?.output_budget, 1600));
+    // The stored setting is read lazily: an explicit budget must never be refused by an invalid stored policy value.
+    const budget = requested === 'unbounded' ? 8192 : requested !== undefined ? integer(requested, 1600) : integer(policy?.output_budget, 1600);
+    insist(requested !== undefined || budget <= 8192, 'invalid_input', 'Stored output budget exceeds the 8192 token ceiling');
     insist(command === 'packet' || (ctx.global.outputCursor === undefined && ctx.global.outputLimit === undefined), 'invalid_input', 'Pagination applies only to case packet');
     insist(flags.cursor === undefined || ctx.global.outputCursor === undefined, 'invalid_input', 'Choose one cursor transport', 'Use --cursor for package continuation');
     insist(flags.limit === undefined || ctx.global.outputLimit === undefined, 'invalid_input', 'Choose one limit transport');
