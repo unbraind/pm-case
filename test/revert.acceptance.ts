@@ -36,7 +36,7 @@ try{
     {file:'kernel.js',before:'const memoized = memo.get(key);',after:'const memoized = undefined;',test:'core.test.ts',pattern:'^deterministic covers and domains are reused'},
   ];
   const additional = [
-    {file:'dist/src/schema.js',before:"insist(value.length <= submittedNodeBudget, 'invalid_input', 'Submitted arrays exceed the traversal budget');",after:'void value.length;',test:'privacy.test.ts',pattern:'^sparse arrays refuse'},
+    {file:'dist/src/schema.js',before:"insist(visits.count + value.length <= submittedNodeBudget, 'invalid_input', 'Submitted arrays exceed the traversal budget');",after:'void value.length;',test:'privacy.test.ts',pattern:'^sparse arrays refuse'},
     {file:'README.md',before:'npm install "$archive"',after:'npm install ../pm-case-2026.11.6.tgz',test:'review-classes.test.ts',pattern:'^documented archive installs'},
     {file:'test/install-tools.ts',before:"['bun', 'npm', 'npx', 'sha256sum'] as const",after:"['bun', 'npm', 'npx'] as const",test:'install-tools.test.ts',pattern:'^packed acceptance requires'},
     {file:'test/review-classes.test.ts',before:'source.split(/(?=^  [A-Za-z0-9_-]+:)/m)',after:'source.split(/(?=^  [a-z_]+:)/m)',test:'review-classes.test.ts',pattern:'^runtime provisioning isolates'},
@@ -100,8 +100,23 @@ try{
     {file:'dist/src/api.js',before:'revision: owner.revision, summary, rows, total:',after:'revision: owner.revision, summary: { ...summary, case_counts: { ...summary.case_counts, unresolved: 0 } }, rows, total:',test:'real-data.test.ts',pattern:'^ten pinned resume questions'},
     {file:'dist/src/kernel.js',before:'const model = normalizeModel(raw, stored);\n    return reuse(domainMemo,',after:'const model = raw;\n    return reuse(domainMemo,',test:'core.test.ts',pattern:'^cached covers and domains'},
     {file:'dist/src/kernel.js',before:'const model = normalizeModel(raw, stored);\n    return reuse(coverMemo,',after:'const model = raw;\n    return reuse(coverMemo,',test:'core.test.ts',pattern:'^cached covers and domains'},
+    {file:'test/revert.acceptance.ts',before:"stale.join('\\n')",after:'stale[0]',test:'revert-seams.test.ts',pattern:'^revert acceptance reports all'},
   ];
-  for(const mutation of [...mutations.map(row=>({...row,file:`dist/src/${row.file}`})),...additional]){
+  const allMutations = [...mutations.map(row => ({ ...row, file: `dist/src/${row.file}` })), ...additional];
+  const assertionProbes = [
+    {file:'contracts.test.ts',before:"native.get('corpus-refused')",after:"Promise.reject(Object.assign(new Error('unrelated I/O'), { code: 'io_failure' }))",pattern:'^native harness exercises'},
+    {file:'edge.test.ts',before:'host.client.create()',after:"Promise.reject(Object.assign(new Error('unrelated I/O'), { code: 'io_failure' }))",pattern:'^native persisted adapter'},
+    {file:'edge.test.ts',before:"createCaseModel(host, { ...birth, id: 'corpus-invalid', related: ['corpus-missing'] })",after:"Promise.reject(new CaseRefusal('invalid_input', 'Unrelated refusal'))",pattern:'^native persisted adapter'},
+  ].map(probe => ({ ...probe, file: `test/${probe.file}`, test: probe.file }));
+  const stale: string[] = [];
+  for (const mutation of [...allMutations, ...assertionProbes]) {
+    const source = await readFile(join(root, mutation.file), 'utf8');
+    const matches = source.split(mutation.before).length - 1;
+    if (matches !== 1) stale.push(`${mutation.file}: ${mutation.pattern}: ${matches} matches for ${JSON.stringify(mutation.before)}`);
+  }
+  assert.equal(stale.length, 0, `Stale revert seams (expected exactly one match):\n${stale.join('\n')}`);
+  console.log(`revert-seams: ${allMutations.length + assertionProbes.length} seams match exactly once`);
+  for(const mutation of allMutations){
     await proveMutation(root,mutation);proofs.push({function_behavior:mutation.before,test:mutation.test,pattern:mutation.pattern,baseline_exit:0,named_failure:true,reverted_exit:1,restored_exit:0});
     console.log(JSON.stringify({proved:mutation.test,pattern:mutation.pattern}));
   }
@@ -118,13 +133,9 @@ try{
     }
   }
   const assertion_probes=[];
-  for(const probe of [
-    {file:'contracts.test.ts',before:"native.get('corpus-refused')",after:"Promise.reject(Object.assign(new Error('unrelated I/O'), { code: 'io_failure' }))",pattern:'^native harness exercises'},
-    {file:'edge.test.ts',before:'host.client.create()',after:"Promise.reject(Object.assign(new Error('unrelated I/O'), { code: 'io_failure' }))",pattern:'^native persisted adapter'},
-    {file:'edge.test.ts',before:"createCaseModel(host, { ...birth, id: 'corpus-invalid', related: ['corpus-missing'] })",after:"Promise.reject(new CaseRefusal('invalid_input', 'Unrelated refusal'))",pattern:'^native persisted adapter'},
-  ]) {
-    await proveMutation(root,{...probe,file:`test/${probe.file}`,test:probe.file});
-    assertion_probes.push({test:probe.file,pattern:probe.pattern,wrong_code_exit:1,restored_exit:0});
+  for(const probe of assertionProbes) {
+    await proveMutation(root,probe);
+    assertion_probes.push({test:probe.test,pattern:probe.pattern,wrong_code_exit:1,restored_exit:0});
   }
   await writeFile('revert-receipt.local.json',JSON.stringify({proofs,linked,assertion_probes,workspace_mutated:false},null,2)+'\n');console.log(JSON.stringify({behavioral_reverts:proofs.length,red:proofs.length,restored_green:proofs.length,linked_build_proofs:linked.length,wrong_error_code_proofs:assertion_probes.length}));
 }finally{await rm(root,{recursive:true,force:true});}

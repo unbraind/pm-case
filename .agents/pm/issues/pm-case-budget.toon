@@ -2,26 +2,77 @@ id: pm-case-budget
 title: Read the stored budget setting only when no explicit budget is given
 description: "An invalid stored case output_budget (0, -1, 1.5, 8193) threw before an explicit --budget was honored, because the eager integer(policy?.output_budget, 1600) fallback evaluated first. Read the stored setting lazily, only when no explicit budget transport is provided."
 type: Issue
+pm_format_version: 2
 status: in_progress
 priority: 2
-tags: []
+tags[1]: "gh:unbraind/pm-case#5"
 created_at: "2026-11-09T19:46:28.641Z"
-updated_at: "2026-11-09T20:18:38.634Z"
+updated_at: "2026-11-11T09:20:38.534Z"
 author: codex-agent
 acceptance_criteria: An explicit valid budget succeeds while the stored setting is invalid; Without a budget the invalid stored setting still refuses; Regression fails on revert
-comments[5]{created_at,author,text}:
+comments[11]{created_at,author,text}:
   "2026-11-09T19:46:34.861Z",codex-agent,"Plan: apply the lazy stored-setting fallback in the command dispatch (requested budget first, stored section only when no explicit transport), search for other eager stored-setting fallbacks, and add an extension-harness contract that writes an invalid stored output_budget with the SDK settings writer and proves an explicit budget still succeeds while the un-budgeted command still refuses."
   "2026-11-09T19:49:44.629Z",codex-agent,"Revert proof: with only the two source changes reverted (commands dispatch restored to the eager integer(requested, integer(policy?.output_budget, 1600)) fallback and guardSubmitted restored to the length-only array bound), the focused privacy and contracts suites fail exactly on the two new regressions ('an explicit budget is not refused by an invalid stored budget setting' and 'sparse arrays refuse before schema parsing and only dense arrays are admitted') and pass again once the fix is restored (15/15). The stored 8193 case clamps to the package's 8192 fitting ceiling instead of refusing, which the contract records explicitly."
   "2026-11-09T20:06:17.914Z",codex-agent,"Continuation preserves the existing changes and item. Correcting the prior test exception for stored 8193 to meet the requested refusal when it is selected as the fallback, adding host output-budget coverage, and checking the array length against the remaining aggregate traversal budget before allocating keys. The earlier revert receipt will be superseded with fresh isolated proofs."
   "2026-11-09T20:17:42.172Z",codex-agent,"Fresh isolated revert proofs supersede the earlier receipt: restoring only base src/commands.ts and rebuilding fails 'an explicit budget is not refused by an invalid stored budget setting' (exit 1); restoring the fix and rebuilding passes. Restoring only base src/schema.ts and rebuilding fails 'sparse arrays refuse before schema parsing and only dense arrays are admitted' (exit 1); restoring the fixed guard and rebuilding passes. Both package --budget and host --output-budget, including unbounded, override stored 0, -1, 1.5 and 8193; all four stored values refuse when selected without an override. Invalid explicit budgets still refuse. Dense indices are checked after the remaining aggregate node bound and before schema parsing. The text-budget fixture stays below the node ceiling so it still exercises the independent text limit. No other eager stored-setting fallback remains. Focused suites and pinned pm test --run --progress: 15/15 passed. Complete npm test: 100/100 passed, zero skipped. npm run typecheck and npm run lint passed."
   "2026-11-09T20:18:38.633Z",codex-agent,"Handoff: PR https://github.com/unbraind/pm-case/pull/5; source fix e690e8ca442eb64166325a67d61e64521efc6b31. Exact source-head checks observed queued: CI test (22), test (26), https://github.com/unbraind/pm-case/actions/runs/42691665269; CodeQL https://github.com/unbraind/pm-case/actions/runs/42691665625. Automated reviews are skipped or neutral and are not approval. Full CI certification remains pending; the orchestrator owns verification and closure."
-files[4]{path,scope}:
+  "2026-11-11T08:21:06.098Z",codex-seams-1111,"Investigating Node 26 revert acceptance failure. Reproduce CI build and acceptance, audit every mutation seam for exactly one match, refresh only stale fragments preserving named behavior, and aggregate stale diagnostics before proofs. Run focused tests and both release gates; leave item open and release this claim."
+  "2026-11-11T08:23:56.775Z",codex-seams-1111,Reproduced the original CI failure with bun run build && node test/revert.acceptance.ts under Node 26.13.0. Full preflight audit found one stale seam; all other seams match exactly once. Updated the exact fragment while retaining its original mutation and named failing test. Added a disposable-copy regression for combined missing and ambiguous seam diagnostics before any proof runs.
+  "2026-11-11T08:28:54.748Z",codex-seams-1111,"The first repaired sparse-array seam matched once but its mutation remained green: the newer dense-key check also refused oversized sparse arrays. Strengthened the same named privacy regression with an oversized-array Proxy whose ownKeys trap fails if allocation is reached; require the original traversal-budget refusal first. This preserves the original length-bound mutation and proves its early admission behavior independently of the later sparse-key check. The combined-diagnostic regression fails proof:seam_diagnostics when the collector is reverted to first-only reporting in disposable copies in both packages."
+  "2026-11-11T08:38:05.421Z",codex-seams-1111,"Full pinned-pm CI-equivalent acceptance passed: 73 behavioral mutations each fail the named regression and restore green, 4 linked build proofs, and 3 wrong-error-code proofs. The new combined-diagnostic self-mutation is included. Independent oversized-array length-bound proof is green/red/green (0/1/0) with proof:sparse_array_length_budget. Focused privacy and diagnostics tests pass 10/10; typecheck, lint, docstrings and identity/privacy checks pass. All checks use Node 26.13.0 and Bun 1.3.5 with a 20-minute acceptance cap."
+  "2026-11-11T08:38:22.885Z",codex-seams-1111,"Correction to the preceding count: the acceptance receipt reports 69 behavioral mutations (69 red and 69 restored green), not 73. All 72 seams match exactly once, including the 3 wrong-error-code probes. The 4 linked build proofs are separate. Acceptance stdout is 71 lines; build stderr is 1 line. All other results in the preceding comment stand."
+  "2026-11-11T09:20:36.794Z",codex-seams-1111,"Final local verification: npm run release:check and bun run release:check both passed all 14 sequential gate steps with isolated HOME/Git settings. Each passed 101/101 unit tests (zero skipped), one packed acceptance spanning npm/Bun and Node 22.19.0/26.13.0, and exactly 100 percent coverage: statements 607/607, branches 343/343, functions 171/171, lines 492/492. Standalone CI-equivalent acceptance stdout has 71 lines, plus one build stderr line. Full release links use 3600-second bounds; focused tests and standalone acceptance retain 1200-second caps. Tracker histories remain append-only. Final audit comment and claim release are followed by regenerated changelog and fresh tracker/identity/changelog checks; hosted checks for the pushed head are reported in the PR. Item remains in progress for orchestrator verification. A transient registry audit endpoint error interrupted one Bun attempt; a fresh complete Bun gate subsequently passed without bypassing the audit."
+files[6]{path,scope}:
   src/commands.ts,project
   src/schema.ts,project
   test/contracts.test.ts,project
   test/privacy.test.ts,project
-tests[1]{command,scope,provenance{author,created_at,source_kind,source_ref}}:
-  node --test --test-concurrency=2 test/privacy.test.ts test/contracts.test.ts,project,codex-agent,"2026-11-09T19:54:45.077Z",local_mutation,fix/explicit-budget-over-stored-setting
+  test/revert-seams.test.ts,project
+  test/revert.acceptance.ts,project
+tests[5]:
+  - command: node --test --test-concurrency=2 test/privacy.test.ts test/contracts.test.ts
+    scope: project
+    provenance:
+      author: codex-agent
+      created_at: "2026-11-09T19:54:45.077Z"
+      source_kind: local_mutation
+      source_ref: fix/explicit-budget-over-stored-setting
+  - command: timeout 20m node --test --test-concurrency=2 test/privacy.test.ts test/revert-seams.test.ts
+    scope: project
+    timeout_seconds: 1200
+    provenance:
+      author: codex-seams-1111
+      created_at: "2026-11-11T08:24:43.367Z"
+      source_kind: local_mutation
+      source_ref: fix/explicit-budget-over-stored-setting
+  - command: "timeout 20m sh -c \"bun run build && node test/revert.acceptance.ts\""
+    scope: project
+    timeout_seconds: 1200
+    provenance:
+      author: codex-seams-1111
+      created_at: "2026-11-11T08:24:59.130Z"
+      source_kind: local_mutation
+      source_ref: fix/explicit-budget-over-stored-setting
+  - command: "npm run release:check"
+    scope: project
+    timeout_seconds: 3600
+    provenance:
+      author: codex-seams-1111
+      created_at: "2026-11-11T08:29:38.083Z"
+      source_kind: local_mutation
+      source_ref: fix/explicit-budget-over-stored-setting
+    updated_by: codex-seams-1111
+    updated_at: "2026-11-11T08:50:34.176Z"
+  - command: "bun run release:check"
+    scope: project
+    timeout_seconds: 3600
+    provenance:
+      author: codex-seams-1111
+      created_at: "2026-11-11T08:29:38.971Z"
+      source_kind: local_mutation
+      source_ref: fix/explicit-budget-over-stored-setting
+    updated_by: codex-seams-1111
+    updated_at: "2026-11-11T08:50:35.375Z"
 docs[1]{path,scope}:
   CHANGELOG.md,project
 body: ""

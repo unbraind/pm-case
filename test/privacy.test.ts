@@ -112,6 +112,11 @@ test('sparse arrays refuse before schema parsing and only dense arrays are admit
   /** Both traversal-budget and dense-key refusals must fire before schema validation walks the array. */
   const refused = (input: unknown, proof: string) => assert.throws(() => guardSubmitted(input), error => hasCode('invalid_input')(error) && error instanceof Error && /Submitted arrays exceed the traversal budget|Sparse arrays are not plain JSON data/u.test(error.message), proof);
   for (const length of [200001, 5000000, 2 ** 31]) {
+    const oversized = new Proxy(new Array(length), {
+      /** Array length admission must refuse before allocating its key list. */
+      ownKeys() { assert.fail('Array keys were enumerated before the length bound'); },
+    });
+    assert.throws(() => guardSubmitted(oversized), error => hasCode('invalid_input')(error) && error instanceof Error && error.message === 'Submitted arrays exceed the traversal budget', 'proof:sparse_array_length_budget');
     refused(new Array(length), 'proof:sparse_array_length');
     assert.throws(() => parse(schema, new Array(length)), hasCode('invalid_input'));
   }
