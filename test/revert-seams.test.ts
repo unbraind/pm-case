@@ -1,4 +1,5 @@
 import test from 'node:test';
+import { decode } from '@toon-format/toon';
 import assert from 'node:assert/strict';
 import { cpSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
@@ -13,6 +14,7 @@ test('revert acceptance reports all missing and ambiguous seams before running p
   symlinkSync(resolve('node_modules'), join(root, 'node_modules'), 'dir');
 
   const failures = [
+    { file: 'test/contracts.test.ts', before: "native.get('corpus-refused')", after: "native.get('corpus-probe-altered')", label: '^native harness exercises', count: 0 },
     { file: 'README.md', before: 'npm install "$archive"', after: 'npm install "$archive"\nnpm install "$archive"', label: '^documented archive installs', count: 2 },
     { file: 'test/install-tools.ts', before: "['bun', 'npm', 'npx', 'sha256sum'] as const", after: "['bun', 'npm', 'npx'] as const", label: '^packed acceptance requires', count: 0 },
     { file: 'test/corpus.ts', before: '// Both archives use the same frozen revision, so provenance is identical.', after: '// Removed provenance note.', label: '^harness archives share', count: 0 },
@@ -32,4 +34,16 @@ test('revert acceptance reports all missing and ambiguous seams before running p
     assert.ok(readFileSync(join(root, failure.file), 'utf8').includes(failure.after));
   }
   assert.doesNotMatch(result.stdout, /"proved"/);
+});
+
+
+test('linked deadlines use portable commands and native PM timeout metadata', () => {
+  const item = decode(readFileSync('.agents/pm/issues/pm-case-budget.toon', 'utf8')) as { tests: { command: string; timeout_seconds?: number }[] };
+  for (const entry of item.tests) {
+    assert.doesNotMatch(entry.command, /(?:^|\s)(?:g?timeout|sh|bash)(?:\s|$)/, 'proof:portable_deadlines');
+    for (const token of entry.command.split(/\s+/)) assert.doesNotMatch(token, /^(?:[a-z]:[\\/]|[\\/])/iu, 'proof:portable_deadlines');
+  }
+  for (const command of ['node --test --test-concurrency=2 test/privacy.test.ts test/revert-seams.test.ts test/snapshot.test.ts', 'npm run test:revert']) {
+    assert.equal(item.tests.find(entry => entry.command === command)?.timeout_seconds, 1200, 'proof:portable_deadlines');
+  }
 });

@@ -36,7 +36,11 @@ try{
     {file:'kernel.js',before:'const memoized = memo.get(key);',after:'const memoized = undefined;',test:'core.test.ts',pattern:'^deterministic covers and domains are reused'},
   ];
   const additional = [
-    {file:'dist/src/schema.js',before:"insist(visits.count + value.length <= submittedNodeBudget, 'invalid_input', 'Submitted arrays exceed the traversal budget');",after:'void value.length;',test:'privacy.test.ts',pattern:'^sparse arrays refuse'},
+    {file:'dist/src/schema.js',before:"insist(keys.length === length && keys.every((key, index) => key === String(index)), 'invalid_input', 'Sparse arrays are not plain JSON data');",after:'void keys;',test:'privacy.test.ts',pattern:'^dense-index admission refuses'},
+    {file:'dist/src/schema.js',before:"insist(keys.length === length && keys.every((key, index) => key === String(index)), 'invalid_input', 'Sparse arrays are not plain JSON data');",after:'void keys;',test:'privacy.test.ts',pattern:'^sparse arrays refuse'},
+    {file:'dist/src/schema.js',before:'const result = schema.safeParse(snapshot);',after:'const result = schema.safeParse(value);',test:'snapshot.test.ts',pattern:'^file replacement cannot change'},
+    {file:'test/revert.acceptance.ts',before:['[...allMutations, ', '...assertionProbes]'].join(''),after:'allMutations',test:'revert-seams.test.ts',pattern:'^revert acceptance reports all'},
+    {file:'dist/src/schema.js',before:"insist(visits.count + length <= submittedNodeBudget, 'invalid_input', 'Submitted arrays exceed the traversal budget');",after:'void length;',test:'privacy.test.ts',pattern:'^sparse arrays refuse'},
     {file:'README.md',before:'npm install "$archive"',after:'npm install ../pm-case-2026.11.6.tgz',test:'review-classes.test.ts',pattern:'^documented archive installs'},
     {file:'test/install-tools.ts',before:"['bun', 'npm', 'npx', 'sha256sum'] as const",after:"['bun', 'npm', 'npx'] as const",test:'install-tools.test.ts',pattern:'^packed acceptance requires'},
     {file:'test/review-classes.test.ts',before:'source.split(/(?=^  [A-Za-z0-9_-]+:)/m)',after:'source.split(/(?=^  [a-z_]+:)/m)',test:'review-classes.test.ts',pattern:'^runtime provisioning isolates'},

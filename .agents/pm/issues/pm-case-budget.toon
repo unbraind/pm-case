@@ -7,10 +7,10 @@ status: in_progress
 priority: 2
 tags[1]: "gh:unbraind/pm-case#5"
 created_at: "2026-11-09T19:46:28.641Z"
-updated_at: "2026-11-11T09:20:38.534Z"
+updated_at: "2026-11-11T11:28:11.897Z"
 author: codex-agent
 acceptance_criteria: An explicit valid budget succeeds while the stored setting is invalid; Without a budget the invalid stored setting still refuses; Regression fails on revert
-comments[11]{created_at,author,text}:
+comments[16]{created_at,author,text}:
   "2026-11-09T19:46:34.861Z",codex-agent,"Plan: apply the lazy stored-setting fallback in the command dispatch (requested budget first, stored section only when no explicit transport), search for other eager stored-setting fallbacks, and add an extension-harness contract that writes an invalid stored output_budget with the SDK settings writer and proves an explicit budget still succeeds while the un-budgeted command still refuses."
   "2026-11-09T19:49:44.629Z",codex-agent,"Revert proof: with only the two source changes reverted (commands dispatch restored to the eager integer(requested, integer(policy?.output_budget, 1600)) fallback and guardSubmitted restored to the length-only array bound), the focused privacy and contracts suites fail exactly on the two new regressions ('an explicit budget is not refused by an invalid stored budget setting' and 'sparse arrays refuse before schema parsing and only dense arrays are admitted') and pass again once the fix is restored (15/15). The stored 8193 case clamps to the package's 8192 fitting ceiling instead of refusing, which the contract records explicitly."
   "2026-11-09T20:06:17.914Z",codex-agent,"Continuation preserves the existing changes and item. Correcting the prior test exception for stored 8193 to meet the requested refusal when it is selected as the fallback, adding host output-budget coverage, and checking the array length against the remaining aggregate traversal budget before allocating keys. The earlier revert receipt will be superseded with fresh isolated proofs."
@@ -22,35 +22,25 @@ comments[11]{created_at,author,text}:
   "2026-11-11T08:38:05.421Z",codex-seams-1111,"Full pinned-pm CI-equivalent acceptance passed: 73 behavioral mutations each fail the named regression and restore green, 4 linked build proofs, and 3 wrong-error-code proofs. The new combined-diagnostic self-mutation is included. Independent oversized-array length-bound proof is green/red/green (0/1/0) with proof:sparse_array_length_budget. Focused privacy and diagnostics tests pass 10/10; typecheck, lint, docstrings and identity/privacy checks pass. All checks use Node 26.13.0 and Bun 1.3.5 with a 20-minute acceptance cap."
   "2026-11-11T08:38:22.885Z",codex-seams-1111,"Correction to the preceding count: the acceptance receipt reports 69 behavioral mutations (69 red and 69 restored green), not 73. All 72 seams match exactly once, including the 3 wrong-error-code probes. The 4 linked build proofs are separate. Acceptance stdout is 71 lines; build stderr is 1 line. All other results in the preceding comment stand."
   "2026-11-11T09:20:36.794Z",codex-seams-1111,"Final local verification: npm run release:check and bun run release:check both passed all 14 sequential gate steps with isolated HOME/Git settings. Each passed 101/101 unit tests (zero skipped), one packed acceptance spanning npm/Bun and Node 22.19.0/26.13.0, and exactly 100 percent coverage: statements 607/607, branches 343/343, functions 171/171, lines 492/492. Standalone CI-equivalent acceptance stdout has 71 lines, plus one build stderr line. Full release links use 3600-second bounds; focused tests and standalone acceptance retain 1200-second caps. Tracker histories remain append-only. Final audit comment and claim release are followed by regenerated changelog and fresh tracker/identity/changelog checks; hosted checks for the pushed head are reported in the PR. Item remains in progress for orchestrator verification. A transient registry audit endpoint error interrupted one Bun attempt; a fresh complete Bun gate subsequently passed without bypassing the audit."
-files[6]{path,scope}:
+  "2026-11-11T10:48:02.159Z",codex-seams-1111,"Resumed one scoped review round for PR 5 at aaea545. Fetched every thread and every comment with no omitted pages: PRRT_kwDOVlkMx862Hk27 (stable validation/parse snapshot), PRRT_kwDOVlkMx862Hk3Q (independent dense-index seam), PRRT_kwDOVlkMx862Hk3H (assertion-probe diagnostics), PRRT_kwDOVlkMx862Hk2x (portable linked deadlines). The blocking thread describes mutable Proxy input, while the orchestrator also requires a same-class audit of stored settings and tracker reads; address both at their actual boundaries. No thread replies or resolutions; no changes to the accepted sibling package. The queue forbids delegation, so security boundary and bypass reviews will be separate local inspection passes."
+  "2026-11-11T10:55:21.099Z",codex-seams-1111,"Boundary audit: schema parsing was vulnerable because privacy traversal and Zod consumed the original mutable object separately. The capture now reads each own data descriptor once, validates the captured child, and parses that same detached tree; inherited values and later Proxy/file changes are excluded. commands.ts captures one readSettingsSection value, host.ts uses single native settings reads, api.ts validates one complete get snapshot, kernel.ts validates that captured state, and script file readers consume their captured text directly. No independent validate-then-reread file path exists in those modules. Added real settings/tracker second-write controls plus a real input-file replacement at the privacy-to-Zod boundary. Portable links now use relative Node/npm commands and PM timeout_seconds instead of platform-specific timeout/sh wrappers."
+  "2026-11-11T11:02:33.366Z",codex-seams-1111,"Focused native verification passes 16/16, including the real file replacement, Proxy array/object controls, settings second-write control and tracker second-write control. All existing test files also passed 107/107 before the final independent extra-key regression was added. Portable linked commands have a separate real-temp-tracker green/red/green proof (0/1/0), with all metadata edits made through pinned pm commands and history retained. A separate boundary/bypass inspection confirmed own-descriptor capture covers nested arrays and objects, refuses vanishing or invalid descriptors, never consults inherited elements, preserves traversal/text ceilings, and leaves stored-mode compatibility unchanged. Full revert acceptance will additionally certify independent array-bound, sparse-index, extra-key, file-snapshot and assertion-probe-coverage mutations."
+  "2026-11-11T11:12:53.030Z",codex-seams-1111,"CI-equivalent bun build plus revert acceptance passed within the 1200-second cap: all 76 seams match once; 73 named behavioral mutations fail and restore green; 4 linked build proofs and 3 wrong-error-code probes pass. Combined stdout/build-stderr log has 76 lines (75 acceptance stdout plus one build line). The new file-replacement mutation proves unvalidated replacement data cannot enter an outcome. Separate dense-index removals fail sparse-hole and named-key regressions while the aggregate bound remains intact. Omitting assertionProbes from preflight now fails the diagnostic fixture. Latest pinned-pm focused run passes 17/17. Portable linked metadata has a separate real-temp-tracker 0/1/0 revert proof. Typecheck, lint and all 102 documented declarations pass. npm release verification follows within the scoped 45-minute round budget; the previously accepted sibling package is unchanged."
+  "2026-11-11T11:28:11.089Z",codex-seams-1111,"Scoped review outcome: fixed. The original file/Proxy substitution is prevented by validating and parsing the same detached own-data snapshot. Real file replacement, late inherited array values and mutable object controls pass; public Unicode, dense arrays and historical stored data remain compatible. Settings and tracker second-write tests each assert one native read and retain the validated captured value. Latest focused pinned-pm run passes 17/17. Full npm run release:check passes all 14 steps: 108/108 unit tests with zero skips, one packed npm/Bun acceptance across Node 22.19.0 and 26.13.0, and exactly 100 percent of statements/branches/functions/lines. Standalone bun build plus revert acceptance passes all 76 exact seams, 73 red/restored-green behaviors, 4 build proofs and 3 wrong-error-code proofs; combined log has 76 lines. Separate dense-index proofs cover holes and named keys independently of the aggregate bound. Omitting assertionProbes now fails diagnostic coverage. Portable PM deadlines use only relative commands and timeout_seconds metadata; a real-temp-tracker metadata revert proves 0/1/0. Four scoped review threads and all four comments/diff hunks were read with no omitted pages. No replies, reactions or resolutions were made. This round obeys the scoped gate budget; a second full Bun release run and changes to the accepted sibling package were not part of this round. Final comment and claim release are followed by regenerated changelog and fresh tracker/identity/changelog checks. Item remains in progress for orchestrator verification."
+files[7]{path,scope}:
   src/commands.ts,project
   src/schema.ts,project
   test/contracts.test.ts,project
   test/privacy.test.ts,project
   test/revert-seams.test.ts,project
   test/revert.acceptance.ts,project
+  test/snapshot.test.ts,project
 tests[5]:
   - command: node --test --test-concurrency=2 test/privacy.test.ts test/contracts.test.ts
     scope: project
     provenance:
       author: codex-agent
       created_at: "2026-11-09T19:54:45.077Z"
-      source_kind: local_mutation
-      source_ref: fix/explicit-budget-over-stored-setting
-  - command: timeout 20m node --test --test-concurrency=2 test/privacy.test.ts test/revert-seams.test.ts
-    scope: project
-    timeout_seconds: 1200
-    provenance:
-      author: codex-seams-1111
-      created_at: "2026-11-11T08:24:43.367Z"
-      source_kind: local_mutation
-      source_ref: fix/explicit-budget-over-stored-setting
-  - command: "timeout 20m sh -c \"bun run build && node test/revert.acceptance.ts\""
-    scope: project
-    timeout_seconds: 1200
-    provenance:
-      author: codex-seams-1111
-      created_at: "2026-11-11T08:24:59.130Z"
       source_kind: local_mutation
       source_ref: fix/explicit-budget-over-stored-setting
   - command: "npm run release:check"
@@ -73,6 +63,22 @@ tests[5]:
       source_ref: fix/explicit-budget-over-stored-setting
     updated_by: codex-seams-1111
     updated_at: "2026-11-11T08:50:35.375Z"
+  - command: node --test --test-concurrency=2 test/privacy.test.ts test/revert-seams.test.ts test/snapshot.test.ts
+    scope: project
+    timeout_seconds: 1200
+    provenance:
+      author: codex-seams-1111
+      created_at: "2026-11-11T10:55:13.583Z"
+      source_kind: local_mutation
+      source_ref: fix/explicit-budget-over-stored-setting
+  - command: "npm run test:revert"
+    scope: project
+    timeout_seconds: 1200
+    provenance:
+      author: codex-seams-1111
+      created_at: "2026-11-11T10:55:17.116Z"
+      source_kind: local_mutation
+      source_ref: fix/explicit-budget-over-stored-setting
 docs[1]{path,scope}:
   CHANGELOG.md,project
 body: ""

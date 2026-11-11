@@ -89,8 +89,8 @@ const emailAddressPattern = /(?<![\w.+-])[\w.+-]+@[\w.-]+\.[a-z]{2,}/iu;
 const submittedNodeBudget = 200000;
 /** Bound cumulative scanning, including repeated strings, above schema-bounded request sizes. */
 const submittedTextBudget = 4 * 1024 * 1024;
-/** Refuse unsafe data before it can enter immutable native history. */
-export function guardSubmitted(value: unknown, seen = new Set<object>(), depth = 0, visits = { count: 0, characters: 0 }): void {
+/** Capture own data once, validating the exact detached values that schema parsing will consume. */
+function submittedSnapshot(value: unknown, seen = new Set<object>(), depth = 0, visits = { count: 0, characters: 0 }): unknown {
   insist(depth <= 16, 'invalid_input', 'Input nesting exceeds sixteen levels');
   insist(++visits.count <= submittedNodeBudget, 'invalid_input', 'Submitted input exceeds the traversal budget');
   if (typeof value === 'string') {
@@ -103,29 +103,34 @@ export function guardSubmitted(value: unknown, seen = new Set<object>(), depth =
   } else if (value !== null && typeof value === 'object') {
     const prototype = Object.getPrototypeOf(value);
     insist(Array.isArray(value) || prototype === Object.prototype || prototype === null, 'invalid_input', 'Only plain JSON data is supported');
-    // JSON arrays never have holes. A hole lets schema validation walk empty slots and read values inherited from
-    // Array.prototype that this guard never scans, so only arrays whose keys are exactly the indices 0..length-1 are
-    // accepted. The length is checked against the traversal budget before the key list is allocated.
-    if (Array.isArray(value)) {
-      insist(visits.count + value.length <= submittedNodeBudget, 'invalid_input', 'Submitted arrays exceed the traversal budget');
-      const keys = Object.keys(value);
-      insist(keys.length === value.length && keys.every((key, index) => key === String(index)), 'invalid_input', 'Sparse arrays are not plain JSON data');
-    }
+    const array = Array.isArray(value);
+    const length = array ? Object.getOwnPropertyDescriptor(value, 'length')!.value as number : 0;
+    insist(Number.isSafeInteger(length) && length >= 0, 'invalid_input', 'Only plain JSON data is supported');
+    // Bound allocation before enumerating keys, then require every own array index exactly once.
+    if (array) insist(visits.count + length <= submittedNodeBudget, 'invalid_input', 'Submitted arrays exceed the traversal budget');
+    const keys = Reflect.ownKeys(value).filter(name => !array || name !== 'length');
+    if (array) insist(keys.length === length && keys.every((key, index) => key === String(index)), 'invalid_input', 'Sparse arrays are not plain JSON data');
     insist(!seen.has(value), 'invalid_input', 'Cyclic input is forbidden'); seen.add(value);
-    for (const name of Reflect.ownKeys(value)) {
-      const descriptor = Object.getOwnPropertyDescriptor(value, name)!;
-      insist(typeof name === 'string' && 'value' in descriptor && (descriptor.enumerable || (Array.isArray(value) && name === 'length')), 'invalid_input', 'Only enumerable JSON data properties are supported');
-    }
-    for (const [name, child] of Object.entries(value)) {
-      insist(!['__proto__', 'prototype', 'constructor'].includes(name), 'invalid_input', 'Prototype keys are forbidden'); guardSubmitted(child, seen, depth + 1, visits);
+    const snapshot = array ? new Array<unknown>(length) : Object.create(null) as Record<string, unknown>;
+    for (const name of keys) {
+      const descriptor = Object.getOwnPropertyDescriptor(value, name);
+      insist(descriptor !== undefined && typeof name === 'string' && 'value' in descriptor && descriptor.enumerable, 'invalid_input', 'Only enumerable JSON data properties are supported');
+      insist(!['__proto__', 'prototype', 'constructor'].includes(name), 'invalid_input', 'Prototype keys are forbidden');
+      Object.defineProperty(snapshot, name, { value: submittedSnapshot(descriptor.value, seen, depth + 1, visits), enumerable: true, configurable: true, writable: true });
     }
     seen.delete(value);
+    return snapshot;
   }
+  return value;
+}
+/** Refuse unsafe input using the same bounded capture as submitted schema parsing. */
+export function guardSubmitted(value: unknown, seen = new Set<object>(), depth = 0, visits = { count: 0, characters: 0 }): void {
+  submittedSnapshot(value, seen, depth, visits);
 }
 /** Strict JSON schema validation with inert, payload-free errors. */
 export function parse<T>(schema: z.ZodType<T>, value: unknown, stored = false): T {
-  if (!stored) guardSubmitted(value);
-  const result = schema.safeParse(value);
+  const snapshot = stored ? value : submittedSnapshot(value);
+  const result = schema.safeParse(snapshot);
   if (!result.success) throw new CaseRefusal(stored ? 'invalid_record' : (schema as z.ZodType<unknown>) === RecordCaseOutcomeInputSchema && result.error.issues.some(issue => issue.path[0] === 'outcome') ? 'invalid_outcome' : 'invalid_input', 'Strict case contract failed', 'Use the documented finite model and input schema');
   return result.data;
 }

@@ -137,3 +137,11 @@ test('sparse arrays refuse before schema parsing and only dense arrays are admit
   assert.equal((await native.schemaListFields()).fields.length, 0);
   await assert.rejects(native.get(birth.id), hasCode('item_not_found'));
 });
+
+
+test('dense-index admission refuses named keys that replace or extend array indices', () => {
+  for (const value of [Object.assign(new Array(2), { x: 'public', y: 'public' }), Object.assign(['public'], { extra: 'public' })]) {
+    assert.throws(() => guardSubmitted(value), error => hasCode('invalid_input')(error) && error instanceof Error && error.message === 'Sparse arrays are not plain JSON data', 'proof:dense_indices');
+  }
+  assert.doesNotThrow(() => guardSubmitted(['public', 'control']));
+});
