@@ -43,7 +43,16 @@ test('linked deadlines use portable commands and native PM timeout metadata', ()
     assert.doesNotMatch(entry.command, /(?:^|\s)(?:g?timeout|sh|bash)(?:\s|$)/, 'proof:portable_deadlines');
     for (const token of entry.command.split(/\s+/)) assert.doesNotMatch(token, /^(?:[a-z]:[\\/]|[\\/])/iu, 'proof:portable_deadlines');
   }
-  for (const command of ['node --test --test-concurrency=2 test/privacy.test.ts test/revert-seams.test.ts test/snapshot.test.ts', 'npm run test:revert']) {
+  let linked = 0;
+  for (const path of ['issues/pm-case-budget.toon', 'features/pm-case-kernel.toon', 'features/pm-case-proof.toon', 'features/pm-case-storage.toon']) {
+    const owner = decode(readFileSync(join('.agents/pm', path), 'utf8')) as { tests: { command: string }[] };
+    for (const entry of owner.tests) if (entry.command.includes('node --test')) {
+      linked++;
+      assert.ok(entry.command.startsWith('npm run build && '), `proof:linked_build ${path}`);
+    }
+  }
+  assert.ok(linked >= 6, 'Every linked source-test selection must be covered');
+  for (const command of ['npm run build && node --test --test-concurrency=2 test/privacy.test.ts test/contracts.test.ts', 'npm run build && node --test --test-concurrency=2 test/privacy.test.ts test/revert-seams.test.ts test/snapshot.test.ts', 'npm run test:revert']) {
     assert.equal(item.tests.find(entry => entry.command === command)?.timeout_seconds, 1200, 'proof:portable_deadlines');
   }
 });
