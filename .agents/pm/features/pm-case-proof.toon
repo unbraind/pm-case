@@ -2,11 +2,13 @@ id: pm-case-proof
 title: Public corpus and complete first-release evidence
 description: ""
 type: Feature
-status: in_progress
+status: closed
 priority: 2
 tags: []
 created_at: "2026-11-06T18:19:03.675Z"
-updated_at: "2026-11-08T10:24:12.609Z"
+updated_at: "2026-11-14T08:45:20.174Z"
+closed_at: "2026-11-14T08:45:20.107Z"
+completed_at: "2026-11-14T08:45:20.107Z"
 author: codex-agent
 acceptance_criteria: Three public matrices from twenty passages; gap fidelity; packed npm and Bun; 500 seeded sequences; complete source coverage and gates.
 parent: pm-case-release
@@ -36,4 +38,5 @@ docs[4]{path,scope}:
   docs/real-data-receipt.json,project
   docs/real-data.md,project
   README.md,project
+close_reason: "https://github.com/unbraind/pm-case/pull/1 merged 2026-11-09T09:34:31Z; merge SHA f9abde559d22852b958ad92e3da81787de43d6c0; PR head a56d4b5ced194eb2ca98469d31b9dfd31a3d294b. Delivered: Public three-matrix corpus, gap fidelity, packed npm/Bun consumers, seeded sequences and complete source coverage gates. Green at that head: test (22), codeql, test (26), CodeQL, cubic · AI code reviewer. Other check outcomes: enable-auto-merge: SKIPPED; CodeRabbit: CANCELLED; Sourcery review: SKIPPED (not counted as green)."
 body: ""

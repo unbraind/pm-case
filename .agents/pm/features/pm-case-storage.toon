@@ -2,11 +2,13 @@ id: pm-case-storage
 title: Revision-checked owner lifecycle and resume commands
 description: ""
 type: Feature
-status: in_progress
+status: closed
 priority: 2
 tags: []
 created_at: "2026-11-06T18:18:57.840Z"
-updated_at: "2026-11-08T10:24:13.913Z"
+updated_at: "2026-11-14T08:45:15.770Z"
+closed_at: "2026-11-14T08:45:15.692Z"
+completed_at: "2026-11-14T08:45:15.692Z"
 author: codex-agent
 acceptance_criteria: Seven operations; replay identity; no-git concurrent writes and crash convergence; strict privacy and budget envelopes.
 parent: pm-case-release
@@ -32,4 +34,5 @@ tests[2]{command,scope,timeout_seconds,provenance{author,created_at,source_kind,
   npm run build && node --test --test-concurrency=1 --test-name-pattern=duplicate.receipt.bindings test/core.test.ts,project,120,codex-agent,"2026-11-08T09:52:26.297Z",local_mutation,review/case-resume
 docs[1]{path,scope}:
   ARCHITECTURE.md,project
+close_reason: "https://github.com/unbraind/pm-case/pull/1 merged 2026-11-09T09:34:31Z; merge SHA f9abde559d22852b958ad92e3da81787de43d6c0; PR head a56d4b5ced194eb2ca98469d31b9dfd31a3d294b. Delivered: Seven revision-checked operations with replay, no-git concurrency, crash recovery, privacy and bounded output. Green at that head: test (22), codeql, test (26), CodeQL, cubic · AI code reviewer. Other check outcomes: enable-auto-merge: SKIPPED; CodeRabbit: CANCELLED; Sourcery review: SKIPPED (not counted as green)."
 body: ""
