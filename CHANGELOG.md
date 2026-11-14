@@ -14,5 +14,5 @@
 
 ### Other
 
-- Deliver constrained test-design context ([pm-case-release](https://github.com/unbraind/pm-case/blob/main/.agents/pm/epics/pm-case-release.toon))
 - Close delivered items and return idle in-progress items to open (2026-11-14 sweep) ([pm-case-sweep-1114](https://github.com/unbraind/pm-case/blob/main/.agents/pm/chores/pm-case-sweep-1114.toon))
+- Deliver constrained test-design context ([pm-case-release](https://github.com/unbraind/pm-case/blob/main/.agents/pm/epics/pm-case-release.toon))
