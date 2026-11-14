@@ -90,11 +90,14 @@ test('all production imports exclude static dynamic member and optional proof lo
 test('all CI and release jobs provision their exact acceptance runtimes', () => {
   for (const path of readdirSync('.github/workflows').filter(name => /\.ya?ml$/.test(name))) {
     const source = readFileSync(`.github/workflows/${path}`, 'utf8'); runtimeProvisioning(source);
-    for (const version of ['22.19.0', '26.13.0', '1.3.5']) if (source.includes(`version: ${version}`)) assert.throws(() => runtimeProvisioning(source.replaceAll(`version: ${version}`, 'version: latest')), assert.AssertionError);
+    for (const version of ['22.19.0', '26.13.0', '1.3.5']) if (!source.includes('daily-release.yml@') && source.includes(`version: ${version}`)) assert.throws(() => runtimeProvisioning(source.replaceAll(`version: ${version}`, 'version: latest')), assert.AssertionError);
   }
-  const source = readFileSync('.github/workflows/release.yml', 'utf8');
-  assert.throws(() => runtimeProvisioning(source.replaceAll('PM_CASE_NODE_26=', 'MISSING_NODE_26=')), assert.AssertionError);
-  assert.match(source, /pkg_name="pm-case"/); assert.doesNotMatch(source, /pm-unit/);
+  const manifest = JSON.parse(readFileSync('package.json','utf8')) as { scripts: Record<string,string> };
+  const hook = manifest.scripts['release:prepare-runtimes'];
+  assert.ok(hook);
+  for (const token of ['--package=node@22.19.0','--package=node@26.13.0','PM_CASE_NODE_22','PM_CASE_NODE_26','GITHUB_ENV']) assert.ok(hook.includes(token), token);
+  assert.match(readFileSync('.github/workflows/release.yml','utf8'), /prepare-script: release:prepare-runtimes/u);
+
 });
 
 test('all workflow release metadata binds the owning package identity', () => {
@@ -105,8 +108,12 @@ test('all workflow release metadata binds the owning package identity', () => {
       assert.throws(() => workflowPackageIdentity(changed), assert.AssertionError, `Every package coordinate in ${path} must reject template drift`);
     }
   }
-  const source = readFileSync('.github/workflows/release.yml', 'utf8');
-  for (const [before, after] of [['Release pm-case', 'Release wrong-package'], ['Tracking: [pm-case-release]', 'Tracking: [wrong-item]']]) assert.throws(() => workflowPackageIdentity(source.replace(before, after)), assert.AssertionError);
+  const source=readFileSync('.github/workflows/release.yml','utf8');
+  assert.ok(source.includes('uses: unbraind/pm-ops/'));
+  assert.ok(source.includes('release-enabled:'));
+  assert.ok(source.includes('prepare-script: release:prepare-runtimes'));
+  const tracking=readFileSync('docs/release-caller-rollout.md','utf8');
+  assert.ok(tracking.includes('Tracking: [pm-case-release](https://github.com/unbraind/pm-case/blob/main/.agents/pm/epics/pm-case-release.toon)'));
 });
 
 test('harness archives share frozen provenance while retaining intentional path scopes', () => {
