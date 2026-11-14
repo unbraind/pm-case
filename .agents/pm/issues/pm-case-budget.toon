@@ -3,14 +3,16 @@ title: Read the stored budget setting only when no explicit budget is given
 description: "An invalid stored case output_budget (0, -1, 1.5, 8193) threw before an explicit --budget was honored, because the eager integer(policy?.output_budget, 1600) fallback evaluated first. Read the stored setting lazily, only when no explicit budget transport is provided."
 type: Issue
 pm_format_version: 2
-status: in_progress
+status: closed
 priority: 2
 tags[1]: "gh:unbraind/pm-case#5"
 created_at: "2026-11-09T19:46:28.641Z"
-updated_at: "2026-11-11T15:58:53.018Z"
+updated_at: "2026-11-14T09:58:51.156Z"
+closed_at: "2026-11-14T08:45:06.652Z"
+completed_at: "2026-11-11T17:53:32.000Z"
 author: codex-agent
 acceptance_criteria: An explicit valid budget succeeds while the stored setting is invalid; Without a budget the invalid stored setting still refuses; Regression fails on revert
-comments[20]{created_at,author,text}:
+comments[21]{created_at,author,text}:
   "2026-11-09T19:46:34.861Z",codex-agent,"Plan: apply the lazy stored-setting fallback in the command dispatch (requested budget first, stored section only when no explicit transport), search for other eager stored-setting fallbacks, and add an extension-harness contract that writes an invalid stored output_budget with the SDK settings writer and proves an explicit budget still succeeds while the un-budgeted command still refuses."
   "2026-11-09T19:49:44.629Z",codex-agent,"Revert proof: with only the two source changes reverted (commands dispatch restored to the eager integer(requested, integer(policy?.output_budget, 1600)) fallback and guardSubmitted restored to the length-only array bound), the focused privacy and contracts suites fail exactly on the two new regressions ('an explicit budget is not refused by an invalid stored budget setting' and 'sparse arrays refuse before schema parsing and only dense arrays are admitted') and pass again once the fix is restored (15/15). The stored 8193 case clamps to the package's 8192 fitting ceiling instead of refusing, which the contract records explicitly."
   "2026-11-09T20:06:17.914Z",codex-agent,"Continuation preserves the existing changes and item. Correcting the prior test exception for stored 8193 to meet the requested refusal when it is selected as the fallback, adding host output-budget coverage, and checking the array length against the remaining aggregate traversal budget before allocating keys. The earlier revert receipt will be superseded with fresh isolated proofs."
@@ -31,6 +33,7 @@ comments[20]{created_at,author,text}:
   "2026-11-11T15:35:42.582Z",codex-seams-1111,"Both corrected focused links now build before Node and keep 1200-second metadata deadlines. The first linked selection passed from absent dist and rebuilt it. The build-prefix regression has a real-temp-tracker 0/1/0 proof: restoring the old direct Node command fails proof:linked_build, then restoring the build prefix passes. To keep the unfiltered issue run within the requested 20-minute cap and avoid repeating accepted full release work, deduplicated its npm/Bun release links; both identical full checks remain unchanged on pm-case-release with their existing 5400-second deadlines. No release check or threshold was removed from the project. The issue retains its revert acceptance and both focused selections. The four kernel/proof/storage links already build first and need no edit."
   "2026-11-11T15:44:50.473Z",codex-seams-1111,"The unfiltered npx pm test pm-case-budget --run passed all three retained links after generated dist was deleted. Both focused selections also independently passed from absent dist and rebuilt it: privacy/contracts 16/16, privacy/diagnostics/snapshot 17/17. The item run's revert receipt reports 73 red/restored-green behaviors, 4 linked build proofs and 3 wrong-error-code probes. No release gate was bypassed or changed: duplicate issue links were removed while the canonical full npm/Bun links remain on the release epic. Completing the four audited sibling links and the explicitly requested Bun-build acceptance next, each with a 20-minute outer cap."
   "2026-11-11T15:58:51.548Z",codex-seams-1111,"Final build-link verification passed. Deleted ignored, untracked generated dist before the unfiltered npx pm test pm-case-budget --run: all 3 retained commands passed and rebuilt dist. Both changed focused links independently passed from absent dist too (16/16 privacy/contracts; 17/17 privacy/diagnostics/snapshot). All 4 unchanged sibling links passed through pinned pm: kernel 1/1, proof 1/1, storage 2/2. Their old branch provenance required local fingerprint acknowledgement after reviewing the exact commands; definitions were not changed. Separate bun run build && node test/revert.acceptance.ts passed under its 1200-second cap: 76 exact seams, 73 red/restored-green behaviors, 4 linked build proofs, 3 wrong-error-code probes, and 76 combined output lines. The new build-prefix regression has an isolated real-temp-tracker 0/1/0 proof using pinned pm metadata edits. Typecheck and lint pass. Duplicate full npm/Bun release links remain unchanged on pm-case-release; only duplicate issue links were removed to keep the requested full issue run bounded. No release definition or validation threshold changed. Final comment and claim release are followed by changelog regeneration and tracker/identity/changelog checks; the issue remains in progress for orchestrator verification. No review-thread replies or resolutions."
+  "2026-11-14T09:58:51.055Z",codex-sweep-1114,"Release-attribution correction: completed_at = 2026-11-11T17:53:32Z from https://github.com/unbraind/pm-case/pull/5 (merge SHA 794adf6f223af8efee434b2f98e8d7a1408512be); no fetched release tag contains that merge commit, so release remains unset and this work is genuinely unreleased."
 files[7]{path,scope}:
   src/commands.ts,project
   src/schema.ts,project
@@ -45,4 +48,5 @@ tests[3]{command,scope,timeout_seconds,provenance{author,created_at,source_kind,
   npm run build && node --test --test-concurrency=2 test/privacy.test.ts test/revert-seams.test.ts test/snapshot.test.ts,project,1200,codex-seams-1111,"2026-11-11T15:31:55.170Z",local_mutation,fix/explicit-budget-over-stored-setting
 docs[1]{path,scope}:
   CHANGELOG.md,project
+close_reason: "https://github.com/unbraind/pm-case/pull/5 merged 2026-11-11T17:53:32Z; merge SHA 794adf6f223af8efee434b2f98e8d7a1408512be; PR head f31871a7815930c51b6229219da0f79ef0d07112. Delivered: Lazy stored-budget fallback and regression/revert proofs for explicit budget precedence. Green at that head: test (22), codeql, test (26), CodeQL, CodeRabbit, cubic · AI code reviewer. Other check outcomes: enable-auto-merge: SKIPPED; Sourcery review: SKIPPED (not counted as green)."
 body: ""

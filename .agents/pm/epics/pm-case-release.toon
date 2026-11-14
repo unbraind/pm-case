@@ -2,14 +2,16 @@ id: pm-case-release
 title: Deliver constrained test-design context
 description: Implement companion specification pm-cli-website-c98t locally; no publication.
 type: Epic
-status: in_progress
+status: closed
 priority: 2
 tags[1]: "gh:unbraind/pm-case#1"
 created_at: "2026-11-06T18:17:25.406Z"
-updated_at: "2026-11-09T09:32:37.066Z"
+updated_at: "2026-11-14T09:59:18.377Z"
+closed_at: "2026-11-14T08:45:11.571Z"
+completed_at: "2026-11-09T09:34:31.000Z"
 author: codex-agent
 acceptance_criteria: Seven CLI and SDK operations; complete exact feasible coverage witnesses; native guarded storage; public proof; all release gates.
-comments[49]{created_at,author,text}:
+comments[50]{created_at,author,text}:
   "2026-11-06T18:17:25.406Z",codex-agent,"Companion reference: pm-cli-website-c98t. Source specification and comments read only. Implement the complete production v1 slice; strength above two and autonomous execution remain follow-ups."
   "2026-11-06T19:11:25.139Z",codex-agent,"Implementation and evidence are complete for local first-release review. Companion pm-cli-website-c98t remains read-only. Package-owned links identify source, docs and tests; public harness receipt proves three selected upstream tests and one reproduced historical regression. Required final validation commands are npm run release:check and bun run release:check with isolated Git identity configuration. No repository creation, pushing, publication or hosted operation is authorized. Remaining capabilities are explicitly tracked as open Features; items remain open for orchestrator verification."
   "2026-11-06T19:43:50.816Z",codex-agent,"Orchestrator opened public PR 1 at the completed implementation head. Resuming review ownership: inspect CodeRabbit including outside-diff and nitpick content, address findings, validate changes, push all package-owned tracker records, and verify final CI. Existing implementation and public proofs remain complete."
@@ -59,6 +61,7 @@ comments[49]{created_at,author,text}:
   "2026-11-09T08:27:33.399Z",codex-agent,"PRRT_kwDOVlkMx861K4Fq behavioral revert proof: in a disposable copy, reverted only test/corpus.ts to the pre-fix catch. node --test --test-concurrency=1 --test-name-pattern=\"^corpus guard skips only invalid_input\" test/corpus-privacy.test.ts failed 1/1 with ERR_ASSERTION: Missing expected exception. Restoring the fixed catch passed 1/1. The regression executes the actual passage guard statement and covers accepted input, invalid_input skip, TypeError propagation and outcome_unknown propagation. Pinned pm test --run --only-last --progress passed all 12 focused tests with zero skips. npm run typecheck and npm run lint passed."
   "2026-11-09T08:28:21.739Z",codex-agent,"Final scoped round validation: node test/public-harness.acceptance.ts passed in a disposable package copy using the frozen public repositories: three selected tests pass, one historical regression fails as expected, restored execution passes, and the finally block verifies original file bytes. Generated receipts/logs stayed in the disposable copy. PRRT_kwDOVlkMx861K4Ff now distinguishes acceptance-created and separately created release archives in ARCHITECTURE.md and README.md; PRRT_kwDOVlkMx861K4Fl states the enforced 6400 UTF-8 byte bound and ceil(bytes/4) estimate; PRRT_kwDOVlkMx861K4Fq filters only invalid_input and has the recorded red/green proof; PRRT_kwDOVlkMx861K4Fu protects the initial mutation write and asserts exact restoration in finally; PRRT_kwDOVlkMx861K4Fy asserts at least two planned cases before indexed access. All 12 focused tests, typecheck and lint passed. Only the requested corpus regression was added; no helpers, dependency changes, review-thread interactions or full local gates. Release the claim, regenerate and check the changelog, then push the existing PR branch; CI owns full certification. No new pm CLI/SDK defects were encountered."
   "2026-11-09T09:32:37.065Z","harness:claude-code","Orchestrator fix: branch protection requires the checks 'test (22)' and 'test (26)', but the exact-version matrix (22.19.0, 26.13.0) reported 'test (22.19.0)' and 'test (26.13.0)', so the PR stayed BLOCKED with every check green. The test job is now named 'test (${{ matrix.major }})' with a matrix include of node-version plus major, and runtimeProvisioning accepts that form while still requiring exactly 22=22.19.0 and 26=26.13.0. workflow + review-classes tests 13/13; mutating major 26 to 25 fails 2."
+  "2026-11-14T09:59:18.376Z",codex-sweep-1114,"Release-attribution correction: completed_at = 2026-11-09T09:34:31Z from https://github.com/unbraind/pm-case/pull/1 (merge SHA f9abde559d22852b958ad92e3da81787de43d6c0); no fetched release tag contains that merge commit, so release remains unset and this work is genuinely unreleased."
 files[39]{path,scope}:
   .github/workflows/ci.yml,project
   .github/workflows/release.yml,project
@@ -113,4 +116,5 @@ docs[3]{path,scope}:
   ARCHITECTURE.md,project
   docs/real-data.md,project
   README.md,project
+close_reason: "https://github.com/unbraind/pm-case/pull/1 merged 2026-11-09T09:34:31Z; merge SHA f9abde559d22852b958ad92e3da81787de43d6c0; PR head a56d4b5ced194eb2ca98469d31b9dfd31a3d294b. Delivered: Seven CLI/SDK operations, exact coverage witnesses, guarded storage, public corpus and complete npm/Bun release gates. Green at that head: test (22), codeql, test (26), CodeQL, cubic · AI code reviewer. Other check outcomes: enable-auto-merge: SKIPPED; CodeRabbit: CANCELLED; Sourcery review: SKIPPED (not counted as green)."
 body: ""
