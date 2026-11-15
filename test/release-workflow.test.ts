@@ -64,3 +64,14 @@ test('package-owned approval and preparation inputs are preserved', () => {
   "node-version": "22.19.0"
 });
 });
+
+// The pinned transaction derives the npm coordinate from the caller's package.json.
+test('release caller retains package-derived scoped npm identity', () => {
+  const pkg = JSON.parse(readFileSync('package.json', 'utf8')) as { name: string };
+  assert.equal(pkg.name, '@unbrained/pm-case');
+  assert.ok(text.includes(`npm identity is derived from package.json: ${pkg.name}.`));
+  assert.equal(caller.jobs.release.with['npm-project-dir'] ?? '.', '.');
+  assert.equal(Object.hasOwn(caller.jobs.release.with, 'package-name'), false);
+  assert.equal(Object.hasOwn(caller.jobs.release.with, 'npm-publish'), false);
+  assert.equal(Object.hasOwn(caller.jobs.release.with, 'bun-verify'), false);
+});

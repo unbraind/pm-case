@@ -1,0 +1,14 @@
+id: pm-case-linked-health-sandbox
+title: Investigate linked-test sandbox health fixture failure
+description: "During scoped npm validation, test/workflow.test.ts passed directly but its plain-tracker health baseline failed when run through pm test with tracker context and source workspace. The same direct suite passes. Investigate nested sandbox environment handling separately from package identity and CI v2."
+type: Task
+status: open
+priority: 2
+tags[1]: testing
+created_at: "2026-11-15T19:58:38.188Z"
+updated_at: "2026-11-15T20:00:12.924Z"
+author: codex-sol
+acceptance_criteria: "Reproduce the direct-versus-linked difference, identify the inherited setting or extension boundary, and make the health fixture reliable without weakening its corruption check."
+files[1]{path,scope}:
+  test/workflow.test.ts,project
+body: ""
