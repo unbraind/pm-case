@@ -6,6 +6,8 @@ Constrained combinatorial test design as durable agent context. An agent can res
 
 ## Install
 
+The npm package is `@unbrained/pm-case`. The pm extension identity and catalog display name remain `pm-case`; existing `pm case` commands do not change. The homepage remains <https://github.com/unbraind/pm-case#readme>.
+
 This candidate is local and unpublished. To create a fresh local review archive from a clean source checkout, run these prerequisites in the package directory:
 
 ```sh
@@ -13,16 +15,16 @@ npm ci
 npm pack
 ```
 
-This creates `pm-case-2026.11.6.tgz` in that directory. It is a newly built review archive, with no claim that its bytes match the captured, validated artifact from a previous run. The captured artifact is untracked; use a maintainer-supplied copy and its matching SHA-256 receipt when verifying that earlier run.
+This creates `unbrained-pm-case-2026.11.6.tgz` in that directory. It is a newly built review archive, with no claim that its bytes match the captured, validated artifact from a previous run. The captured artifact is untracked; use a maintainer-supplied copy and its matching SHA-256 receipt when verifying that earlier run.
 
 Install the archive in a fresh consumer directory, never inside this source checkout, so `pm init` provisions a new tracker instead of the checkout's own:
 
 ```sh
-archive="$(pwd)/pm-case-2026.11.6.tgz"
+archive="$(pwd)/unbrained-pm-case-2026.11.6.tgz"
 mkdir ../pm-case-demo && cd ../pm-case-demo
 npm install "$archive" @unbrained/pm-cli@2026.11.5
 npx --no-install pm init demo --defaults --agent-guidance skip --no-merge-fence
-npx --no-install pm package install ./node_modules/pm-case
+npx --no-install pm package install ./node_modules/@unbrained/pm-case
 npx --no-install pm case --help
 ```
 
@@ -30,16 +32,39 @@ After maintainer publication, the registry paths are:
 
 ```sh
 # Fresh npm project outside this checkout
-npm install pm-case @unbrained/pm-cli
+npm install @unbrained/pm-case @unbrained/pm-cli
 npx --no-install pm init demo --defaults --agent-guidance skip --no-merge-fence
-npx --no-install pm package install ./node_modules/pm-case
+npx --no-install pm package install ./node_modules/@unbrained/pm-case
 npx --no-install pm case --help
 
 # Separate fresh Bun project
-bun add pm-case @unbrained/pm-cli
+bun add @unbrained/pm-case @unbrained/pm-cli
 bunx --bun --no-install pm init demo --defaults --agent-guidance skip --no-merge-fence
-bunx --bun --no-install pm package install ./node_modules/pm-case
+bunx --bun --no-install pm package install ./node_modules/@unbrained/pm-case
 bunx --bun --no-install pm case --help
+```
+
+With a host already installed and a tracker initialized, registry activation is:
+
+```sh
+pm install npm:@unbrained/pm-case
+pm case --help
+```
+
+The `npm:` prefix selects the registry; bare `pm install @unbrained/pm-case` is interpreted as a local source by the pinned host. npm or Bun installation alone does not activate the extension.
+
+Global SDK installation is available after publication:
+
+```sh
+npm i -g @unbrained/pm-case
+bun add -g @unbrained/pm-case
+```
+
+This extension has no standalone executable: `npx @unbrained/pm-case` and `bunx @unbrained/pm-case` cannot run it directly. Invoke the host instead in an initialized tracker:
+
+```sh
+npx --package @unbrained/pm-cli pm install npm:@unbrained/pm-case
+bunx --bun --package @unbrained/pm-cli pm install npm:@unbrained/pm-case
 ```
 
 Node 22.19 or newer is required. Packed acceptance exercises npm, Bun, npx and native bunx in fresh projects, including SDK creation and writes, with Git absent from `PATH`.
@@ -97,7 +122,7 @@ import {
   casePacket, recoverCaseOperation, envelope, fitEnvelope,
   normalizeModel, enumerateFeasibleTuples, generateCover, evaluateCaseCoverage,
   CaseRefusal,
-} from 'pm-case';
+} from '@unbrained/pm-case';
 
 import { PmClient } from '@unbrained/pm-cli/sdk/core';
 

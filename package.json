@@ -1,5 +1,5 @@
 {
-  "name": "pm-case",
+  "name": "@unbrained/pm-case",
   "version": "2026.11.6",
   "description": "Constrained combinatorial test design and exact coverage context",
   "repository": {
@@ -109,7 +109,7 @@
       ],
       "links": {
         "docs": "https://github.com/unbraind/pm-case#readme",
-        "npm": "https://www.npmjs.com/package/pm-case",
+        "npm": "https://www.npmjs.com/package/@unbrained/pm-case",
         "repository": "https://github.com/unbraind/pm-case",
         "report": "https://github.com/unbraind/pm-case/issues"
       }

@@ -1,0 +1,32 @@
+id: pm-case-scoped-npm-name
+title: Publish pm-case as @unbrained/pm-case
+description: npm rejected the first unscoped publish with E403 because pm-case is too similar to no-case. Adopt the owner-selected scoped npm coordinate while preserving extension identity and commands.
+type: Chore
+status: in_progress
+priority: 2
+tags[2]: npm,release
+created_at: "2026-11-15T19:54:23.218Z"
+updated_at: "2026-11-15T20:01:42.162Z"
+author: codex-sol
+acceptance_criteria: "Scoped metadata, docs and release contracts agree; npm and Bun packed consumers activate and run real case commands in fresh non-git trackers; targeted gates pass; ready PR opened without merge or publication."
+comments[4]{created_at,author,text}:
+  "2026-11-15T19:54:25.599Z",codex-sol,"Read pm-lint PR 29. Plan: rename only npm metadata, SDK imports and installation paths; keep manifest, catalog display name, commands, public homepage and publish access. Verify the pinned reusable release derives its package coordinate. Leave CI v2 workflow files untouched; run packed npm/Bun journeys and targeted gates without full coverage. Wait for the shared dispatch hold before pushing."
+  "2026-11-15T19:55:27.430Z",codex-sol,"The pinned pm-ops workflow at 7687a35d7522482bd8361d60dbc2589e9afbc81c has no package-name input: pack, OIDC, npm view and Bun verification derive package.json.name or its release intent. Caller defaults publish and Bun verification on. Added a package-derived caller contract and kept the pin and inputs. README uses npm:@unbrained/pm-case and explains the extension has no standalone bin."
+  "2026-11-15T19:58:40.088Z",codex-sol,"Direct targeted suite passes 28/28, including workflow health. The pm test wrapper causes the unchanged workflow health fixture baseline to fail; tracked separately as pm-case-linked-health-sandbox. The linked scoped-package, release-caller, review, pack and extension-contract suite excludes that unrelated health fixture. No CI v2 files were changed to work around it."
+  "2026-11-15T20:01:41.439Z",codex-sol,"Validation complete: npm run test:install passes 1/1 with zero skips; native npm and Bun packs have the scoped identity. Both managers install the same tarball into fresh prefixes, activate manifest pm-case without Git, execute real case lifecycle and scoped SDK commands, and pass exact Node 22.19.0 and 26.13.0 CLI/SDK checks. Direct targeted suite passes 28/28, linked scoped suite 25/25, standalone workflow suite 3/3. Typecheck, lint, pack allowlist (45 files) and publish-attestation pass. No coverage sources changed; full coverage was not run. Evidence and exact commands are in docs/scoped-npm-validation.md. Release this claim for orchestrator review; leave status in progress. No merge or npm publication."
+files[8]{path,scope}:
+  .github/workflows/release.yml,project
+  CHANGELOG.md,project
+  package-lock.json,project
+  package.json,project
+  test/install.acceptance.ts,project
+  test/package-metadata.test.ts,project
+  test/release-workflow.test.ts,project
+  test/review-classes.test.ts,project
+tests[2]{command,scope,timeout_seconds,pm_context_mode,workspace_context_mode,provenance{author,created_at,source_kind,source_ref}}:
+  node --test --test-concurrency=2 test/package-metadata.test.ts test/release-workflow.test.ts test/review-classes.test.ts test/pack-gate.test.ts test/contracts.test.ts,project,120,tracker,source,codex-sol,"2026-11-15T19:58:01.894Z",local_mutation,chore/scoped-npm-name
+  "npm run test:install",project,1200,tracker,source,codex-sol,"2026-11-15T20:00:18.806Z",local_mutation,chore/scoped-npm-name
+docs[2]{path,scope}:
+  docs/scoped-npm-validation.md,project
+  README.md,project
+body: ""
