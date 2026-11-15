@@ -1,3 +1,4 @@
+import { testTimeout } from './support/time.ts';
 import assert from 'node:assert/strict';
 import { mkdtemp, cp, symlink, rm, readFile, writeFile } from 'node:fs/promises';
 import { delimiter, join, resolve } from 'node:path';
@@ -10,7 +11,7 @@ import { selectedTestPassed, selectedTestFailed } from './harness-results.ts';
 /** Prove one behavioral mutation fails and always restore it before proving the fixed implementation. */
 async function proveMutation(root: string, mutation: { file: string; before: string; after: string; test: string; pattern: string }): Promise<void> {
   const path=join(root,mutation.file);const original=await readFile(path,'utf8');assert.equal(original.split(mutation.before).length,2,`Revert seam must identify exactly one behavior: ${mutation.file}`);
-  const args=['--test','--test-concurrency=1','--test-reporter',join(root,'test/harness-reporter.ts'),'--test-name-pattern',mutation.pattern,`test/${mutation.test}`];const options={cwd:root,env:testEnvironment(npmEnvironment(process.env)),encoding:'utf8' as const,timeout:90000,maxBuffer:4*1024*1024};
+  const args=['--test','--test-concurrency=1','--test-reporter',join(root,'test/harness-reporter.ts'),'--test-name-pattern',mutation.pattern,`test/${mutation.test}`];const options={cwd:root,env:testEnvironment(npmEnvironment(process.env)),encoding:'utf8' as const,timeout: testTimeout(90000),maxBuffer:4*1024*1024};
   const baseline=spawnSync(process.execPath,args,options);assert.equal(baseline.status,0,baseline.stdout+baseline.stderr);selectedTestPassed(baseline.stdout,mutation.pattern,mutation.test);
   try {
     await writeFile(path,original.replace(mutation.before,mutation.after));
@@ -129,7 +130,7 @@ try{
     const item=decode(await readFile(`.agents/pm/features/${id}.toon`,'utf8')) as {tests:{command:string}[]};
     for(const {command} of item.tests) {
       assert.ok(command.startsWith('npm run build && '),'Every linked source test must build first');
-      const options={cwd:root,env:{...testEnvironment(npmEnvironment(process.env)),PATH:resolve('node_modules/.bin')+delimiter+process.env.PATH},encoding:'utf8' as const,timeout:120000,maxBuffer:4*1024*1024};
+      const options={cwd:root,env:{...testEnvironment(npmEnvironment(process.env)),PATH:resolve('node_modules/.bin')+delimiter+process.env.PATH},encoding:'utf8' as const,timeout: testTimeout(120000),maxBuffer:4*1024*1024};
       const baseline=spawnSync(command,{...options,shell:true});assert.equal(baseline.status,0,baseline.stdout+baseline.stderr);
       await rm(join(root,'dist'),{recursive:true,force:true});
       const red=spawnSync(command.slice('npm run build && '.length),{...options,shell:true});assert.equal(red.status,1);assert.match(red.stdout+red.stderr,/ERR_MODULE_NOT_FOUND/);

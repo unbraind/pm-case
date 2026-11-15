@@ -1,3 +1,4 @@
+import { testTimeout } from './support/time.ts';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { mkdtempSync, cpSync, rmSync } from 'node:fs';
@@ -10,7 +11,7 @@ test('package gate refuses each missing linked proof document from the real pack
   const root = mkdtempSync(join(tmpdir(), 'case-pack-policy-'));
   try {
     for (const path of ['scripts', 'src', 'index.ts', 'dist', 'package.json', 'manifest.json', 'README.md', 'LICENSE', 'CHANGELOG.md', 'ARCHITECTURE.md', 'docs']) cpSync(path, join(root, path), { recursive: true });
-    const run = () => spawnSync(process.execPath, ['scripts/pack-gate.ts'], { cwd: root, env: testEnvironment(npmEnvironment(process.env)), encoding: 'utf8', timeout: 30000 });
+    const run = () => spawnSync(process.execPath, ['scripts/pack-gate.ts'], { cwd: root, env: testEnvironment(npmEnvironment(process.env)), encoding: 'utf8', timeout: testTimeout(30000) });
     const baseline = run(); assert.equal(baseline.status, 0, baseline.stdout + baseline.stderr);
     for (const file of ['docs/real-data.md', 'docs/real-data-receipt.json', 'docs/public-harness-receipt.json']) {
       rmSync(join(root, file));

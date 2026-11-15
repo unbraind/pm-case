@@ -1,3 +1,4 @@
+import { testTimeout } from './support/time.ts';
 import test from 'node:test';
 import { decode } from '@toon-format/toon';
 import assert from 'node:assert/strict';
@@ -24,7 +25,7 @@ test('revert acceptance reports all missing and ambiguous seams before running p
     assert.equal(source.split(failure.before).length, 2);
     writeFileSync(file, source.replace(failure.before, failure.after));
   }
-  const result = spawnSync(process.execPath, ['test/revert.acceptance.ts'], { cwd: root, env: testEnvironment(npmEnvironment(process.env)), encoding: 'utf8', timeout: 30000, maxBuffer: 4 * 1024 * 1024 });
+  const result = spawnSync(process.execPath, ['test/revert.acceptance.ts'], { cwd: root, env: testEnvironment(npmEnvironment(process.env)), encoding: 'utf8', timeout: testTimeout(30000), maxBuffer: 4 * 1024 * 1024 });
   assert.equal(result.error, undefined);
   assert.equal(result.status, 1);
   const output = result.stdout + result.stderr;
