@@ -1,0 +1,46 @@
+id: pm-case-ci-v2
+title: Apply Fleet CI v2 quick PR and deep tiers
+description: "Preserve required checks and release contracts while reducing repeated PR work. Companion: pm-cli-website-dyhg."
+type: Task
+status: in_progress
+priority: 2
+tags[3]: ci,"gh:unbraind/pm-case#13",performance
+created_at: "2026-11-15T14:21:47.360Z"
+updated_at: "2026-11-15T19:03:38.673Z"
+author: codex-sol
+comments[10]{created_at,author,text}:
+  "2026-11-15T14:21:50.236Z",codex-sol,"Required checks confirmed: test (22), test (26), codeql. CodeQL remains unfiltered. Plan: one quick npm release gate on Node 26, quick build/tests on Node 22, documentation identity/privacy checks on both, exhaustive npm/Bun gates in a deep workflow. Release rollout files remain owned by pm-ops#272."
+  "2026-11-15T14:23:21.562Z",codex-sol,"Successful main run 43705527239 job logs: seeded model 71.197 s at 500 operations; packed consumer acceptance 125.835 s. Hosted execution: Node 22 3m09s; Node 26 11m54s. gh run view returned an empty log, so used the job-log endpoint. Only the 500-operation model needs depth reduction; finite capacity fixtures and the 24-case proposal stay unchanged. Docs privacy suites require compiled modules, so their gate includes a prerequisite build. Integer watchdog scaling covers harness timeouts only."
+  "2026-11-15T14:28:25.897Z",codex-sol,"Baseline blocker: tracker:health fails extension_host_pm_cli_version_skew (host 2026.11.9; pm-github needs 2026.11.14). Tracked separately as pm-case-health-skew; health gates remain strict. Linked schema/tracker contexts also exposed ambient extension discovery in the plain-tracker fixture; give that fixture its own global PM path. Workflow assertion now follows the health call inside release:check. Initial quick coverage passed 110/111 tests before this fixture correction."
+  "2026-11-15T14:29:01.654Z",codex-sol,"Correction after inspecting existing release evidence: the host-version skew is from inherited global extensions, not a package dependency or clean-CI defect. Existing pm-case-release notes already identify this environment boundary. pm-case-health-skew now describes isolation follow-up only. No dependency pin changes are needed; verify local health with an isolated global PM path."
+  "2026-11-15T14:30:23.955Z",codex-sol,Final focused linked run in tracker context passes all 35 tests (158.901 s); direct workflow suite passes 3/3 (26.364 s). Strict docs health first installs clone-local merge drivers because this package has no prepare hook. Local SDK health passes with isolated global PM settings. Typecheck and lint pass. No product timeout or coverage policy changed.
+  "2026-11-15T14:32:01.886Z",codex-sol,"Final direct quick coverage PASSED: 111/111 tests; all statements, branches, functions and lines 100% across the unchanged nine emitted runtime files. No missing late-seed branches. Disposable clone proof: merge install followed by strict pm health passes with zero warnings. Changelog and identity gates pass. PR #13 opened; CI run 43724796981 and CodeQL run 43724796915 are queued. Queue-inclusive required-check wall time is unavailable; not waiting for CI. Full depth and packed/revert acceptance remain for remote tiers."
+  "2026-11-15T18:49:57.329Z",codex-sol,"Round C: verify the supplied review findings, repair failing checks, audit CI tier boundaries and harness controls, and run focused gates. Review threads remain untouched; no merge or closure."
+  "2026-11-15T18:56:06.387Z",codex-sol,"Failed run 43724887689 reached changelog checking: the in-progress CI task was missing from generated content. Regenerate with the package script. Self-review checks documentation/privacy/identity gates, unscaled product budgets, integer timeouts, validation before spawn, platform filenames and generated-only quick thresholds."
+  "2026-11-15T18:57:51.525Z",codex-sol,"Self-review additionally restores input-sensitive docs-path gates: identity/privacy, packaging and attestation validation, plus applicable docs/tooling tests. These cheap-path requirements are in the rollout template. New failure-injection tests execute each documentation block."
+  "2026-11-15T19:03:37.913Z",codex-sol,"Round C validation passed: typecheck, test TypeScript compilation, focused behavior and workflow/tooling suites, strict unique-key YAML parsing, and package changelog regeneration/check. Lint passed where the package provides a lint script; packages without one passed their existing docstring gate. No configured coverage source changed, so no package coverage run was added. Existing isolated coverage-tooling fixtures are part of the focused tooling suites. All supplied review findings are valid and repaired. Self-review additionally preserves executable tracker scans and all applicable docs/privacy/identity/package/attestation gates. Product budgets and coverage thresholds remain unchanged. Validation uses the local Node 24 runtime; Node 22/26, native Windows and deep runtime certification remain CI evidence. Threads untouched; no merge or item closure. Release ownership after recording this evidence."
+files[14]{path,scope}:
+  .github/workflows/ci-deep.yml,project
+  .github/workflows/ci.yml,project
+  .github/workflows/codeql.yml,project
+  test/ci-docs.test.ts,project
+  test/concurrency.test.ts,project
+  test/install.acceptance.ts,project
+  test/model.test.ts,project
+  test/pack-gate.test.ts,project
+  test/public-harness.acceptance.ts,project
+  test/revert-seams.test.ts,project
+  test/revert.acceptance.ts,project
+  test/support/depth.ts,project
+  test/support/time.ts,project
+  test/workflow.test.ts,project
+tests[6]{command,scope,timeout_seconds,provenance{author,created_at,source_kind,source_ref}}:
+  npm run typecheck,project,300,codex-sol,"2026-11-15T14:23:24.273Z",local_mutation,ci/quick-pr-tier-deep-local-tier
+  npm run lint,project,300,codex-sol,"2026-11-15T14:23:26.849Z",local_mutation,ci/quick-pr-tier-deep-local-tier
+  PM_TEST_DEPTH=quick PM_TEST_TIME_SCALE=3 node --test --test-concurrency=2 test/model.test.ts test/concurrency.test.ts test/pack-gate.test.ts test/revert-seams.test.ts test/workflow.test.ts,project,1200,codex-sol,"2026-11-15T14:23:28.901Z",local_mutation,ci/quick-pr-tier-deep-local-tier
+  PM_TEST_DEPTH=quick npm run coverage,project,1200,codex-sol,"2026-11-15T14:23:39.328Z",local_mutation,ci/quick-pr-tier-deep-local-tier
+  "npm run typecheck && npm run lint --if-present && npm run build && npm run build:test && PM_TEST_DEPTH=quick node --test --test-concurrency=2 test/workflow.test.ts test/release-workflow.test.ts test/install-tools.test.ts && node --input-type=module -e 'import {readFileSync,readdirSync} from \"node:fs\"; import {parseDocument} from \"yaml\"; for(const file of readdirSync(\".github/workflows\").filter(f=>/\\.ya?ml$/.test(f))){ const d=parseDocument(readFileSync(\".github/workflows/\"+file,\"utf8\"),{uniqueKeys:true}); if(d.errors.length) throw new Error(file+\": \"+d.errors.join(\";\")); } console.log(\"Strict workflow YAML passed\");'",project,900,codex-sol,"2026-11-15T18:56:10.075Z",local_mutation,ci/quick-pr-tier-deep-local-tier
+  "npm run typecheck && npm run lint && node --test test/ci-docs.test.ts && npm run pack:dry-run && npm run verify:release-publish-attestation",project,900,codex-sol,"2026-11-15T18:57:57.308Z",local_mutation,ci/quick-pr-tier-deep-local-tier
+docs[1]{path,scope}:
+  docs/ci-tiers.md,project
+body: ""

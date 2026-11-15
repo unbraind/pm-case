@@ -1,0 +1,11 @@
+id: pm-case-health-skew
+title: Document isolation of inherited global extensions during local health checks
+description: "Observed host CLI 2026.11.9 versus globally inherited pm-github requiring 2026.11.14. Existing release evidence already records this local environment warning. Verify health with isolated global settings; clean hosted CI does not inherit the integration. Do not upgrade package dependencies solely for this observation. Related: pm-case-ci-v2."
+type: Task
+status: open
+priority: 2
+tags[2]: ci,dependencies
+created_at: "2026-11-15T14:28:20.047Z"
+updated_at: "2026-11-15T14:28:58.458Z"
+author: codex-sol
+body: ""
