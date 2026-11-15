@@ -1,15 +1,16 @@
 import test from 'node:test';
+import { testDepth } from './support/depth.ts';
 import assert from 'node:assert/strict';
 import { createCaseModel, selectCases, recordCaseOutcome, readCaseModel, proposeCases, caseCoverage, canonical } from '../dist/index.js';
 import type { RecordCaseOutcomeInput, Outcome } from '../dist/index.js';
 import { fixture, select, observation, hasCode, historyEvents } from './helpers.ts';
 
-test('500 seeded random operation sequences agree with independent SDK read-back and replay model', async t => {
+test('seeded random operation sequences agree with independent SDK read-back and replay model', async t => {
   const { host, native, id, birth, pmRoot } = await fixture(t,false); await native.create({id:'corpus-public-source',title:'Public relationship',type:'Task'}); const linkedBirth={...birth,related:['public-source']}; await createCaseModel(host,linkedBirth); await select(host, id); let seed = 0x5187a4; const expected: Outcome[] = []; const requests: RecordCaseOutcomeInput[] = []; let writes = 2;
   /** Deterministic portable random schedule; values never become test expectations themselves. */
   const random = () => { seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0; return seed; };
   const kinds = new Set<number>();
-  for (let sequence = 0; sequence < 500; sequence++) {
+  for (let sequence = 0; sequence < testDepth(500); sequence++) {
     const kind = random() % 7; kinds.add(kind); const before = await readCaseModel(host, id); const history = await historyEvents(pmRoot, id);
     if (kind < 2 || requests.length === 0) {
       const outcome = observation(before.state.selected_plan!.cases[random() % before.state.selected_plan!.cases.length].case_id, `run-${sequence}`, { result: (['pass','fail','unresolved'] as const)[random() % 3], reason: `  Data only: row ${sequence}\n  retain whitespace é\t${sequence % 2}  ` });
@@ -29,5 +30,5 @@ test('500 seeded random operation sequences agree with independent SDK read-back
     const actual = await readCaseModel(host, id); assert.equal(canonical(actual.state.outcomes), canonical(expected)); assert.equal(actual.state.operation_receipts.length, writes);
     const nativeRead = await native.get(id, { outputInclude: 'full', outputBudget: 'unbounded' }); assert.ok('item' in nativeRead); assert.equal(canonical(nativeRead.item.case_state), canonical(actual.state)); assert.deepEqual(nativeRead.item.dependencies?.map(row=>({id:row.id,kind:row.kind})),[{id:'corpus-public-source',kind:'related'}]);
   }
-  assert.equal(kinds.size, 7); assert.equal(await historyEvents(pmRoot, id), writes); t.diagnostic(JSON.stringify({ seed: '0x5187a4', sequences: 500, variants: kinds.size, outcomes: expected.length, acknowledged_mutations: writes }));
+  assert.equal(kinds.size, 7); assert.equal(await historyEvents(pmRoot, id), writes); t.diagnostic(JSON.stringify({ seed: '0x5187a4', sequences: testDepth(500), variants: kinds.size, outcomes: expected.length, acknowledged_mutations: writes }));
 });
