@@ -110,6 +110,8 @@ jobs:
           # Privacy suites consume dist; compile only as their prerequisite.
           npm run build
           node --test test/privacy.test.ts test/corpus-privacy.test.ts
+          npm run pack:dry-run
+          npm run verify:release-publish-attestation
 
       - name: Quick engines floor build and tests
         if: steps.changes.outputs.code == 'true' && matrix.major == 22

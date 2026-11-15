@@ -15,9 +15,10 @@ Executable JavaScript/TypeScript under the tracker selects the code tier too.
 | Tests | quick | quick coverage | privacy suites only | full, npm + Bun |
 | Typecheck, lint, duplication, docstrings | — | release gate | — | npm + Bun gates |
 | Coverage: 100% statements, branches, functions, lines | — | quick | — | full, npm + Bun |
-| Production audit, package dry-run | — | release gate | — | npm + Bun gates |
+| Production audit | — | release gate | — | npm + Bun gates |
+| Package dry-run / documentation file allowlist | — | release gate | yes | npm + Bun gates |
 | Changelog consistency | — | release gate | yes | npm + Bun gates |
-| Publish attestation verification | — | release gate | — | npm + Bun gates |
+| Publish attestation verification | — | release gate | yes | npm + Bun gates |
 | Packed npm/Bun/npx/bunx and SDK acceptance, exact Node runtimes | — | release gate | — | npm + Bun gates |
 | Behavioral reverts and linked build proofs | — | release gate | — | npm + Bun gates |
 | Bun dependency graph installation | — | smoke | — | smoke |
