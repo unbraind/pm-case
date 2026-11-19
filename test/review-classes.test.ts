@@ -174,14 +174,13 @@ test('documented archive installs create and enter a fresh consumer directory ou
     const root = mkdtempSync(join(tmpdir(), 'case-readme-')); const source = join(root, 'source checkout'); mkdirSync(source);
     try {
       // Use a staged version so this proof catches a stale filename on any checkout.
-      const version = '2099.1.2';
-      writeFileSync(join(source, 'package.json'), JSON.stringify({ version }));
-      writeFileSync(join(source, `unbrained-pm-case-${version}.tgz`), 'synthetic archive');
+      const filename = 'unbrained-pm-case-2099.1.2.tgz';
+      writeFileSync(join(source, filename), 'synthetic archive');
       const stub = [
         'npm() {',
         '  case "$1" in',
         '    ci) return 0 ;;',
-        '    pack) printf "%s\\n" "unbrained-pm-case-$(node -p \'require(\"./package.json\").version\').tgz" ;;',
+        `    pack) printf '%s\\n' '${filename}' ;;`,
         '    install) [ -f "$2" ] ;;',
         '    *) return 90 ;;',
         '  esac',
