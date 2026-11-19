@@ -13,14 +13,16 @@ To evaluate a source commit, start in a clean checkout. The archive is a newly b
 The commands pack the checkout and install the archive in a fresh sibling directory so `pm init` provisions a new tracker. If `../pm-case-demo` already exists, use a new name in both commands on the `mkdir` line.
 
 ```sh
-npm ci
-tarball=$(npm pack --silent) && test -n "$tarball" && test -f "$tarball" || exit 1
-archive="$(pwd)/$tarball"
-mkdir ../pm-case-demo && cd ../pm-case-demo || exit 1
-npm install "$archive" @unbrained/pm-cli@2026.11.5
-npx --no-install pm init demo --defaults --agent-guidance skip --no-merge-fence
-npx --no-install pm package install ./node_modules/@unbrained/pm-case
-npx --no-install pm case --help
+(
+  npm ci
+  tarball=$(npm pack --silent) && test -n "$tarball" && test -f "$tarball" || exit 1
+  archive="$(pwd)/$tarball"
+  mkdir ../pm-case-demo && cd ../pm-case-demo || exit 1
+  npm install "$archive" @unbrained/pm-cli@2026.11.5
+  npx --no-install pm init demo --defaults --agent-guidance skip --no-merge-fence
+  npx --no-install pm package install ./node_modules/@unbrained/pm-case
+  npx --no-install pm case --help
+)
 ```
 
 Install from the npm registry in a fresh project. Choose the npm or Bun commands.
