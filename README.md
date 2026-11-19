@@ -10,18 +10,24 @@ The npm package is `@unbrained/pm-case`. The pm extension identity and catalog d
 
 To evaluate a source commit, start in a clean checkout. The archive is a newly built review archive. Use a maintainer-supplied copy and its matching SHA-256 receipt when verifying bytes from an earlier run.
 
-The commands pack the checkout and install the archive in a fresh sibling directory so `pm init` provisions a new tracker. If `../pm-case-demo` already exists, use a new name in both commands on the `mkdir` line.
+The commands pack the checkout and install the archive in a fresh temporary directory so `pm init` provisions a new tracker.
 
 ```sh
 (
-  npm ci
+  npm ci || exit 1
   tarball=$(npm pack --silent) && test -n "$tarball" && test -f "$tarball" || exit 1
+  packed_version=$(node -p 'require("./package.json").version') || exit 1
   archive="$(pwd)/$tarball"
-  mkdir ../pm-case-demo && cd ../pm-case-demo || exit 1
-  npm install "$archive" @unbrained/pm-cli@2026.11.5
-  npx --no-install pm init demo --defaults --agent-guidance skip --no-merge-fence
-  npx --no-install pm package install ./node_modules/@unbrained/pm-case
-  npx --no-install pm case --help
+  consumer=$(mktemp -d -t pm-case.XXXXXX) && test -n "$consumer" && cd "$consumer" || exit 1
+  npm install "$archive" @unbrained/pm-cli@2026.11.5 || exit 1
+  npx --no-install pm init demo --defaults --agent-guidance skip --no-merge-fence || exit 1
+  npx --no-install pm package install ./node_modules/@unbrained/pm-case || exit 1
+  npx --no-install pm case --help || exit 1
+  installed_version=$(node -p 'require("./node_modules/@unbrained/pm-case/package.json").version') || exit 1
+  test "$installed_version" = "$packed_version" || {
+    printf 'Expected version %s, installed %s.\n' "$packed_version" "$installed_version" >&2
+    exit 1
+  }
 )
 ```
 
@@ -191,7 +197,9 @@ The ten questions use 14 calls, 42044 delivered bytes versus 97937 baseline byte
 
 Automated npm publication requires the maintainer to configure a GitHub Actions
 [trusted publisher](https://docs.npmjs.com/trusted-publishers/) for this repository
-with workflow filename `release.yml`. `PM_RELEASE_APPROVED=true` gates daily and manual
+with workflow filename `release.yml` and select `npm publish` under **Allowed actions**.
+Trusted publishers created after September 3, 2026 default to
+`npm stage publish` only. `PM_RELEASE_APPROVED=true` gates daily and manual
 releases on `main`. The trusted publisher authorizes the workflow to publish to npm through OIDC.
 
 ## Without git

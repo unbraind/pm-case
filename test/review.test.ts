@@ -69,7 +69,7 @@ test('every documented local archive install has preceding build prerequisites a
   const installs = [...text.matchAll(/npm install (?:\.{1,2}\/[^\s`]+\.tgz|"\$archive")/g)]; assert.ok(installs.length > 0);
   for (const install of installs) {
     const preceding = text.slice(0, install.index);
-    assert.match(preceding, /npm ci\s+tarball=\$\(npm pack --silent\)/);
+    assert.match(preceding, /npm ci \|\| exit 1\s+tarball=\$\(npm pack --silent\)/);
     assert.ok(preceding.includes('newly built review archive'));
     assert.ok(preceding.includes('maintainer-supplied copy and its matching SHA-256 receipt'));
   }
