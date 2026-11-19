@@ -1,6 +1,6 @@
 {
   "name": "@unbrained/pm-case",
-  "version": "2026.11.6",
+  "version": "2026.11.19",
   "description": "Constrained combinatorial test design and exact coverage context",
   "repository": {
     "type": "git",
