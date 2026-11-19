@@ -82,7 +82,7 @@ try{
     {file:'test/review-classes.test.ts',before:"assert.notEqual(node.type, 'ImportExpression', 'Dynamic production imports are forbidden');",after:'void node;',test:'review-classes.test.ts',pattern:'^all production imports'},
     {file:'test/review-classes.test.ts',before:"['CallExpression', 'OptionalCallExpression'].includes(String(node.type))",after:"['CallExpression'].includes(String(node.type))",test:'review-classes.test.ts',pattern:'^all production imports'},
     {file:'test/corpus-privacy.test.ts',before:"callee.type==='Import' ? callee.type : callee.name??callee.property?.name??callee.property?.value??''",after:"callee.name??''",test:'corpus-privacy.test.ts',pattern:'^public-only acquisition guard'},
-    {file:'README.md',before:'npm ci\nnpm pack',after:'npm ci\nnpm run build',test:'review.test.ts',pattern:'^every documented local archive'},
+    {file:'README.md',before:'tarball=$(npm pack --silent) && test -n "$tarball" && test -f "$tarball" || exit 1',after:'npm run build',test:'review.test.ts',pattern:'^every documented local archive'},
     {file:'dist/src/errors.js',before:"'revision_conflict', 'lock_conflict', 'contention'",after:"'revision_conflict', 'contention'",test:'review.test.ts',pattern:'^transient refusal metadata'},
     {file:'test/writer-retry.ts',before:' || tries >= maxAttempts',after:'',test:'writer-retry.test.ts',pattern:'^writers bound every conflict'},
     {file:'dist/src/kernel.js',before:'parse(CaseModelSchema, raw, stored)',after:'parse(CaseModelSchema, raw)',test:'review.test.ts',pattern:'^stored owners remain readable'},
