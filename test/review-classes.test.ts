@@ -173,8 +173,10 @@ test('documented archive installs create and enter a fresh consumer directory ou
     assert.ok(lines.slice(0, install).some(line => /^mkdir .+&& cd /.test(line)), 'Every documented archive install must create and enter a fresh consumer directory first');
     const root = mkdtempSync(join(tmpdir(), 'case-readme-')); const source = join(root, 'source checkout'); mkdirSync(source);
     try {
-      const pkg = JSON.parse(readFileSync('package.json', 'utf8')) as { version: string };
-      writeFileSync(join(source, `unbrained-pm-case-${pkg.version}.tgz`), 'synthetic archive');
+      // Use a staged version so this proof catches a stale filename on any checkout.
+      const version = '2099.1.2';
+      writeFileSync(join(source, 'package.json'), JSON.stringify({ version }));
+      writeFileSync(join(source, `unbrained-pm-case-${version}.tgz`), 'synthetic archive');
       const probe = 'npm() { [ "$1" = install ] && [ -f "$2" ]; }\n' + lines.slice(0, install + 1).join('\n');
       const result = spawnSync('sh', ['-ec', probe], { cwd: source, env: testEnvironment(npmEnvironment(process.env)), encoding: 'utf8' });
       assert.equal(result.status, 0, 'The documented install must locate the archive from the consumer directory: ' + result.stderr);

@@ -2,11 +2,13 @@ id: pm-case-release-caller-rollout
 title: Adopt the released reusable Daily Release caller
 description: "Fleet rollout for unbraind/pm-ops#272 after the successful pm-jira cross-repository OIDC pilot. Replace copied release orchestration with the released SHA caller, matching validator, explicit empty changelog hooks and package-owned caller contracts. No merge, dispatch or publication."
 type: Task
-status: open
+status: in_progress
 priority: 2
 tags[2]: "area:release","gh:unbraind/pm-ops#272"
 created_at: "2026-11-14T21:59:24.376Z"
-updated_at: "2026-11-19T03:41:31.253Z"
+updated_at: "2026-11-19T07:56:26.820Z"
+assignee: codex-sol
+claim_principal: codex-sol
 author: codex-ops272-1114
 comments[5]{created_at,author,text}:
   "2026-11-14T21:59:29.207Z",codex-ops272-1114,"Orient and start the authorized fleet rollout. Verified released v2026.11.14 at 7687a35d7522482bd8361d60dbc2589e9afbc81c. Preserve this package approval, schedule, preparation and publication hooks through canonical inputs. The merged Jira pilot proves cross-repository npm identity acceptance; this package must still pass its own first-run preflight. Run caller contracts, installed attestation, strict YAML, actionlint and regenerated changelog checks. Shared-runner hold gates every push. No review-thread action, merge, dispatch or publication."
@@ -14,16 +16,19 @@ comments[5]{created_at,author,text}:
   "2026-11-19T02:04:17.937Z",codex-sol,"Daily Release candidate PR #18 for 2026.11.6 failed with Live publication identity disagrees. npm published at 2026-11-16T08:35:25.128Z before trusted preparation at 2026-11-16T13:59:05Z. No attestation, tag, GitHub Release or recorded workflow publication attempt exists for this intent. The protected merge matches the receipt. Read-only replay at c46a241 returns occupied and retains the historical receipt on retirement. Pin the shared workflow to v2026.11.18 with existing inputs and permissions."
   "2026-11-19T02:08:38.437Z",codex-sol,The linked release caller contract and changelog check both passed. Rollout is pending review and scheduled reconciliation.
   "2026-11-19T03:41:26.071Z",codex-sol,"Updated docs/release-caller-rollout.md and docs/scoped-npm-validation.md to the pm-ops v2026.11.18 caller SHA c46a2419c63af3b348e6b559b0733ab0d9942cc7. Pinned the package-side pm-ops dev dependency and lockfile to 2026.11.18 (previously 2026.11.14). With tags fetched, npm run changelog:full and npm run changelog:check passed. The caller tests passed 7/7, the linked documentation contracts passed 15/15, and npm run typecheck passed."
-files[4]{path,scope}:
+files[5]{path,scope}:
   .github/workflows/release.yml,project
   package-lock.json,project
   package.json,project
   test/release-workflow.test.ts,project
-tests[4]{command,scope,provenance{author,created_at,source_kind,source_ref}}:
+  test/review-classes.test.ts,project
+tests[6]{command,scope,provenance{author,created_at,source_kind,source_ref}}:
   node --test --test-concurrency=2 test/release-workflow.test.ts,project,codex-ops272-1114,"2026-11-14T22:15:56.351Z",local_mutation,codex/ops272-fleet-1114
   "npm run changelog:check",project,codex-sol,"2026-11-19T02:04:41.637Z",local_mutation,ci/repin-daily-release-1119
   node --test --test-concurrency=2 test/ci-docs.test.ts test/review-classes.test.ts test/review.test.ts,project,codex-sol,"2026-11-19T03:40:24.075Z",local_mutation,ci/repin-daily-release-1119
   npm run typecheck,project,codex-sol,"2026-11-19T03:40:31.460Z",local_mutation,ci/repin-daily-release-1119
+  node --test --test-name-pattern='^documented archive installs' test/review-classes.test.ts,project,codex-sol,"2026-11-19T07:56:26.493Z",local_mutation,fix/release-archive-install-doc
+  npm run coverage,project,codex-sol,"2026-11-19T07:56:26.493Z",local_mutation,fix/release-archive-install-doc
 docs[3]{path,scope}:
   docs/release-caller-rollout.md,project
   docs/scoped-npm-validation.md,project
