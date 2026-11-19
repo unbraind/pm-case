@@ -164,9 +164,9 @@ test('harness PATH composition and linked commands use platform conventions', ()
 });
 
 test('documented archive installs create and enter a fresh consumer directory outside the source checkout', () => {
-  const text = readFileSync('README.md', 'utf8'); let documented = 0;
+  const text = readFileSync('README.md', 'utf8').replaceAll('\r\n', '\n'); let documented = 0;
   for (const block of text.matchAll(/```sh\n([\s\S]*?)```/g)) {
-    if (!block[1].includes('.tgz')) continue;
+    if (!/(?:\.tgz|"\$archive")/.test(block[1])) continue;
     const lines = block[1].trim().split('\n');
     const install = lines.findIndex(line => /^npm install /.test(line));
     if (install < 0) continue; documented += 1;
@@ -177,7 +177,17 @@ test('documented archive installs create and enter a fresh consumer directory ou
       const version = '2099.1.2';
       writeFileSync(join(source, 'package.json'), JSON.stringify({ version }));
       writeFileSync(join(source, `unbrained-pm-case-${version}.tgz`), 'synthetic archive');
-      const probe = 'npm() { [ "$1" = install ] && [ -f "$2" ]; }\n' + lines.slice(0, install + 1).join('\n');
+      const stub = [
+        'npm() {',
+        '  case "$1" in',
+        '    ci) return 0 ;;',
+        '    pack) printf "%s\\n" "unbrained-pm-case-$(node -p \'require(\"./package.json\").version\').tgz" ;;',
+        '    install) [ -f "$2" ] ;;',
+        '    *) return 90 ;;',
+        '  esac',
+        '}',
+      ].join('\n');
+      const probe = [stub, ...lines.slice(0, install + 1)].join('\n');
       const result = spawnSync('sh', ['-ec', probe], { cwd: source, env: testEnvironment(npmEnvironment(process.env)), encoding: 'utf8' });
       assert.equal(result.status, 0, 'The documented install must locate the archive from the consumer directory: ' + result.stderr);
     } finally { rmSync(root, { recursive: true, force: true }); }
@@ -196,7 +206,7 @@ test('linked release gates keep timeouts above the measured full-run duration', 
 });
 
 test('all documented CLI and SDK installs initialize a tracker before package use', () => {
-  const source = readFileSync('README.md', 'utf8');
+  const source = readFileSync('README.md', 'utf8').replaceAll('\r\n', '\n');
   for (const block of source.matchAll(/```(?:sh|ts)\n([\s\S]*?)```/g)) {
     const commands = block[1].split('\n'); let initialized = false;
     for (const command of commands) {
@@ -225,5 +235,50 @@ test('runtime provisioning isolates hyphenated numbered jobs and unnamed setup s
     const named = step.replace('- uses:', '- name: Extra runtime\n' + indentation + '  uses:');
     assert.doesNotThrow(() => runtimeProvisioning(baseline + named + pinned + '\n'));
     assert.throws(() => runtimeProvisioning(baseline + named + 'latest\n'), assert.AssertionError);
+  }
+});
+
+test('documented archive installs stop before installation when packing fails or yields no archive', t => {
+  const readme = readFileSync('README.md', 'utf8').replaceAll('\r\n', '\n');
+  const blocks = [...readme.matchAll(/^```sh\n([\s\S]*?)^```$/gm)]
+    .map(match => match[1])
+    .filter(block => /^tarball=|^(?:npm install|bun add) "\$archive"/m.test(block));
+  assert.ok(blocks.length > 0, 'The README must document an archive installation');
+  const source = mkdtempSync(join(tmpdir(), 'readme-pack-'));
+  t.after(() => rmSync(source, { recursive: true, force: true }));
+  writeFileSync(join(source, 'package.tgz'), 'synthetic archive');
+
+  const stubs = String.raw`
+pack_result=$1
+npm() {
+  case "$1" in
+    ci) return 0 ;;
+    pack)
+      printf 'pack\n' >&2
+      case "$pack_result" in
+        failed) printf '%s\n' package.tgz; return 33 ;;
+        empty) return 0 ;;
+        missing) printf '%s\n' missing.tgz; return 0 ;;
+      esac
+      ;;
+    *) printf 'npm %s\n' "$1" >&2; return 90 ;;
+  esac
+}
+bun() { printf 'bun %s\n' "$1" >&2; return 90; }
+npx() { printf 'npx\n' >&2; return 90; }
+bunx() { printf 'bunx\n' >&2; return 90; }
+mkdir() { printf 'mkdir\n' >&2; return 90; }
+mktemp() { printf 'mktemp\n' >&2; return 90; }
+`;
+  for (const block of blocks) {
+    for (const packResult of ['failed', 'empty', 'missing']) {
+      const result = spawnSync('sh', ['-c', `${stubs}\n${block}`, 'readme-pack', packResult], {
+        cwd: source,
+        encoding: 'utf8',
+      });
+      assert.ifError(result.error);
+      assert.equal(result.stderr, 'pack\n', `${packResult}: only packing should run\n${block}`);
+      assert.equal(result.status, 1, `${packResult}: the snippet must exit with a failure`);
+    }
   }
 });

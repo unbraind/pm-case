@@ -8,20 +8,15 @@ Constrained combinatorial test design as durable agent context. An agent can res
 
 The npm package is `@unbrained/pm-case`. The pm extension identity and catalog display name remain `pm-case`; existing `pm case` commands do not change. The homepage remains <https://github.com/unbraind/pm-case#readme>.
 
-To evaluate a source commit, build a local review archive from a clean checkout. Run these commands in the package directory.
+To evaluate a source commit, start in a clean checkout. The archive is a newly built review archive. Use a maintainer-supplied copy and its matching SHA-256 receipt when verifying bytes from an earlier run.
+
+The commands pack the checkout and install the archive in a fresh sibling directory so `pm init` provisions a new tracker. If `../pm-case-demo` already exists, use a new name in both commands on the `mkdir` line.
 
 ```sh
 npm ci
-npm pack
-```
-
-This creates `unbrained-pm-case-<version>.tgz` in that directory, using the version in `package.json`. It is a newly built review archive, with no claim that its bytes match the captured, validated artifact from a previous run. The captured artifact is untracked; use a maintainer-supplied copy and its matching SHA-256 receipt when verifying that earlier run.
-
-Choose a fresh sibling directory so `pm init` provisions a new tracker. Run this block from the checkout. If `../pm-case-demo` already exists, use a new name in both commands on the `mkdir` line.
-
-```sh
-archive="$(pwd)/unbrained-pm-case-$(node -p 'require("./package.json").version').tgz"
-mkdir ../pm-case-demo && cd ../pm-case-demo
+tarball=$(npm pack --silent) && test -n "$tarball" && test -f "$tarball" || exit 1
+archive="$(pwd)/$tarball"
+mkdir ../pm-case-demo && cd ../pm-case-demo || exit 1
 npm install "$archive" @unbrained/pm-cli@2026.11.5
 npx --no-install pm init demo --defaults --agent-guidance skip --no-merge-fence
 npx --no-install pm package install ./node_modules/@unbrained/pm-case
@@ -191,6 +186,11 @@ V1 deliberately supports strengths 1 and 2. Three-way exhaustive reference suite
 | pm-ops | 2655 | 664 | 8229 | 2058 |
 
 The ten questions use 14 calls, 42044 delivered bytes versus 97937 baseline bytes: 57.07% fewer. The largest serialized page is 3836 bytes. Every page is below 1600 estimated tokens.
+
+Automated npm publication requires the maintainer to configure a GitHub Actions
+[trusted publisher](https://docs.npmjs.com/trusted-publishers/) for this repository
+with workflow filename `release.yml`. `PM_RELEASE_APPROVED=true` gates daily and manual
+releases on `main`. The trusted publisher authorizes the workflow to publish to npm through OIDC.
 
 ## Without git
 
