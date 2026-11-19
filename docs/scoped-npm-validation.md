@@ -30,7 +30,7 @@ The package has no standalone executable; npx/bunx invoke the pm host. The READM
 
 ## Release and local gates
 
-The caller retains pm-ops SHA `7687a35d7522482bd8361d60dbc2589e9afbc81c`. Inspection of that exact reusable workflow confirms there is no package-name input: packing, OIDC, registry metadata checks and Bun verification derive `package.json.name` or the release intent containing it. Defaults enable npm publication and Bun verification. The caller contract checks the package root and preserves those defaults, approval gate and runtime preparation.
+The caller pins pm-ops v2026.11.18 at `c46a2419c63af3b348e6b559b0733ab0d9942cc7`. Inspection of that exact reusable workflow confirms there is no package-name input: packing, OIDC, registry metadata checks and Bun verification derive `package.json.name` or the release intent containing it. Defaults enable npm publication and Bun verification. The caller contract checks the package root and preserves those defaults, approval gate and runtime preparation.
 
 Commands: `npm run typecheck`, `npm run lint`, `npm run pack:dry-run`, `npm run verify:release-publish-attestation`, `npm run identity:check`, `npm run changelog:full`, and `npm run changelog:check`. Targeted tests:
 
