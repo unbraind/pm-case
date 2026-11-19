@@ -167,7 +167,7 @@ test('documented archive installs create and enter a fresh consumer directory ou
   const text = readFileSync('README.md', 'utf8').replaceAll('\r\n', '\n'); let documented = 0;
   for (const block of text.matchAll(/```sh\n([\s\S]*?)```/g)) {
     if (!/(?:\.tgz|"\$archive")/.test(block[1])) continue;
-    const lines = block[1].trim().split('\n');
+    const lines = block[1].trim().split('\n').map(line => line.trimStart());
     const install = lines.findIndex(line => /^npm install /.test(line));
     if (install < 0) continue; documented += 1;
     assert.ok(lines.slice(0, install).some(line => /^mkdir .+&& cd /.test(line)), 'Every documented archive install must create and enter a fresh consumer directory first');
@@ -185,8 +185,9 @@ test('documented archive installs create and enter a fresh consumer directory ou
         '    *) return 90 ;;',
         '  esac',
         '}',
+        'npx() { return 0; }',
       ].join('\n');
-      const probe = [stub, ...lines.slice(0, install + 1)].join('\n');
+      const probe = [stub, block[1]].join('\n');
       const result = spawnSync('sh', ['-ec', probe], { cwd: source, env: testEnvironment(npmEnvironment(process.env)), encoding: 'utf8' });
       assert.equal(result.status, 0, 'The documented install must locate the archive from the consumer directory: ' + result.stderr);
     } finally { rmSync(root, { recursive: true, force: true }); }
@@ -209,7 +210,7 @@ test('all documented CLI and SDK installs initialize a tracker before package us
   for (const block of source.matchAll(/```(?:sh|ts)\n([\s\S]*?)```/g)) {
     const commands = block[1].split('\n'); let initialized = false;
     for (const command of commands) {
-      if (/^(?:npm install|bun add)/.test(command)) initialized = false;
+      if (/^(?:npm install|bun add)/.test(command.trimStart())) initialized = false;
       if (/pm init demo|await native\.init\(/.test(command)) initialized = true;
       if (/pm package install|const host = createDirectoryHost/.test(command)) assert.ok(initialized, 'Every installation path must initialize the tracker first');
     }
@@ -241,7 +242,7 @@ test('pack failure or missing output stops documented archive installs before co
   const readme = readFileSync('README.md', 'utf8').replaceAll('\r\n', '\n');
   const blocks = [...readme.matchAll(/^```sh\n([\s\S]*?)^```$/gm)]
     .map(match => match[1])
-    .filter(block => /^tarball=|^(?:npm install|bun add) "\$archive"/m.test(block));
+    .filter(block => /^[ \t]*(?:tarball=|(?:npm install|bun add) "\$archive")/m.test(block));
   assert.ok(blocks.length > 0, 'The README must document an archive installation');
   const source = mkdtempSync(join(tmpdir(), 'readme-pack-'));
   t.after(() => rmSync(source, { recursive: true, force: true }));
@@ -270,14 +271,16 @@ mkdir() { printf 'mkdir\n' >&2; return 90; }
 mktemp() { printf 'mktemp\n' >&2; return 90; }
 `;
   for (const block of blocks) {
+    assert.match(block.trim(), /^\(\n[\s\S]*\n\)$/, 'The archive install must run in a subshell');
     for (const packResult of ['failed', 'empty', 'missing']) {
-      const result = spawnSync('sh', ['-c', `${stubs}\n${block}`, 'readme-pack', packResult], {
+      const result = spawnSync('sh', ['-c', `${stubs}\n${block}\nprintf 'shell continued: %s\\n' "$?"`, 'readme-pack', packResult], {
         cwd: source,
         encoding: 'utf8',
       });
       assert.ifError(result.error);
       assert.equal(result.stderr, 'pack\n', `${packResult}: only packing should run\n${block}`);
-      assert.equal(result.status, 1, `${packResult}: the snippet must exit with a failure`);
+      assert.equal(result.status, 0, `${packResult}: the calling shell must continue`);
+      assert.equal(result.stdout, 'shell continued: 1\n', `${packResult}: the snippet must return a failure`);
     }
   }
 });
