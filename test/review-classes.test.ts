@@ -237,7 +237,7 @@ test('runtime provisioning isolates hyphenated numbered jobs and unnamed setup s
   }
 });
 
-test('documented archive installs stop before installation when packing fails or yields no archive', t => {
+test('pack failure or missing output stops documented archive installs before consumer commands', t => {
   const readme = readFileSync('README.md', 'utf8').replaceAll('\r\n', '\n');
   const blocks = [...readme.matchAll(/^```sh\n([\s\S]*?)^```$/gm)]
     .map(match => match[1])
