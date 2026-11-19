@@ -8,7 +8,7 @@ Constrained combinatorial test design as durable agent context. An agent can res
 
 The npm package is `@unbrained/pm-case`. The pm extension identity and catalog display name remain `pm-case`; existing `pm case` commands do not change. The homepage remains <https://github.com/unbraind/pm-case#readme>.
 
-This candidate is local and unpublished. To create a fresh local review archive from a clean source checkout, run these prerequisites in the package directory:
+To evaluate a source commit, build a local review archive from a clean checkout. Run these commands in the package directory.
 
 ```sh
 npm ci
@@ -17,7 +17,7 @@ npm pack
 
 This creates `unbrained-pm-case-<version>.tgz` in that directory, using the version in `package.json`. It is a newly built review archive, with no claim that its bytes match the captured, validated artifact from a previous run. The captured artifact is untracked; use a maintainer-supplied copy and its matching SHA-256 receipt when verifying that earlier run.
 
-Install the archive in a fresh consumer directory, never inside this source checkout, so `pm init` provisions a new tracker instead of the checkout's own:
+Choose a fresh sibling directory so `pm init` provisions a new tracker. Run this block from the checkout. If `../pm-case-demo` already exists, use a new name in both commands on the `mkdir` line.
 
 ```sh
 archive="$(pwd)/unbrained-pm-case-$(node -p 'require("./package.json").version').tgz"
@@ -28,16 +28,16 @@ npx --no-install pm package install ./node_modules/@unbrained/pm-case
 npx --no-install pm case --help
 ```
 
-After maintainer publication, the registry paths are:
+Install from the npm registry in a fresh project. Choose the npm or Bun commands.
 
 ```sh
-# Fresh npm project outside this checkout
 npm install @unbrained/pm-case @unbrained/pm-cli
 npx --no-install pm init demo --defaults --agent-guidance skip --no-merge-fence
 npx --no-install pm package install ./node_modules/@unbrained/pm-case
 npx --no-install pm case --help
+```
 
-# Separate fresh Bun project
+```sh
 bun add @unbrained/pm-case @unbrained/pm-cli
 bunx --bun --no-install pm init demo --defaults --agent-guidance skip --no-merge-fence
 bunx --bun --no-install pm package install ./node_modules/@unbrained/pm-case
@@ -53,7 +53,7 @@ pm case --help
 
 The `npm:` prefix selects the registry; bare `pm install @unbrained/pm-case` is interpreted as a local source by the pinned host. npm or Bun installation alone does not activate the extension.
 
-Global SDK installation is available after publication:
+For a global SDK installation, use npm or Bun.
 
 ```sh
 npm i -g @unbrained/pm-case
