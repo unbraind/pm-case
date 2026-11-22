@@ -1,0 +1,23 @@
+id: pm-case-sdk-1122
+title: Adopt pm-cli 2026.11.22 host-aligned SDK behaviour
+description: Migrate the package toolchain and verify the native host contracts. Companion item pm-cli-website-spus.
+type: Chore
+status: in_progress
+priority: 2
+tags: []
+created_at: "2026-11-22T20:36:35.472Z"
+updated_at: "2026-11-22T21:41:31.194Z"
+author: codex-agent
+acceptance_criteria: Pin all first-party development tools at npm latest and refresh tracked locks; Prove native and package cursor and budget behaviours with the installed SDK; Run the unchanged release gates and open the migration PR
+comments[1]{created_at,author,text}:
+  "2026-11-22T21:41:30.010Z",codex-agent,"## Host behavior\n\n- `not ok 32 - native harness exercises all seven commands with equivalent scoped JSON and TOON`. The old harness accepted a package cursor through `outputCursor` and delivered `invalid_input` from the package for conflicting or malformed cursors. The host now validates the native cursor before dispatch and reports `read_output_cursor_invalid` with exit 2. The native assertions check those refusals and still resume via the package `--cursor`. The original package guards run directly with the real SDK.\n- The same test previously saw package `invalid_input` for an array-valued `--tuple` and a malformed output session. The host now refuses these as `extension_flag_value_invalid` and `invalid_read_output_session`. The tests check both host codes and keep the handler-level refusals.\n- `not ok 37 - an explicit budget is not refused by an invalid stored budget setting`. An array-valued `--budget` used to enter the handler and produce a package refusal. The host now rejects arrays for scalar flags before dispatch. The native assertion expects `extension_flag_value_invalid` with exit 2, and the handler assertion retains `invalid_input`. Valid explicit budgets, invalid scalar budgets, stored policy fallback and pre-write reservation remain covered.\n\n## Verification\n\n- Baseline build and typecheck passed. The full baseline passed 114 of 116 tests. Both updated failure classes fail with a missing expected host rejection when run against 2026.11.14 in a disposable checkout.\n- `pm test pm-case-sdk-1122 --run --progress` passed 6 of 6 contract tests.\n- `npm run release:check` and `bun run release:check` each passed 116 of 116 tests. Coverage is 614/614 statements, 355/355 branches, 173/173 functions, and 498/498 lines. The gates include typecheck, lint, identity and privacy, tracker health, changelog, production audit, packed npm and Bun acceptance, and behavioral and linked-build reverts.\n\nCI for this branch is tracked in the Actions run list. [Branch runs](https://github.com/unbraind/pm-case/actions?query=branch%3Adeps%2Fadopt-pm-cli-host-alignment-1122)"
+files[3]{path,scope}:
+  package-lock.json,project
+  package.json,project
+  test/contracts.test.ts,project
+tests[1]{command,scope,provenance{author,created_at,source_kind,source_ref}}:
+  node --test --test-concurrency=2 test/contracts.test.ts,project,codex-agent,"2026-11-22T21:06:49.320Z",local_mutation,deps/adopt-pm-cli-host-alignment-1122
+docs[2]{path,scope}:
+  ARCHITECTURE.md,project
+  README.md,project
+body: ""

@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Other
+
+- Adopt pm-cli 2026.11.22 host-aligned SDK behaviour ([pm-case-sdk-1122](https://github.com/unbraind/pm-case/blob/main/.agents/pm/chores/pm-case-sdk-1122.toon))
+
 ## 2026.11.20 - 2026-11-20
 
 ### Dependencies
