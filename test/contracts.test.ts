@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createExtensionTestHarness, decodeToon } from '@unbrained/pm-cli/sdk/testing';
-import { fitOutputEnvelope, writeSettingsSection } from '@unbrained/pm-cli/sdk';
+import { createExtensionCommandSdk, fitOutputEnvelope, writeSettingsSection } from '@unbrained/pm-cli/sdk';
 import extension, { createCaseModel, recordCaseOutcome, readCaseModel, casePacket, envelope, fitEnvelope, CaseRefusal, digest } from '../dist/index.js';
 import { runCommand, inputJson } from '../dist/src/commands.js';
 import { wire } from '../dist/src/output.js';
@@ -24,7 +24,25 @@ test('native harness exercises all seven commands with equivalent scoped JSON an
   const page = await run('packet', { limit: '1' }); assert.ok(page.next_cursor);
   for (const format of ['json','toon'] as const) { const rendered = await ext.runRendererOverride({ format, command: 'case packet', result: page }); const decoded = format === 'json' ? JSON.parse(String(rendered.rendered)) : decodeToon(String(rendered.rendered)); assert.deepEqual(decoded, page); assert.ok(Buffer.byteLength(String(rendered.rendered)) <= 6400); }
   assert.equal((await run('packet', { limit: '1', cursor: page.next_cursor })).ok, true);
-  assert.equal((await run('packet', { limit: '1' }, { outputCursor: page.next_cursor })).ok, true);
+  const hostCursorRefusal = { code: 'read_output_cursor_invalid', exitCode: 2 };
+  await assert.rejects(run('packet', { limit: '1' }, { outputCursor: page.next_cursor }), hostCursorRefusal);
+  await assert.rejects(run('packet', { cursor: page.next_cursor }, { outputCursor: page.next_cursor }), hostCursorRefusal);
+  await assert.rejects(run('coverage', {}, { outputCursor: 'bad' }), hostCursorRefusal);
+  await assert.rejects(run('explain', { tuple: [] }), { code: 'extension_flag_value_invalid', exitCode: 2 });
+  await assert.rejects(run('packet', {}, { outputSession: 'x' }), { code: 'invalid_read_output_session', exitCode: 2 });
+
+  // Exercise the package guards with the real SDK because the native host refuses these inputs before dispatch.
+  const sdk = createExtensionCommandSdk(pmRoot, native);
+  for (const [command, options, global] of [
+    ['packet', { cursor: page.next_cursor }, { outputCursor: page.next_cursor }],
+    ['coverage', {}, { outputCursor: 'bad' }],
+    ['explain', { tuple: [] }, {}],
+    ['packet', {}, { outputSession: 'x' }],
+  ] as const) {
+    const direct = await runCommand(command, { command: `case ${command}`, args: ['corpus-cli'], options, global, pm_root: pmRoot, sdk }) as CaseResult;
+    assert.equal(direct.refusal?.code, 'invalid_input');
+    assert.equal(direct.exit_code, 2);
+  }
   assert.equal((await run('packet', {}, { outputLimit: '1', outputBudget: '1600' })).ok, true);
   assert.equal((await run('packet', { limit: '1', budget: '1600' })).ok, true);
   for (const [command, options, global, code] of [
@@ -33,9 +51,9 @@ test('native harness exercises all seven commands with equivalent scoped JSON an
     ['create', { id: 'corpus-refused', op: 'bad', input: '{"id":"other"}' }, {}, 'invalid_input'],
     ['create', { id: 'corpus-refused', op: 'small', input: JSON.stringify({ title: 'Small', model: model() }) }, { outputBudget: '1' }, 'output_budget'],
     ['packet', { limit: '1.5' }, {}, 'invalid_input'], ['packet', { limit: '101' }, {}, 'invalid_input'], ['packet', {}, { outputBudget: 0 }, 'invalid_input'], ['packet', {}, { outputBudget: [] }, 'invalid_input'], ['packet', {}, { outputBudget: '99999999999999999' }, 'invalid_input'],
-    ['explain', { tuple: [] }, {}, 'invalid_input'], ['packet', {}, { outputInclude: 'id' }, 'invalid_input'], ['packet', {}, { outputSession: 'x' }, 'invalid_input'], ['packet', {}, { outputRowContract: 'x' }, 'invalid_input'],
-    ['coverage', {}, { outputCursor: 'bad' }, 'invalid_input'], ['coverage', {}, { outputLimit: 1 }, 'invalid_input'],
-    ['packet', { cursor: page.next_cursor }, { outputCursor: page.next_cursor }, 'invalid_input'], ['packet', { limit: '1' }, { outputLimit: '2' }, 'invalid_input'], ['packet', { budget: '1600' }, { outputBudget: '1600' }, 'invalid_input'],
+    ['packet', {}, { outputInclude: 'id' }, 'invalid_input'], ['packet', {}, { outputRowContract: 'x' }, 'invalid_input'],
+    ['coverage', {}, { outputLimit: 1 }, 'invalid_input'],
+    ['packet', { limit: '1' }, { outputLimit: '2' }, 'invalid_input'], ['packet', { budget: '1600' }, { outputBudget: '1600' }, 'invalid_input'],
   ] as const) assert.equal((await run(command, options, global)).refusal?.code, code);
   await assert.rejects(native.get('corpus-refused'), hasCode('item_not_found'));
   assert.equal((await runCommand('packet', { command: 'case packet', args: [], options: {}, global: {}, pm_root: pmRoot } as CommandHandlerContext) as CaseResult).refusal?.code, 'backend_unsupported');
@@ -72,7 +90,7 @@ test('all write budgets refuse before native item schema or history side effects
 });
 
 test('an explicit budget is not refused by an invalid stored budget setting', async t => {
-  const { pmRoot, id } = await fixture(t); const ext = await createExtensionTestHarness(extension, { capabilities: ['commands', 'schema', 'renderers'] }); t.after(() => ext.deactivate());
+  const { pmRoot, id, native } = await fixture(t); const ext = await createExtensionTestHarness(extension, { capabilities: ['commands', 'schema', 'renderers'] }); t.after(() => ext.deactivate());
   for (const stored of [0, -1, 1.5, 8193]) {
     await writeSettingsSection(pmRoot, 'case', { output_budget: stored }, { author: 'fixture' });
     for (const transport of [{ options: { budget: '1600' }, global: {} }, { options: {}, global: { outputBudget: '1600' } }, { options: {}, global: { outputBudget: 'unbounded' } }]) {
@@ -82,8 +100,13 @@ test('an explicit budget is not refused by an invalid stored budget setting', as
     const fallback = await ext.runCommand({ command: 'case packet', args: [id], options: { limit: '1' }, pmRoot }); if (fallback.cause) throw fallback.cause;
     assert.equal((fallback.result as CaseResult).ok, false, `Invalid stored ${stored} must still refuse without an explicit budget`);
   }
-  for (const explicit of ['0', '-1', '1.5', []]) {
+  for (const explicit of ['0', '-1', '1.5']) {
     const ran = await ext.runCommand({ command: 'case packet', args: [id], options: { limit: '1', budget: explicit }, pmRoot }); if (ran.cause) throw ran.cause;
     assert.equal((ran.result as CaseResult).ok, false, 'Invalid explicit budgets still refuse');
   }
+  const options = { limit: '1', budget: [] };
+  await assert.rejects(ext.runCommand({ command: 'case packet', args: [id], options, pmRoot }), { code: 'extension_flag_value_invalid', exitCode: 2 });
+  const sdk = createExtensionCommandSdk(pmRoot, native);
+  const direct = await runCommand('packet', { command: 'case packet', args: [id], options, global: {}, pm_root: pmRoot, sdk }) as CaseResult;
+  assert.equal(direct.refusal?.code, 'invalid_input');
 });
