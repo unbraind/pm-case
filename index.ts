@@ -1,7 +1,7 @@
 import { defineExtension } from '@unbrained/pm-cli/sdk/authoring';
 import { register } from './src/commands.ts';
 /** Native finite case-model extension; activation contributes schema and commands only. */
-const extension = defineExtension({ name: 'pm-case', version: "2026.11.23", description: 'Constrained test design and exact coverage context', activate: register });
+const extension = defineExtension({ name: 'pm-case', version: "2026.11.24", description: 'Constrained test design and exact coverage context', activate: register });
 /** Activate through the native pm extension host. */
 export default extension;
 /** Authorized in-process lifecycle, coverage and resume operations. */

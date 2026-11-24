@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 2026.11.24 - 2026-11-24
 
 ### Other
 
@@ -8,7 +8,7 @@
 
 ### Dependencies
 
-- Bump @babel/parser
+- Bump @babel/parser from 8.1.2 to 8.1.3 in the dependencies group ([#37](https://github.com/unbraind/pm-case/pull/37))
 
 ## 2026.11.23 - 2026-11-23
 
