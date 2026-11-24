@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Other
+
+- Keep published dependency updates in the generated changelog ([pm-case-jow8](https://github.com/unbraind/pm-case/blob/main/.agents/pm/chores/pm-case-jow8.toon))
+
 ## 2026.11.23 - 2026-11-23
 
 ### Other
@@ -30,3 +36,16 @@
 - Deliver constrained test-design context ([pm-case-release](https://github.com/unbraind/pm-case/blob/main/.agents/pm/epics/pm-case-release.toon))
 - Publish pm-case as @unbrained/pm-case ([pm-case-scoped-npm-name](https://github.com/unbraind/pm-case/blob/main/.agents/pm/chores/pm-case-scoped-npm-name.toon))
 - Apply Fleet CI v2 quick PR and deep tiers ([pm-case-ci-v2](https://github.com/unbraind/pm-case/blob/main/.agents/pm/tasks/pm-case-ci-v2.toon))
+
+### Dependencies
+
+- Bump pm-changelog ([#22](https://github.com/unbraind/pm-case/pull/22))
+- Bump eslint ([#20](https://github.com/unbraind/pm-case/pull/20))
+- Bump the pm-toolchain group with 2 updates ([#19](https://github.com/unbraind/pm-case/pull/19))
+- Bump the pm-toolchain group with 2 updates ([#15](https://github.com/unbraind/pm-case/pull/15))
+- Bump the dependencies group with 2 updates ([#16](https://github.com/unbraind/pm-case/pull/16))
+- Bump the pm-toolchain group across 1 directory with 2 updates ([#9](https://github.com/unbraind/pm-case/pull/9))
+- Bump jscpd ([#8](https://github.com/unbraind/pm-case/pull/8))
+- Bump the pm-toolchain group across 1 directory with 3 updates ([#6](https://github.com/unbraind/pm-case/pull/6))
+- Bump unbraind/pm-github/.github/workflows/pm-github-sync.yml ([#3](https://github.com/unbraind/pm-case/pull/3))
+- Bump the codeql-action group across 1 directory with 2 updates ([#2](https://github.com/unbraind/pm-case/pull/2))
