@@ -6,6 +6,10 @@
 
 - Keep published dependency updates in the generated changelog ([pm-case-jow8](https://github.com/unbraind/pm-case/blob/main/.agents/pm/chores/pm-case-jow8.toon))
 
+### Dependencies
+
+- Bump @babel/parser
+
 ## 2026.11.23 - 2026-11-23
 
 ### Other
