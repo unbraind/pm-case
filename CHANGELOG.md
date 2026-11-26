@@ -4,6 +4,7 @@
 
 ### Dependencies
 
+- Bump the codeql-action group with 2 updates ([#40](https://github.com/unbraind/pm-case/pull/40))
 - Bump @unbrained/pm-cli
 - Bump unbraind/pm-ops/.github/workflows/daily-release.yml from 2026.11.18 to 2026.11.22 ([#41](https://github.com/unbraind/pm-case/pull/41))
 
