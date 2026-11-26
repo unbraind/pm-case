@@ -1,11 +1,11 @@
 # Changelog
 
-## Unreleased
+## 2026.11.26 - 2026-11-26
 
 ### Dependencies
 
+- Bump @unbrained/pm-cli from 2026.11.22 to 2026.11.23 in the pm-toolchain group ([#43](https://github.com/unbraind/pm-case/pull/43))
 - Bump the codeql-action group with 2 updates ([#40](https://github.com/unbraind/pm-case/pull/40))
-- Bump @unbrained/pm-cli
 - Bump unbraind/pm-ops/.github/workflows/daily-release.yml from 2026.11.18 to 2026.11.22 ([#41](https://github.com/unbraind/pm-case/pull/41))
 
 ## 2026.11.24 - 2026-11-24
